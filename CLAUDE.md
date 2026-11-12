@@ -124,9 +124,12 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - La configuración va en `vitest.config.mts`. Tiene que ser `.mts`: el plugin es solo ESM y con `.ts` Vite lo carga con `require` y falla.
 - No lee `wrangler.jsonc` (`config: false`), que todavía tiene un `database_id` de relleno. Declara solo la D1.
 - `tests/esquema.ts` aplica `db/schema.sql` y vacía las tablas antes de cada prueba. Lee el esquema de verdad, no una copia: si una migración rompe una consulta, se cae la suite.
-- `tests/propiedades.test.ts` reemplaza `@/lib/db` con la D1 de miniflare. Es la única forma de probar `propiedades.ts` sin el contexto de Cloudflare.
-- Cubren `src/lib`: RUT y contraseñas (`crypto`), firma real de las imágenes y claves de R2 (`imagenes`), límites del formulario (`validar-propiedad`), filtros y orden del listado (`filters`), formatos en es-CL (`format`) y el inventario sobre D1, con el orden de las fotos (`propiedades`).
-- Lo que no cubren: los route handlers, los componentes y el acceso completo (`auth.ts` necesita `next/headers`).
+- Las pruebas que tocan la base reemplazan `@/lib/db` con la D1 y el R2 de miniflare. Es la única forma de probar esos módulos sin el contexto de Cloudflare.
+- Los route handlers se prueban llamándolos directo con un `Request` armado a mano: son funciones que reciben un `Request` y devuelven un `Response`, no hace falta levantar Next. `tests/sesion.ts` arma la cookie de sesión sin pasar por el login.
+- Cubren `src/lib`: RUT y contraseñas (`crypto`), firma real de las imágenes y claves de R2 (`imagenes`), límites del formulario (`validar-propiedad`), filtros y orden del listado (`filters`), formatos en es-CL (`format`) y el inventario sobre D1 (`propiedades`).
+- Y los endpoints: login con bloqueo por intentos y freno por IP, cambio de clave, logout, alta y baja de usuarios, CRUD de propiedades, subida y borrado de fotos, reordenar, y la entrega desde R2 en `/fotos`.
+- Turnstile va mockeado en las pruebas del login: sale a pedirle el veredicto a Cloudflare. Lo que se prueba es que el login lo respete.
+- Lo que no cubren: los componentes, los Server Components del panel (`guardias.ts`), el envío de correos de `leads.ts` y la propia llamada a Turnstile.
 
 ## Contenido de ejemplo (reemplazar antes de publicar)
 
@@ -143,4 +146,4 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 4. Datos de contacto reales, y reemplazar las propiedades de ejemplo desde el panel.
 5. Verificar cotaclara.cl en Resend y dejar `RESEND_API_KEY` y `LEADS_FROM` en `.env.local`.
 6. Dominio cotaclara.cl apuntando al Worker.
-7. Las pruebas cubren `src/lib`; las rutas de API y los componentes siguen verificándose a mano.
+7. Las pruebas cubren `src/lib` y los endpoints; los componentes y las páginas siguen verificándose a mano.

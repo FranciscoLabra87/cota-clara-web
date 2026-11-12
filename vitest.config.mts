@@ -17,6 +17,7 @@ export default defineConfig({
         compatibilityDate: '2026-09-01',
         compatibilityFlags: ['nodejs_compat'],
         d1Databases: ['DB'],
+        r2Buckets: ['FOTOS'],
       },
     }),
   ],

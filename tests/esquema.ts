@@ -27,4 +27,9 @@ beforeEach(async () => {
     "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%'",
   ).all<{ name: string }>();
   await env.DB.batch(results.map((t) => env.DB.prepare(`DELETE FROM ${t.name}`)));
+
+  // El bucket también: si no, una prueba ve las fotos que dejó la anterior y
+  // deja de servir para comprobar que una subida rechazada no escribe nada.
+  const { objects } = await env.FOTOS.list();
+  if (objects.length) await env.FOTOS.delete(objects.map((o) => o.key));
 });
