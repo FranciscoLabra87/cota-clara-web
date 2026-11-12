@@ -100,3 +100,8 @@
 .field__check a {
   color: var(--color-petroleo);
 }
+
+.field__hint {
+  font-size: var(--fs-sm);
+  color: var(--color-texto-suave);
+}

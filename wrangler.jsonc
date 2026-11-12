@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cota-clara-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+
+  // Los produce `opennextjs-cloudflare build`; no cambiar.
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+
+  "observability": { "enabled": true },
+
+  // Optimización de imágenes de next/image sobre Workers.
+  "images": { "binding": "IMAGES" },
+
+  // Base del acceso corporativo: usuarios, sesiones y bitácora.
+  // El database_id lo entrega `npx wrangler d1 create cota-clara-db` y hay que
+  // pegarlo aquí antes del primer deploy. En local no se usa: `next dev` monta
+  // una D1 de mentira en .wrangler/state.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "cota-clara-db",
+      "database_id": "PENDIENTE-CORRER-WRANGLER-D1-CREATE"
+    }
+  ]
+
+  // El bucket R2 de fotos entra en la etapa 2, junto con la subida de imágenes.
+  // Declararlo antes haría fallar el deploy, porque el bucket aún no existe.
+}

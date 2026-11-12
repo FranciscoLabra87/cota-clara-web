@@ -55,6 +55,16 @@ export function Header() {
                 </Link>
               </li>
             ))}
+            <li className="nav__item">
+              <Link
+                href="/acceso"
+                className={`nav__link nav__link--acceso${isActive('/acceso') ? ' nav__link--active' : ''}`}
+                aria-current={isActive('/acceso') ? 'page' : undefined}
+              >
+                <Icon name="key" className="nav__link-icon" />
+                Acceso Corporativo
+              </Link>
+            </li>
           </ul>
         </nav>
 
@@ -91,6 +101,11 @@ export function Header() {
           <li>
             <Link href="/contacto" className="mobile-menu__link">
               Contacto
+            </Link>
+          </li>
+          <li>
+            <Link href="/acceso" className="mobile-menu__link mobile-menu__link--acceso">
+              <Icon name="key" /> Acceso Corporativo
             </Link>
           </li>
         </ul>

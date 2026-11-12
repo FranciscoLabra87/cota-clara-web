@@ -209,3 +209,30 @@
     display: none;
   }
 }
+
+/* Acceso corporativo: no es navegación pública, así que va en terracota para
+   separarlo del resto del menú. */
+.nav__link--acceso {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: var(--color-terracota-600);
+}
+
+.nav__link-icon {
+  width: 1em;
+  height: 1em;
+}
+
+/* Sobre el hero oscuro el terracota pierde contraste: se usa el tono claro. */
+.site-header--transparent .nav__link--acceso {
+  color: var(--color-terracota-claro);
+}
+
+.mobile-menu__link--acceso {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-terracota-claro);
+}
