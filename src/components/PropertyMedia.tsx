@@ -16,7 +16,7 @@ type Props = {
 export function PropertyMedia({ propiedad, className, sizes = '(max-width: 700px) 100vw, 33vw', priority = false }: Props) {
   const foto = propiedad.imagenes?.[0];
   if (foto) {
-    return <Image src={foto} alt="" fill sizes={sizes} className={className} priority={priority} />;
+    return <Image src={foto} alt="" fill sizes={sizes} className={className} priority={priority} unoptimized />;
   }
   return (
     <Illustration
