@@ -65,16 +65,17 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - `src/lib`:
   - `format.ts`: números en es-CL y precios en UF/CLP.
   - `filters.ts`: filtros y orden del listado.
+  - `leads.ts`: arma el correo del lead (asunto, texto y HTML) y lo envía con Resend.
 
 ## Contenido de ejemplo (reemplazar antes de publicar)
 
 - **Propiedades:** son ficticias. Sin fotos se muestra una ilustración SVG de `Illustration.tsx` (`ilustracion: { seed, tono }`). Para usar fotos reales, deja los archivos en `public/propiedades/` y agrega `imagenes: ['/propiedades/x.jpg']` a la propiedad.
 - **Contacto:** en `site.ts`, teléfono, WhatsApp, email y dirección son placeholders. `site.url` es `https://www.cotaclara.cl`.
 - **Honorarios:** los de `services.ts` son referenciales; hay que confirmarlos con el cliente.
-- **Leads:** `api/contacto` valida nombre, email, el consentimiento `acepto` y el honeypot `empresa`, pero solo registra el lead con `console.info`. Falta conectar un email o CRM (por ejemplo Resend), con las credenciales en `.env.local`.
+- **Leads:** `api/contacto` valida nombre, email, el consentimiento `acepto` y el honeypot `empresa`, y manda el lead por correo con Resend (`src/lib/leads.ts`). Necesita `RESEND_API_KEY` y `LEADS_FROM` en `.env.local`; las variables están documentadas en `.env.example`. Sin esas dos el lead solo queda en el log del servidor y la ruta responde `ok`. Si Resend falla, responde 502 y el `LeadForm` muestra su alerta con el correo de respaldo. Falta verificar el dominio cotaclara.cl en Resend.
 
 ## Pendientes sugeridos
 
 1. Datos de contacto reales y fotos.
-2. Envío real de los leads desde `/api/contacto`.
+2. Verificar cotaclara.cl en Resend y dejar `RESEND_API_KEY` y `LEADS_FROM` en `.env.local`.
 3. Deploy en Vercel y dominio cotaclara.cl.
