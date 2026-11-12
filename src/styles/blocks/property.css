@@ -166,12 +166,16 @@
 .gallery__thumbs {
   display: flex;
   gap: var(--space-3);
+  overflow-x: auto;
+  padding-block: 2px 8px;
+  scroll-snap-type: x proximity;
 }
 
 .gallery__thumb {
   position: relative;
-  flex: 1 1 0;
+  flex: 0 0 clamp(72px, 10vw, 84px);
   aspect-ratio: 4 / 3;
+  scroll-snap-align: start;
   padding: 0;
   border: 2px solid transparent;
   border-radius: var(--radius-sm);

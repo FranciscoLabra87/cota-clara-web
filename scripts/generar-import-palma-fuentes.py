@@ -160,9 +160,11 @@ def main() -> None:
         selected = gallery["images"]
         if gallery["sourceListingUrl"] != prop["sourceUrl"] or len(selected) != gallery["selectedCount"]:
             raise ValueError(f"Galería inconsistente: {prop['id']}")
-        if len(selected) > images["maxImagesPerListing"]:
-            raise ValueError(f"Demasiadas fotos: {prop['id']}")
-        for photo in selected:
+        if len(selected) != gallery["galleryCount"] or len(selected) != len(prop["images"]):
+            raise ValueError(f"Galería incompleta: {prop['id']}")
+        for index, photo in enumerate(selected, start=1):
+            if photo["index"] != index or photo["sourceUrl"] != prop["images"][index - 1]:
+                raise ValueError(f"Orden de fotos inconsistente: {prop['id']}")
             key = photo["key"]
             if not re.fullmatch(rf"palma-fuentes/{prop['id']}/\d+-[0-9a-f]{{12}}\.(jpg|png|webp)", key):
                 raise ValueError(f"Clave R2 no válida: {key}")

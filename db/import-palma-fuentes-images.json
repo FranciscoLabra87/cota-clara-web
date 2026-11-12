@@ -1,13 +1,13 @@
 {
   "source": "https://www.corredorapalmafuentes.cl/",
   "capturedAt": "2026-11-12",
-  "maxImagesPerListing": 8,
+  "maxImagesPerListing": 39,
   "listings": [
     {
       "sourceId": "202057",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/202057-departamento-mesa-de-aragon-vina",
       "galleryCount": 16,
-      "selectedCount": 8,
+      "selectedCount": 16,
       "images": [
         {
           "index": 1,
@@ -88,6 +88,86 @@
           "width": 370,
           "height": 800,
           "sha256": "71d3b6ac9b1da2d40aaa738aecbb287f6f59cd09b2c762903ba55a22c152a216"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co3f1ada.jpg",
+          "key": "palma-fuentes/202057/009-71e73b5926bb.jpg",
+          "status": "ok",
+          "bytes": 70863,
+          "width": 800,
+          "height": 370,
+          "sha256": "71e73b5926bbdb35928f9906a92ea13337f14111ca3c11f780a7a5103067812f"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co7b9081.jpg",
+          "key": "palma-fuentes/202057/010-81915fac0105.jpg",
+          "status": "ok",
+          "bytes": 71840,
+          "width": 800,
+          "height": 370,
+          "sha256": "81915fac01053bc4ad21ec895aa7c63b335303579092190da40123e3f8f2c182"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod55041.jpg",
+          "key": "palma-fuentes/202057/011-03f811f729a2.jpg",
+          "status": "ok",
+          "bytes": 82980,
+          "width": 370,
+          "height": 800,
+          "sha256": "03f811f729a21bfcf851218d4faa4227731c4f7a96524394020ab56e232554e3"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co4463f4.jpg",
+          "key": "palma-fuentes/202057/012-c14905345eb2.jpg",
+          "status": "ok",
+          "bytes": 63229,
+          "width": 370,
+          "height": 800,
+          "sha256": "c14905345eb2fcc38c8219f8dac46ee1d158d6167d3897fd2e2c3bd890a1e79d"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094codb319b.jpg",
+          "key": "palma-fuentes/202057/013-413b0fe570f5.jpg",
+          "status": "ok",
+          "bytes": 65048,
+          "width": 370,
+          "height": 800,
+          "sha256": "413b0fe570f5e1593ef0443df8c26a41ed4ee1c3e2b37d028d0575ec6f657226"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co07b7d8.jpg",
+          "key": "palma-fuentes/202057/014-ae89c907f7d9.jpg",
+          "status": "ok",
+          "bytes": 88101,
+          "width": 370,
+          "height": 800,
+          "sha256": "ae89c907f7d9a726b175378596bea8edebdb5cab40ec004f76e5141f8f596fda"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co187155.jpg",
+          "key": "palma-fuentes/202057/015-c3c46a6354f8.jpg",
+          "status": "ok",
+          "bytes": 92049,
+          "width": 800,
+          "height": 370,
+          "sha256": "c3c46a6354f889836ec277a7581e31f7c649ec7821c35e7d5e5947857b3f4c0b"
+        },
+        {
+          "index": 16,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co241d6c.jpg",
+          "key": "palma-fuentes/202057/016-5bf44b939008.jpg",
+          "status": "ok",
+          "bytes": 72972,
+          "width": 370,
+          "height": 800,
+          "sha256": "5bf44b93900880e10cc0bb547f51ea8a1db3d0786f04262ddf9a784c10332ff7"
         }
       ]
     },
@@ -95,7 +175,7 @@
       "sourceId": "202053",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/202053-departamento-los-pinos-quilpue",
       "galleryCount": 12,
-      "selectedCount": 8,
+      "selectedCount": 12,
       "images": [
         {
           "index": 1,
@@ -176,6 +256,46 @@
           "width": 800,
           "height": 800,
           "sha256": "e89f4663f2f9ae52e099b9553c9626f97c07c68d66b5f1694d77855458d56dc3"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co01e27c.jpg",
+          "key": "palma-fuentes/202053/009-6fb257b890d8.jpg",
+          "status": "ok",
+          "bytes": 105673,
+          "width": 800,
+          "height": 800,
+          "sha256": "6fb257b890d8fcc7607d6be2b625e1af5ff3fa440ea73d9610245e66f64f53a0"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094codb18a0.jpg",
+          "key": "palma-fuentes/202053/010-0b6452d4161e.jpg",
+          "status": "ok",
+          "bytes": 131498,
+          "width": 800,
+          "height": 800,
+          "sha256": "0b6452d4161ea24ce31a8d349253734ef3b87143338e817595d5eb7738d77bc5"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co4dd0eb.jpg",
+          "key": "palma-fuentes/202053/011-1fd06b8f94d4.jpg",
+          "status": "ok",
+          "bytes": 159553,
+          "width": 800,
+          "height": 800,
+          "sha256": "1fd06b8f94d41b4a9c170ac375659bf482064591bb42cfb477a08f68614a152c"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co78c449.jpg",
+          "key": "palma-fuentes/202053/012-5dd64b5dbd20.jpg",
+          "status": "ok",
+          "bytes": 123612,
+          "width": 800,
+          "height": 800,
+          "sha256": "5dd64b5dbd2081e1b7c672814d43dec78ae96e2466f8da06908db6ce5fb33bf3"
         }
       ]
     },
@@ -183,7 +303,7 @@
       "sourceId": "202043",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/202043-hermosa-casa-teniente-serrano-quilpue",
       "galleryCount": 21,
-      "selectedCount": 8,
+      "selectedCount": 21,
       "images": [
         {
           "index": 1,
@@ -264,6 +384,136 @@
           "width": 800,
           "height": 800,
           "sha256": "8c8f96370670816956a43fb2431784e17fbde171a7e0b8bf4a3109e96170e9db"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cocb3c56.jpg",
+          "key": "palma-fuentes/202043/009-2d01567d50f6.jpg",
+          "status": "ok",
+          "bytes": 126910,
+          "width": 800,
+          "height": 800,
+          "sha256": "2d01567d50f6eed1ff2dbf6f4d88dfe7ce1b18c1a4a12db320c7db3422d9a32b"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cofb1f3c.jpg",
+          "key": "palma-fuentes/202043/010-9c7f13d95838.jpg",
+          "status": "ok",
+          "bytes": 134605,
+          "width": 800,
+          "height": 800,
+          "sha256": "9c7f13d958380c67671c37cb567e4380943b7792efe872affbc3ae3f052336cf"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co7cacf7.jpg",
+          "key": "palma-fuentes/202043/011-efa925cd0ffe.jpg",
+          "status": "ok",
+          "bytes": 143618,
+          "width": 800,
+          "height": 800,
+          "sha256": "efa925cd0ffecf83fd1d389229457b6235089b13ff3bc98e5e37378875ac0908"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coe3e478.jpg",
+          "key": "palma-fuentes/202043/012-8ebd4717cea5.jpg",
+          "status": "ok",
+          "bytes": 156774,
+          "width": 800,
+          "height": 800,
+          "sha256": "8ebd4717cea56f8e92ccf0b21efdc11a0143ce19dc76debedd9848d4ab9cce9c"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co1a1e6d.jpg",
+          "key": "palma-fuentes/202043/013-eb947cf0f70b.jpg",
+          "status": "ok",
+          "bytes": 165292,
+          "width": 800,
+          "height": 800,
+          "sha256": "eb947cf0f70bf00fcb4e8d59929ae692f15244e14a2aba361fc560144ab117c2"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co86fde7.jpg",
+          "key": "palma-fuentes/202043/014-d32ae12bfc53.jpg",
+          "status": "ok",
+          "bytes": 104183,
+          "width": 800,
+          "height": 800,
+          "sha256": "d32ae12bfc53433bc1a90c8793e8f48142d5e618c7267eeddff52f014942d79a"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coefd6b1.jpg",
+          "key": "palma-fuentes/202043/015-8d60599ad43e.jpg",
+          "status": "ok",
+          "bytes": 112378,
+          "width": 800,
+          "height": 800,
+          "sha256": "8d60599ad43e848683ebc930894685542c3f27a44dc75d2f236fccbe520ace50"
+        },
+        {
+          "index": 16,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co444b6d.jpg",
+          "key": "palma-fuentes/202043/016-f62effb03b6b.jpg",
+          "status": "ok",
+          "bytes": 225479,
+          "width": 800,
+          "height": 800,
+          "sha256": "f62effb03b6be730eb031b0ed3fd9387ece9e6fa5fb668feca48c6bb94985f34"
+        },
+        {
+          "index": 17,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cobd7e08.jpg",
+          "key": "palma-fuentes/202043/017-1fa94a5c0fc3.jpg",
+          "status": "ok",
+          "bytes": 209132,
+          "width": 800,
+          "height": 800,
+          "sha256": "1fa94a5c0fc340469e318576c2e0ced0efb533c08311cd994757945c46ec3855"
+        },
+        {
+          "index": 18,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coa00a1d.jpg",
+          "key": "palma-fuentes/202043/018-76858c01c677.jpg",
+          "status": "ok",
+          "bytes": 170395,
+          "width": 800,
+          "height": 800,
+          "sha256": "76858c01c67783df35cc164d0296e0ba72d5db8c01f0a9d9cae0b232941d8920"
+        },
+        {
+          "index": 19,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co683ef8.jpg",
+          "key": "palma-fuentes/202043/019-23ff829ed79c.jpg",
+          "status": "ok",
+          "bytes": 132386,
+          "width": 800,
+          "height": 800,
+          "sha256": "23ff829ed79cf0d209225d005c4d5ddf4e36b3059c011713892b1f3ca5d90884"
+        },
+        {
+          "index": 20,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co96bf84.jpg",
+          "key": "palma-fuentes/202043/020-4bb264e3339c.jpg",
+          "status": "ok",
+          "bytes": 129679,
+          "width": 800,
+          "height": 800,
+          "sha256": "4bb264e3339c09d99eed549c2dc5f5c933efb3b3ccacc321a906ecaea836c07c"
+        },
+        {
+          "index": 21,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co701907.jpg",
+          "key": "palma-fuentes/202043/021-efc15ed2ecf2.jpg",
+          "status": "ok",
+          "bytes": 132710,
+          "width": 800,
+          "height": 800,
+          "sha256": "efc15ed2ecf21ac532588fb582dfe3ac5ac55210d38a9a6bd318b95402638787"
         }
       ]
     },
@@ -271,7 +521,7 @@
       "sourceId": "202040",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/202040-hermosa-casa-pena-blanca",
       "galleryCount": 12,
-      "selectedCount": 8,
+      "selectedCount": 12,
       "images": [
         {
           "index": 1,
@@ -352,6 +602,46 @@
           "width": 600,
           "height": 800,
           "sha256": "11ac604ec614d8996a5178deab63285541fd4e1599356dbad20a6f75d2428fd2"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co8e5e4e.jpg",
+          "key": "palma-fuentes/202040/009-d81a5b978da4.jpg",
+          "status": "ok",
+          "bytes": 56671,
+          "width": 600,
+          "height": 800,
+          "sha256": "d81a5b978da4bf0b19a80f6edde442ac8903504c5ab29f6003ecccc9ecef4dfb"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co39050c.jpg",
+          "key": "palma-fuentes/202040/010-688aae909f1e.jpg",
+          "status": "ok",
+          "bytes": 107042,
+          "width": 800,
+          "height": 600,
+          "sha256": "688aae909f1e72a3bfb1d39dd87aa07e62f89d927e709f0384077aab293c28e8"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co845f44.jpg",
+          "key": "palma-fuentes/202040/011-a2fe6a11b518.jpg",
+          "status": "ok",
+          "bytes": 96067,
+          "width": 600,
+          "height": 800,
+          "sha256": "a2fe6a11b5187e0f0738a1bd9666f1f0cae1ffe181b6190cd01604c55d1cae32"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cob88d06.jpg",
+          "key": "palma-fuentes/202040/012-657a0202707c.jpg",
+          "status": "ok",
+          "bytes": 207448,
+          "width": 800,
+          "height": 636,
+          "sha256": "657a0202707c22f7193839f78a624e387c1f90717ba2a9b00aecb468fca221d6"
         }
       ]
     },
@@ -359,7 +649,7 @@
       "sourceId": "202039",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/202039-departamento-con-con",
       "galleryCount": 11,
-      "selectedCount": 8,
+      "selectedCount": 11,
       "images": [
         {
           "index": 1,
@@ -440,6 +730,36 @@
           "width": 800,
           "height": 800,
           "sha256": "8b3d75b34909784cb75c9fd057c55086d861812e6e13971539ad39af1bb6ec64"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coca2a79.jpeg",
+          "key": "palma-fuentes/202039/009-fab592b87741.jpg",
+          "status": "ok",
+          "bytes": 83100,
+          "width": 800,
+          "height": 800,
+          "sha256": "fab592b87741b933a077fe47d130cd21888bcd58553f3ab824a0edefdaa545c6"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod6a01c.jpeg",
+          "key": "palma-fuentes/202039/010-9cf66f378972.jpg",
+          "status": "ok",
+          "bytes": 95486,
+          "width": 800,
+          "height": 800,
+          "sha256": "9cf66f3789725f39d2eea22da34f579d6ac61c0ef77db56bb041cf049b23ba9e"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co4a5a28.jpeg",
+          "key": "palma-fuentes/202039/011-58119d059635.jpg",
+          "status": "ok",
+          "bytes": 89384,
+          "width": 800,
+          "height": 800,
+          "sha256": "58119d059635dd6552f0f0241c5381a2970ca4d6d5d7331d219e52043b473d94"
         }
       ]
     },
@@ -447,7 +767,7 @@
       "sourceId": "202038",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/202038-casa-residencial-vina-del-mar",
       "galleryCount": 11,
-      "selectedCount": 8,
+      "selectedCount": 11,
       "images": [
         {
           "index": 1,
@@ -528,6 +848,36 @@
           "width": 800,
           "height": 600,
           "sha256": "2aa007e5c485173ad3284878e6e957d4fe6c1aa9a19b0ba1920786c191cbc0d3"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coe6cba2.JPG",
+          "key": "palma-fuentes/202038/009-f92e24bcde9c.jpg",
+          "status": "ok",
+          "bytes": 111291,
+          "width": 800,
+          "height": 601,
+          "sha256": "f92e24bcde9cc82571f5c59f37dc5ac5df967349aea85226fd0751525415e09f"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co700149.JPG",
+          "key": "palma-fuentes/202038/010-340ee5f786c5.jpg",
+          "status": "ok",
+          "bytes": 99976,
+          "width": 800,
+          "height": 601,
+          "sha256": "340ee5f786c596f46502930a0edac877b3cbec2ba97555561349a7616f47634f"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co2369d8.JPG",
+          "key": "palma-fuentes/202038/011-843f346ec3e4.jpg",
+          "status": "ok",
+          "bytes": 109956,
+          "width": 800,
+          "height": 600,
+          "sha256": "843f346ec3e4f88d87b98d2dee7f1c22b2c21dae3adba2a77a96134cc12122ed"
         }
       ]
     },
@@ -535,7 +885,7 @@
       "sourceId": "202036",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/202036-hermosa-casa-sector-del-sol-quilpue",
       "galleryCount": 12,
-      "selectedCount": 8,
+      "selectedCount": 12,
       "images": [
         {
           "index": 1,
@@ -616,6 +966,46 @@
           "width": 800,
           "height": 603,
           "sha256": "b2fddd4d0e8807fb923d71ec77dd0643c7626f831ea5f596e2ea25feb782f3ff"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coe1ade4.JPG",
+          "key": "palma-fuentes/202036/009-248b420f53e7.jpg",
+          "status": "ok",
+          "bytes": 89248,
+          "width": 800,
+          "height": 600,
+          "sha256": "248b420f53e7b2ef92d3394c4a3fdd3d8b247af62cdee6f80d8e17c0dc84f339"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod160ad.JPG",
+          "key": "palma-fuentes/202036/010-fd0ce577df1d.jpg",
+          "status": "ok",
+          "bytes": 87929,
+          "width": 800,
+          "height": 599,
+          "sha256": "fd0ce577df1d37334f647cee485ce170f0af39e81334a7c170d4fe0e852ea978"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co166313.JPG",
+          "key": "palma-fuentes/202036/011-cabc4be33fb7.jpg",
+          "status": "ok",
+          "bytes": 111814,
+          "width": 800,
+          "height": 603,
+          "sha256": "cabc4be33fb77c66156ceb5a1c58630f9acb23d00623e799ccb02b2f6bf5ef1f"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co9ac35f.JPG",
+          "key": "palma-fuentes/202036/012-5195fbba0ec1.jpg",
+          "status": "ok",
+          "bytes": 106633,
+          "width": 800,
+          "height": 601,
+          "sha256": "5195fbba0ec1ddf7932d3880ae372f6d5456480d2446fe673779de7049fdbc31"
         }
       ]
     },
@@ -623,7 +1013,7 @@
       "sourceId": "201760",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/201760-proyecto-eco-estacion",
       "galleryCount": 39,
-      "selectedCount": 8,
+      "selectedCount": 39,
       "images": [
         {
           "index": 1,
@@ -704,6 +1094,316 @@
           "width": 800,
           "height": 576,
           "sha256": "1b66b24cc0a377099bffc86fec74c81b6a241b75a07344ab607a1465d85da34c"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co523e15.JPG",
+          "key": "palma-fuentes/201760/009-decf2a35d763.jpg",
+          "status": "ok",
+          "bytes": 35449,
+          "width": 708,
+          "height": 531,
+          "sha256": "decf2a35d763d6570379dfc39a75220d5b7485823ff1eaaa0f2b2d6eea15fc39"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coc1577c.JPG",
+          "key": "palma-fuentes/201760/010-9607d9a4d062.jpg",
+          "status": "ok",
+          "bytes": 38938,
+          "width": 707,
+          "height": 528,
+          "sha256": "9607d9a4d06214d187a4718d5ab7174df319dec36033479b307bc19c25e1f891"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co04a988.JPG",
+          "key": "palma-fuentes/201760/011-df35cbe899dc.jpg",
+          "status": "ok",
+          "bytes": 40437,
+          "width": 706,
+          "height": 522,
+          "sha256": "df35cbe899dce145fc3d926fa665ad2cc4f3b8e3243d198763f4b3369379885b"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co2f4b01.JPG",
+          "key": "palma-fuentes/201760/012-904f808ac3e4.jpg",
+          "status": "ok",
+          "bytes": 39314,
+          "width": 702,
+          "height": 528,
+          "sha256": "904f808ac3e4a38009ad0da21f3351f48d5aa8552505676ba651d87c83eb6698"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co7d6d5a.JPG",
+          "key": "palma-fuentes/201760/013-1f94efe74e08.jpg",
+          "status": "ok",
+          "bytes": 38951,
+          "width": 707,
+          "height": 525,
+          "sha256": "1f94efe74e081beb4812c86f6b2fa92f81eabd2dbc5b7f0241e6c5a7a107ca7b"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co283f8d.JPG",
+          "key": "palma-fuentes/201760/014-a5fb531b8695.jpg",
+          "status": "ok",
+          "bytes": 41239,
+          "width": 705,
+          "height": 530,
+          "sha256": "a5fb531b8695415422c524b3d8f60bfc5cbaa0d116ea6df3eeebabcfc0b7a782"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co831032.JPG",
+          "key": "palma-fuentes/201760/015-e41484d248ba.jpg",
+          "status": "ok",
+          "bytes": 37189,
+          "width": 701,
+          "height": 529,
+          "sha256": "e41484d248ba695f5d2330c7e3bf02f882597765790eee165a440d7f30b5033c"
+        },
+        {
+          "index": 16,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co4c2e70.JPG",
+          "key": "palma-fuentes/201760/016-6fe19704e9f6.jpg",
+          "status": "ok",
+          "bytes": 39437,
+          "width": 706,
+          "height": 534,
+          "sha256": "6fe19704e9f639ea994bd98efbe0a1b609b39195502aeb03c5ef8629699cb59b"
+        },
+        {
+          "index": 17,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co0b2b34.JPG",
+          "key": "palma-fuentes/201760/017-da3ae6171ae3.jpg",
+          "status": "ok",
+          "bytes": 42181,
+          "width": 706,
+          "height": 527,
+          "sha256": "da3ae6171ae38b8e80f7cb002c7aa34223ad2865bd1507b34b22f6b1ed00d1ab"
+        },
+        {
+          "index": 18,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co2773a7.JPG",
+          "key": "palma-fuentes/201760/018-fbd60f46631d.jpg",
+          "status": "ok",
+          "bytes": 38900,
+          "width": 704,
+          "height": 527,
+          "sha256": "fbd60f46631dd65d025ce61c96d41ee9aaa7566cf5774161ea4c73c92add8bbd"
+        },
+        {
+          "index": 19,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co494d6e.JPG",
+          "key": "palma-fuentes/201760/019-86511a318fd4.jpg",
+          "status": "ok",
+          "bytes": 40308,
+          "width": 701,
+          "height": 531,
+          "sha256": "86511a318fd480b7dd7f1cc68be1d9820d210620abbb0b262375560004422196"
+        },
+        {
+          "index": 20,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co8c55ac.JPG",
+          "key": "palma-fuentes/201760/020-f9d990cfd72d.jpg",
+          "status": "ok",
+          "bytes": 42983,
+          "width": 706,
+          "height": 527,
+          "sha256": "f9d990cfd72dc1de87278c506e2eeaad5136e2399092a66111b66b1e38efba4a"
+        },
+        {
+          "index": 21,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co1d7e3e.JPG",
+          "key": "palma-fuentes/201760/021-1c9e36cb1edb.jpg",
+          "status": "ok",
+          "bytes": 77767,
+          "width": 711,
+          "height": 560,
+          "sha256": "1c9e36cb1edbb072d821c2656d6067974872f5c418a05556ab237dc443db9f70"
+        },
+        {
+          "index": 22,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co9e2ae6.JPG",
+          "key": "palma-fuentes/201760/022-49c9533b8e4d.jpg",
+          "status": "ok",
+          "bytes": 66501,
+          "width": 706,
+          "height": 541,
+          "sha256": "49c9533b8e4d93ee87310a2aa7b77d4d0542613531bec60d497107fa81b8c39e"
+        },
+        {
+          "index": 23,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co4b767e.JPG",
+          "key": "palma-fuentes/201760/023-0fdd45cd14b2.jpg",
+          "status": "ok",
+          "bytes": 65407,
+          "width": 710,
+          "height": 544,
+          "sha256": "0fdd45cd14b25f55c150cd19aaedc807a6cef01da08ca3c4acda8589abdd1922"
+        },
+        {
+          "index": 24,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coeb9f2e.JPG",
+          "key": "palma-fuentes/201760/024-260d74d47d29.jpg",
+          "status": "ok",
+          "bytes": 68240,
+          "width": 711,
+          "height": 538,
+          "sha256": "260d74d47d2950801382238ecacdc39bb3359bbdd84b25576c5ab9a095ab8de9"
+        },
+        {
+          "index": 25,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod07ff3.JPG",
+          "key": "palma-fuentes/201760/025-fdf5e02357cd.jpg",
+          "status": "ok",
+          "bytes": 58157,
+          "width": 712,
+          "height": 555,
+          "sha256": "fdf5e02357cdd41f76777774be276f2c4ef6b23d88f862d0f6ba81f08708319b"
+        },
+        {
+          "index": 26,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cob079f7.JPG",
+          "key": "palma-fuentes/201760/026-7b9e6e828f48.jpg",
+          "status": "ok",
+          "bytes": 110860,
+          "width": 708,
+          "height": 533,
+          "sha256": "7b9e6e828f48ce6c239f997301f37fc5a1bb26ca9e71a1c0ea6caac63b782dba"
+        },
+        {
+          "index": 27,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coa7d261.JPG",
+          "key": "palma-fuentes/201760/027-1b66b24cc0a3.jpg",
+          "status": "ok",
+          "bytes": 78970,
+          "width": 800,
+          "height": 576,
+          "sha256": "1b66b24cc0a377099bffc86fec74c81b6a241b75a07344ab607a1465d85da34c"
+        },
+        {
+          "index": 28,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co6cd35b.JPG",
+          "key": "palma-fuentes/201760/028-decf2a35d763.jpg",
+          "status": "ok",
+          "bytes": 35449,
+          "width": 708,
+          "height": 531,
+          "sha256": "decf2a35d763d6570379dfc39a75220d5b7485823ff1eaaa0f2b2d6eea15fc39"
+        },
+        {
+          "index": 29,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod33ecd.JPG",
+          "key": "palma-fuentes/201760/029-9607d9a4d062.jpg",
+          "status": "ok",
+          "bytes": 38938,
+          "width": 707,
+          "height": 528,
+          "sha256": "9607d9a4d06214d187a4718d5ab7174df319dec36033479b307bc19c25e1f891"
+        },
+        {
+          "index": 30,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co6f99f3.JPG",
+          "key": "palma-fuentes/201760/030-df35cbe899dc.jpg",
+          "status": "ok",
+          "bytes": 40437,
+          "width": 706,
+          "height": 522,
+          "sha256": "df35cbe899dce145fc3d926fa665ad2cc4f3b8e3243d198763f4b3369379885b"
+        },
+        {
+          "index": 31,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co9a8336.JPG",
+          "key": "palma-fuentes/201760/031-904f808ac3e4.jpg",
+          "status": "ok",
+          "bytes": 39314,
+          "width": 702,
+          "height": 528,
+          "sha256": "904f808ac3e4a38009ad0da21f3351f48d5aa8552505676ba651d87c83eb6698"
+        },
+        {
+          "index": 32,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cof1c106.JPG",
+          "key": "palma-fuentes/201760/032-1f94efe74e08.jpg",
+          "status": "ok",
+          "bytes": 38951,
+          "width": 707,
+          "height": 525,
+          "sha256": "1f94efe74e081beb4812c86f6b2fa92f81eabd2dbc5b7f0241e6c5a7a107ca7b"
+        },
+        {
+          "index": 33,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coeb3640.JPG",
+          "key": "palma-fuentes/201760/033-a5fb531b8695.jpg",
+          "status": "ok",
+          "bytes": 41239,
+          "width": 705,
+          "height": 530,
+          "sha256": "a5fb531b8695415422c524b3d8f60bfc5cbaa0d116ea6df3eeebabcfc0b7a782"
+        },
+        {
+          "index": 34,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co462491.JPG",
+          "key": "palma-fuentes/201760/034-e41484d248ba.jpg",
+          "status": "ok",
+          "bytes": 37189,
+          "width": 701,
+          "height": 529,
+          "sha256": "e41484d248ba695f5d2330c7e3bf02f882597765790eee165a440d7f30b5033c"
+        },
+        {
+          "index": 35,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coe6199a.JPG",
+          "key": "palma-fuentes/201760/035-6fe19704e9f6.jpg",
+          "status": "ok",
+          "bytes": 39437,
+          "width": 706,
+          "height": 534,
+          "sha256": "6fe19704e9f639ea994bd98efbe0a1b609b39195502aeb03c5ef8629699cb59b"
+        },
+        {
+          "index": 36,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co5405e9.JPG",
+          "key": "palma-fuentes/201760/036-da3ae6171ae3.jpg",
+          "status": "ok",
+          "bytes": 42181,
+          "width": 706,
+          "height": 527,
+          "sha256": "da3ae6171ae38b8e80f7cb002c7aa34223ad2865bd1507b34b22f6b1ed00d1ab"
+        },
+        {
+          "index": 37,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co3e2dea.JPG",
+          "key": "palma-fuentes/201760/037-fbd60f46631d.jpg",
+          "status": "ok",
+          "bytes": 38900,
+          "width": 704,
+          "height": 527,
+          "sha256": "fbd60f46631dd65d025ce61c96d41ee9aaa7566cf5774161ea4c73c92add8bbd"
+        },
+        {
+          "index": 38,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co52a462.JPG",
+          "key": "palma-fuentes/201760/038-86511a318fd4.jpg",
+          "status": "ok",
+          "bytes": 40308,
+          "width": 701,
+          "height": 531,
+          "sha256": "86511a318fd480b7dd7f1cc68be1d9820d210620abbb0b262375560004422196"
+        },
+        {
+          "index": 39,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cob3575d.JPG",
+          "key": "palma-fuentes/201760/039-f9d990cfd72d.jpg",
+          "status": "ok",
+          "bytes": 42983,
+          "width": 706,
+          "height": 527,
+          "sha256": "f9d990cfd72dc1de87278c506e2eeaad5136e2399092a66111b66b1e38efba4a"
         }
       ]
     },
@@ -711,7 +1411,7 @@
       "sourceId": "201704",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/201704-vicuna-mackenna-metro-rodrigo-de-araya",
       "galleryCount": 16,
-      "selectedCount": 8,
+      "selectedCount": 16,
       "images": [
         {
           "index": 1,
@@ -792,6 +1492,86 @@
           "width": 600,
           "height": 800,
           "sha256": "8e83bd335cbaf4f786b401536d1d815a5d904c3105765d1118704b7679d4591a"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co09754e.jpeg",
+          "key": "palma-fuentes/201704/009-09537c6eb0e0.jpg",
+          "status": "ok",
+          "bytes": 64362,
+          "width": 600,
+          "height": 800,
+          "sha256": "09537c6eb0e0f617679bfe0020539cb73005d401233c68de33ed82e8b68db59a"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094codc96dd.jpeg",
+          "key": "palma-fuentes/201704/010-101d2022c254.jpg",
+          "status": "ok",
+          "bytes": 76742,
+          "width": 600,
+          "height": 800,
+          "sha256": "101d2022c254d9f64d1408962f91b11610bef7a6a4382fc325647686e858ba5d"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co615f22.jpeg",
+          "key": "palma-fuentes/201704/011-2b053cc93346.jpg",
+          "status": "ok",
+          "bytes": 101805,
+          "width": 600,
+          "height": 800,
+          "sha256": "2b053cc93346c534515385b702c31a3f890e81d36234ff65cdc7d42515f9c200"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co385335.jpeg",
+          "key": "palma-fuentes/201704/012-85fb5415bf94.jpg",
+          "status": "ok",
+          "bytes": 67121,
+          "width": 600,
+          "height": 800,
+          "sha256": "85fb5415bf941455a8a8eaa3439c139cfad241433d9bff7890bc7aabb21d4b43"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co46deca.jpeg",
+          "key": "palma-fuentes/201704/013-07c44b887df4.jpg",
+          "status": "ok",
+          "bytes": 74177,
+          "width": 600,
+          "height": 800,
+          "sha256": "07c44b887df425957b0f1d4e3a0241779bc2f9a7cdf29722d780c0810baf8daf"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co60ace0.jpeg",
+          "key": "palma-fuentes/201704/014-fa440573d0a6.jpg",
+          "status": "ok",
+          "bytes": 63966,
+          "width": 600,
+          "height": 800,
+          "sha256": "fa440573d0a627498a5b50167ca621e9eb241c1e82438ea688da80672b8088f0"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co1daa09.jpeg",
+          "key": "palma-fuentes/201704/015-f3b0174248b3.jpg",
+          "status": "ok",
+          "bytes": 97255,
+          "width": 600,
+          "height": 800,
+          "sha256": "f3b0174248b36c89330e75449dd8b2555e8f831de9b36086a532cc998c6b18b0"
+        },
+        {
+          "index": 16,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co1d6062.jpeg",
+          "key": "palma-fuentes/201704/016-a1f9f5f423e3.jpg",
+          "status": "ok",
+          "bytes": 218255,
+          "width": 600,
+          "height": 800,
+          "sha256": "a1f9f5f423e372ab3ad9e7154cb29738299cf1b02ec549502de9fe4fdd249784"
         }
       ]
     },
@@ -799,7 +1579,7 @@
       "sourceId": "201700",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/201700-jose-arrieta-penalolen",
       "galleryCount": 22,
-      "selectedCount": 8,
+      "selectedCount": 22,
       "images": [
         {
           "index": 1,
@@ -880,6 +1660,146 @@
           "width": 720,
           "height": 540,
           "sha256": "de9299adc44fefd1b7a4eacea090b9191d68dd257be335709947e3c83dcf262b"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co99bb2e.jpg",
+          "key": "palma-fuentes/201700/009-5841ba361222.jpg",
+          "status": "ok",
+          "bytes": 42870,
+          "width": 720,
+          "height": 540,
+          "sha256": "5841ba361222ef8a507c88e8e45e4d2582f03b1de09e44ea8b2ace9fe707776a"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co29e925.jpg",
+          "key": "palma-fuentes/201700/010-e8c1b9c6bb6a.jpg",
+          "status": "ok",
+          "bytes": 38114,
+          "width": 720,
+          "height": 540,
+          "sha256": "e8c1b9c6bb6ab4827528b77d8e9cc14dbe7b0d68bd68c4df30a1021411787cc2"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coca1c3b.jpg",
+          "key": "palma-fuentes/201700/011-67d5b2d4edbb.jpg",
+          "status": "ok",
+          "bytes": 38863,
+          "width": 720,
+          "height": 540,
+          "sha256": "67d5b2d4edbbd036fe0db32c1a062b6ee3ea289c846ab3c202ac5a7d26e5da2a"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co90d49b.jpg",
+          "key": "palma-fuentes/201700/012-6b53bb93cfb2.jpg",
+          "status": "ok",
+          "bytes": 44091,
+          "width": 720,
+          "height": 540,
+          "sha256": "6b53bb93cfb2bdda7adcb17e0059033b261cafdeaf4f33876c0adf16cec4ff39"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod3df40.jpg",
+          "key": "palma-fuentes/201700/013-0bb9f329b410.jpg",
+          "status": "ok",
+          "bytes": 34034,
+          "width": 720,
+          "height": 540,
+          "sha256": "0bb9f329b4109d63d731bdb0500252ee514ef9af38f9075c2afb859c87c24127"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co97f14d.jpg",
+          "key": "palma-fuentes/201700/014-9b72bf631660.jpg",
+          "status": "ok",
+          "bytes": 48226,
+          "width": 720,
+          "height": 540,
+          "sha256": "9b72bf6316606030ced40847d564b6abe59046a037080fd6b5f7a1a124954cb8"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094codefb9b.jpg",
+          "key": "palma-fuentes/201700/015-b5a6d71a9ad5.jpg",
+          "status": "ok",
+          "bytes": 36354,
+          "width": 720,
+          "height": 540,
+          "sha256": "b5a6d71a9ad50dc683c4f38894e985bc9af950f1c1f894470b8d7d009a28e5fa"
+        },
+        {
+          "index": 16,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod95eb4.jpg",
+          "key": "palma-fuentes/201700/016-b9c8099ff827.jpg",
+          "status": "ok",
+          "bytes": 43537,
+          "width": 720,
+          "height": 540,
+          "sha256": "b9c8099ff8276c497442a6858418fbc2e625c00ddf38f22fda2ba70eb948f55d"
+        },
+        {
+          "index": 17,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co0c7761.jpg",
+          "key": "palma-fuentes/201700/017-7631bc52c806.jpg",
+          "status": "ok",
+          "bytes": 39642,
+          "width": 720,
+          "height": 540,
+          "sha256": "7631bc52c806f872bcf28323cadb53ea7d061587bf6569004a64cff4ae448392"
+        },
+        {
+          "index": 18,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co81f4c0.jpg",
+          "key": "palma-fuentes/201700/018-559caa8a500b.jpg",
+          "status": "ok",
+          "bytes": 34835,
+          "width": 720,
+          "height": 540,
+          "sha256": "559caa8a500b74b4ccba0bf0c4688f5e42509a99c755aba45f17105450dab3ab"
+        },
+        {
+          "index": 19,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co7215a1.jpg",
+          "key": "palma-fuentes/201700/019-aa30159dd0cb.jpg",
+          "status": "ok",
+          "bytes": 30606,
+          "width": 720,
+          "height": 540,
+          "sha256": "aa30159dd0cbfec175a9ca8c4aa74cfdd942d5d59060ba1ad78c9b08994bc765"
+        },
+        {
+          "index": 20,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co291cb8.JPG",
+          "key": "palma-fuentes/201700/020-25451caf2053.jpg",
+          "status": "ok",
+          "bytes": 98073,
+          "width": 800,
+          "height": 380,
+          "sha256": "25451caf205332634ce2256bd81543d3abd109521dcecd3e85244911b6e73300"
+        },
+        {
+          "index": 21,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co623a6c.JPG",
+          "key": "palma-fuentes/201700/021-35ee18de590e.jpg",
+          "status": "ok",
+          "bytes": 85244,
+          "width": 778,
+          "height": 506,
+          "sha256": "35ee18de590e21dc9c7d4dcac695c1509d628264894e923fd9e8f27f1b222a41"
+        },
+        {
+          "index": 22,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cof0ff74.JPG",
+          "key": "palma-fuentes/201700/022-28dded85af3c.jpg",
+          "status": "ok",
+          "bytes": 67319,
+          "width": 773,
+          "height": 514,
+          "sha256": "28dded85af3c94ccb3df32ad3b16125bd5735faf3c022b4a513ff30622ea108e"
         }
       ]
     },
@@ -887,7 +1807,7 @@
       "sourceId": "201604",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/201604-galvarino-gallardo-providencia",
       "galleryCount": 17,
-      "selectedCount": 8,
+      "selectedCount": 17,
       "images": [
         {
           "index": 1,
@@ -968,6 +1888,96 @@
           "width": 800,
           "height": 600,
           "sha256": "789f9b68144751aeb75a9ada28adcc6b6d8321afb9db036acd95b6476a3e92b3"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coec9e65.jpeg",
+          "key": "palma-fuentes/201604/009-97eb417d9c1b.jpg",
+          "status": "ok",
+          "bytes": 152958,
+          "width": 800,
+          "height": 600,
+          "sha256": "97eb417d9c1b9e945cdf5df951603778414d4581a69d1bfc427f2963decfccdf"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coc35a59.jpeg",
+          "key": "palma-fuentes/201604/010-d5ad8fa07f88.jpg",
+          "status": "ok",
+          "bytes": 98479,
+          "width": 800,
+          "height": 600,
+          "sha256": "d5ad8fa07f883eb97832b295e2e6e270412010ee0f7fff39cd162e418c63d237"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cobc7ebb.jpeg",
+          "key": "palma-fuentes/201604/011-f0c76d7e07f3.jpg",
+          "status": "ok",
+          "bytes": 85079,
+          "width": 800,
+          "height": 600,
+          "sha256": "f0c76d7e07f36514495847540c3cc94ad3f500b2e1e5b427385d2b9047fb8fdb"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co69274f.jpeg",
+          "key": "palma-fuentes/201604/012-ecb4294c4139.jpg",
+          "status": "ok",
+          "bytes": 81405,
+          "width": 600,
+          "height": 800,
+          "sha256": "ecb4294c4139d3307f87c9c7f664c3f4062b3cbb01454f89a3777266248709d1"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co1b4570.jpeg",
+          "key": "palma-fuentes/201604/013-c8e10c5682db.jpg",
+          "status": "ok",
+          "bytes": 108564,
+          "width": 600,
+          "height": 800,
+          "sha256": "c8e10c5682db80398eddc39350257af93e35ae3286bf7df862b868674dc8ef8e"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coc49305.jpeg",
+          "key": "palma-fuentes/201604/014-935309d070d5.jpg",
+          "status": "ok",
+          "bytes": 77710,
+          "width": 600,
+          "height": 800,
+          "sha256": "935309d070d5efeda67b25ee8e3bcc03d7a556ef43c78115b7a4ce17291752fb"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co55ffa0.jpeg",
+          "key": "palma-fuentes/201604/015-851bb955d5fa.jpg",
+          "status": "ok",
+          "bytes": 82552,
+          "width": 600,
+          "height": 800,
+          "sha256": "851bb955d5fab12aaec74b6e2f36982502e1ecb6bc798b2595ec4866a10051cf"
+        },
+        {
+          "index": 16,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coc6d15b.jpeg",
+          "key": "palma-fuentes/201604/016-c4346b492276.jpg",
+          "status": "ok",
+          "bytes": 80314,
+          "width": 600,
+          "height": 800,
+          "sha256": "c4346b4922764da362b5274f38de0b0ad61783c3d7d402e03a31dced0261da0f"
+        },
+        {
+          "index": 17,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co12d0a6.jpeg",
+          "key": "palma-fuentes/201604/017-5fcd2b5d0aa0.jpg",
+          "status": "ok",
+          "bytes": 85954,
+          "width": 600,
+          "height": 800,
+          "sha256": "5fcd2b5d0aa05e6dd3c5c54bb851c52175c1f0706537e83b8c6094f19d9f543b"
         }
       ]
     },
@@ -975,7 +1985,7 @@
       "sourceId": "201545",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/201545-pedro-barrios-ovalle",
       "galleryCount": 20,
-      "selectedCount": 8,
+      "selectedCount": 20,
       "images": [
         {
           "index": 1,
@@ -1056,6 +2066,126 @@
           "width": 800,
           "height": 600,
           "sha256": "01c35083e9d74549667a7a828c89de10110f8c65c87efcb4f3f1b29b6677bd6a"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co73fdc6.jpeg",
+          "key": "palma-fuentes/201545/009-5c3eec15d5db.jpg",
+          "status": "ok",
+          "bytes": 150726,
+          "width": 800,
+          "height": 600,
+          "sha256": "5c3eec15d5dba92bba42390ebbb5cc9865636329f1182e327dd6b607424534ff"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cofd5afa.jpeg",
+          "key": "palma-fuentes/201545/010-d94487471526.jpg",
+          "status": "ok",
+          "bytes": 86841,
+          "width": 800,
+          "height": 600,
+          "sha256": "d9448747152630ccac5834f0f8dd2568b0214f54d96cf3f8f111ee6d043f2267"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coae15a3.jpeg",
+          "key": "palma-fuentes/201545/011-b29e46721c59.jpg",
+          "status": "ok",
+          "bytes": 118009,
+          "width": 800,
+          "height": 600,
+          "sha256": "b29e46721c59227ff0e7a31f765207712bff990eb5846dfa4e7c030cafb99d34"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coe292da.jpeg",
+          "key": "palma-fuentes/201545/012-b9fdf35e9fdf.jpg",
+          "status": "ok",
+          "bytes": 83706,
+          "width": 600,
+          "height": 800,
+          "sha256": "b9fdf35e9fdf568aa51fdf6f676637064de8cd900268491abe91f0d0e8d5e650"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cofa7711.jpeg",
+          "key": "palma-fuentes/201545/013-49c410c768fb.jpg",
+          "status": "ok",
+          "bytes": 191647,
+          "width": 800,
+          "height": 600,
+          "sha256": "49c410c768fb27c193a202c9418c3787dda44d35c173e89c55390603a20e0882"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cof1829f.jpeg",
+          "key": "palma-fuentes/201545/014-4ca1318c0970.jpg",
+          "status": "ok",
+          "bytes": 112188,
+          "width": 800,
+          "height": 600,
+          "sha256": "4ca1318c0970150094b203be7ba2fcc1eefbf150deace86fa3016a2b4cca891f"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co659764.jpeg",
+          "key": "palma-fuentes/201545/015-b1f7309c0c0b.jpg",
+          "status": "ok",
+          "bytes": 95620,
+          "width": 600,
+          "height": 800,
+          "sha256": "b1f7309c0c0bc218a737b7facdbd5cbe6974dcbf5b947d3571f9c8971f4e95c3"
+        },
+        {
+          "index": 16,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coedac98.jpeg",
+          "key": "palma-fuentes/201545/016-bbef52e156fd.jpg",
+          "status": "ok",
+          "bytes": 103384,
+          "width": 600,
+          "height": 800,
+          "sha256": "bbef52e156fdc24eb8db200bb9a9780ab9de54f89a452032d9760ae7063bfd86"
+        },
+        {
+          "index": 17,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coae117b.jpeg",
+          "key": "palma-fuentes/201545/017-448f8a402d5b.jpg",
+          "status": "ok",
+          "bytes": 161088,
+          "width": 800,
+          "height": 711,
+          "sha256": "448f8a402d5bd39b8737be623cd0cb02ed9c5e7aec37ba60a8250e9ebc79691e"
+        },
+        {
+          "index": 18,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co566932.jpeg",
+          "key": "palma-fuentes/201545/018-d2287ae88d57.jpg",
+          "status": "ok",
+          "bytes": 78176,
+          "width": 600,
+          "height": 800,
+          "sha256": "d2287ae88d57599b3dfc1c7cb25a11984f0302803859d051cb411d7aac6d9bbd"
+        },
+        {
+          "index": 19,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cob41396.jpeg",
+          "key": "palma-fuentes/201545/019-0f2c1b8ad05d.jpg",
+          "status": "ok",
+          "bytes": 180270,
+          "width": 800,
+          "height": 600,
+          "sha256": "0f2c1b8ad05dd7040f11160d93f4490d69509eac437b05d9da679a97e655e4fa"
+        },
+        {
+          "index": 20,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co70e5ea.jpeg",
+          "key": "palma-fuentes/201545/020-576726b4a8c3.jpg",
+          "status": "ok",
+          "bytes": 106906,
+          "width": 800,
+          "height": 600,
+          "sha256": "576726b4a8c3f1ecaf381896ea24963bda512b1be795d6fddc9f1d85abed58cd"
         }
       ]
     },
@@ -1063,7 +2193,7 @@
       "sourceId": "201543",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/201543-los-jacaranda-ovalle",
       "galleryCount": 15,
-      "selectedCount": 8,
+      "selectedCount": 15,
       "images": [
         {
           "index": 1,
@@ -1144,6 +2274,76 @@
           "width": 800,
           "height": 800,
           "sha256": "496da0ae00ff0d03e75c354b32c1d323e576880abc36f9699932eedfeb22a3f2"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coad669a.jpeg",
+          "key": "palma-fuentes/201543/009-bc557347f48a.jpg",
+          "status": "ok",
+          "bytes": 102248,
+          "width": 800,
+          "height": 800,
+          "sha256": "bc557347f48af0d5256040b9fbe6424b5db3e9051af737f16e3c905e6eea9f2a"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod73a7b.jpeg",
+          "key": "palma-fuentes/201543/010-d5336501f2f3.jpg",
+          "status": "ok",
+          "bytes": 118735,
+          "width": 800,
+          "height": 800,
+          "sha256": "d5336501f2f3a4840f26942860e9ed5d84840916d4ecedc9525ac5ef1fda41cb"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co1afd4a.jpeg",
+          "key": "palma-fuentes/201543/011-fde4c3c59941.jpg",
+          "status": "ok",
+          "bytes": 119379,
+          "width": 800,
+          "height": 800,
+          "sha256": "fde4c3c599416d004ed96468a883ffebcb5daab39245b04a30bca209cb4406f5"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coe8a75c.jpeg",
+          "key": "palma-fuentes/201543/012-5b484d6fa218.jpg",
+          "status": "ok",
+          "bytes": 107383,
+          "width": 800,
+          "height": 800,
+          "sha256": "5b484d6fa218694b4d49aba2949eb522f451b15710d9117a322c3eb690cc9be7"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co7c34fa.jpeg",
+          "key": "palma-fuentes/201543/013-bf7d12f57dd3.jpg",
+          "status": "ok",
+          "bytes": 87528,
+          "width": 800,
+          "height": 800,
+          "sha256": "bf7d12f57dd3d45eb5243a1773d2e292c4bf34af5da416149bb661e71be7e138"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co40e922.jpeg",
+          "key": "palma-fuentes/201543/014-574741268caf.jpg",
+          "status": "ok",
+          "bytes": 119248,
+          "width": 800,
+          "height": 800,
+          "sha256": "574741268cafa05e1f209812e2fb4c9e86acc05e171a968b1c4d60c6fb926f60"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cofdde85.jpeg",
+          "key": "palma-fuentes/201543/015-648382dbdef4.jpg",
+          "status": "ok",
+          "bytes": 109798,
+          "width": 800,
+          "height": 800,
+          "sha256": "648382dbdef445581dc5f0dc062b5124d2ca33dffadec99da689caa425612311"
         }
       ]
     },
@@ -1151,7 +2351,7 @@
       "sourceId": "201541",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/201541-los-ciruelos-orientes-ovalle",
       "galleryCount": 9,
-      "selectedCount": 8,
+      "selectedCount": 9,
       "images": [
         {
           "index": 1,
@@ -1232,6 +2432,16 @@
           "width": 600,
           "height": 800,
           "sha256": "5fa0e817bc9f0bb50b57413f2d36f81782a2d3a70bfe852a8d97d491f3ca36a6"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co6fd8f7.jpeg",
+          "key": "palma-fuentes/201541/009-f952f000140c.jpg",
+          "status": "ok",
+          "bytes": 93196,
+          "width": 600,
+          "height": 800,
+          "sha256": "f952f000140c89f39787cb55c8d631abc6f2847d532039fb5b7b102b2b07a22a"
         }
       ]
     },
@@ -1239,7 +2449,7 @@
       "sourceId": "201540",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/201540-irma-alcayaga-cortes-ovalle",
       "galleryCount": 15,
-      "selectedCount": 8,
+      "selectedCount": 15,
       "images": [
         {
           "index": 1,
@@ -1320,6 +2530,76 @@
           "width": 600,
           "height": 800,
           "sha256": "4bdc81ae2903a298cea0b362b0cc2ac387db3645a63330c3b1bee4fdc59fbabd"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co2a56c9.jpeg",
+          "key": "palma-fuentes/201540/009-08d24904065b.jpg",
+          "status": "ok",
+          "bytes": 120063,
+          "width": 600,
+          "height": 800,
+          "sha256": "08d24904065b534763f98ef86eb78916cb1993d367e2f5974817c0a866f36b50"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co58866e.jpeg",
+          "key": "palma-fuentes/201540/010-a0d52abc93f6.jpg",
+          "status": "ok",
+          "bytes": 121759,
+          "width": 600,
+          "height": 800,
+          "sha256": "a0d52abc93f602fff10bded1820907fc1a435e479cbe2ad040af8cfa99573392"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cofe51ea.jpeg",
+          "key": "palma-fuentes/201540/011-36da634718df.jpg",
+          "status": "ok",
+          "bytes": 142716,
+          "width": 600,
+          "height": 800,
+          "sha256": "36da634718dfd5e122e2d7e1687bd4bd06acb10118ac673305e42b725d5ef35c"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod903d2.jpeg",
+          "key": "palma-fuentes/201540/012-f01780d439ce.jpg",
+          "status": "ok",
+          "bytes": 96825,
+          "width": 600,
+          "height": 800,
+          "sha256": "f01780d439ce07fa73b50d75ca16d1d28902cb3863a1ce96dded52c581a477af"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod446bd.jpeg",
+          "key": "palma-fuentes/201540/013-f5738acf8ddd.jpg",
+          "status": "ok",
+          "bytes": 185624,
+          "width": 600,
+          "height": 800,
+          "sha256": "f5738acf8ddd1eb872d2279ddf6f834728c1e41a6e8d92660b8cf71fa41a863a"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coaefac2.jpeg",
+          "key": "palma-fuentes/201540/014-b90434527a57.jpg",
+          "status": "ok",
+          "bytes": 172532,
+          "width": 600,
+          "height": 800,
+          "sha256": "b90434527a57975e35d5eaa784b8132c44a131b22cff746507109613443748e8"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co973815.jpeg",
+          "key": "palma-fuentes/201540/015-84eff9846022.jpg",
+          "status": "ok",
+          "bytes": 107949,
+          "width": 600,
+          "height": 800,
+          "sha256": "84eff9846022dc7eced742d87134fbc144bc06283117dbb5bf201ffaa3a4e34a"
         }
       ]
     },
@@ -1327,7 +2607,7 @@
       "sourceId": "201525",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/201525-cipres-cordillerano-la-florida",
       "galleryCount": 19,
-      "selectedCount": 8,
+      "selectedCount": 19,
       "images": [
         {
           "index": 1,
@@ -1408,6 +2688,116 @@
           "width": 586,
           "height": 444,
           "sha256": "9e4415e6282f5971cecf382be221f23731601c2a379d63a9ea4ffa7ebcb9e728"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co44b781.JPG",
+          "key": "palma-fuentes/201525/009-0b975abeb775.jpg",
+          "status": "ok",
+          "bytes": 38871,
+          "width": 593,
+          "height": 444,
+          "sha256": "0b975abeb7751dabf7b23b6883e2f8b7e642f7af294b92e13672f33b898cbaed"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co8af141.JPG",
+          "key": "palma-fuentes/201525/010-a5e54bedb0b8.jpg",
+          "status": "ok",
+          "bytes": 34099,
+          "width": 543,
+          "height": 446,
+          "sha256": "a5e54bedb0b82217c8b0733670a24991bccc2d7b7d77f13daa5c8630ff7d0617"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cofe86d8.JPG",
+          "key": "palma-fuentes/201525/011-ec7ffe74e4b1.jpg",
+          "status": "ok",
+          "bytes": 29227,
+          "width": 582,
+          "height": 440,
+          "sha256": "ec7ffe74e4b1359541db53ff8832d50c77e473d4cecd339caf0b5b4c0c26cbbb"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co2813ce.JPG",
+          "key": "palma-fuentes/201525/012-64dd205ac753.jpg",
+          "status": "ok",
+          "bytes": 68064,
+          "width": 588,
+          "height": 443,
+          "sha256": "64dd205ac753fea35da223c92c2783036c6f07dc9513b5141b2219e79cf0c654"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co0f5e58.JPG",
+          "key": "palma-fuentes/201525/013-e35536b98887.jpg",
+          "status": "ok",
+          "bytes": 33546,
+          "width": 613,
+          "height": 444,
+          "sha256": "e35536b98887c32983157f4c193db549e552eec59a1de610a7d83563e6a1e82a"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co488c68.JPG",
+          "key": "palma-fuentes/201525/014-173bdf9b4a34.jpg",
+          "status": "ok",
+          "bytes": 31630,
+          "width": 614,
+          "height": 447,
+          "sha256": "173bdf9b4a343858a1daead30a3c52085c1652b7ae7ea5a2a8b0af17bafac0a3"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co3b127a.JPG",
+          "key": "palma-fuentes/201525/015-628917015a3b.jpg",
+          "status": "ok",
+          "bytes": 48748,
+          "width": 593,
+          "height": 446,
+          "sha256": "628917015a3b0b94db8cbf5f25b6c12a34fc9ced8f50800be9478056f3201aab"
+        },
+        {
+          "index": 16,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co72f4b2.JPG",
+          "key": "palma-fuentes/201525/016-05a9f6a4f6ba.jpg",
+          "status": "ok",
+          "bytes": 20357,
+          "width": 589,
+          "height": 439,
+          "sha256": "05a9f6a4f6baa3c0354bfe8bd624f3d0c6a9939315a965dd543db587c8fb1834"
+        },
+        {
+          "index": 17,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094codb80f7.JPG",
+          "key": "palma-fuentes/201525/017-129c54030568.jpg",
+          "status": "ok",
+          "bytes": 23659,
+          "width": 589,
+          "height": 445,
+          "sha256": "129c54030568d5c69a051c588d8da15fb0dac94a79ed0c2b7667c2d8c2e8b718"
+        },
+        {
+          "index": 18,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co33f382.JPG",
+          "key": "palma-fuentes/201525/018-276eb9052734.jpg",
+          "status": "ok",
+          "bytes": 27255,
+          "width": 593,
+          "height": 449,
+          "sha256": "276eb905273443c6cf2d98a10faab7c74c4a329d159219427cb13e1df4478e72"
+        },
+        {
+          "index": 19,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod80198.JPG",
+          "key": "palma-fuentes/201525/019-344f490c8016.jpg",
+          "status": "ok",
+          "bytes": 40751,
+          "width": 593,
+          "height": 445,
+          "sha256": "344f490c80160c6ad8f1497a1ec100647291963e7fbc0f622deab49eb5d76309"
         }
       ]
     },
@@ -1415,7 +2805,7 @@
       "sourceId": "201522",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/201522-la-reina-alta-casa",
       "galleryCount": 18,
-      "selectedCount": 8,
+      "selectedCount": 18,
       "images": [
         {
           "index": 1,
@@ -1496,6 +2886,106 @@
           "width": 784,
           "height": 442,
           "sha256": "39aef4939aad8e629da004c22bf381df7b5302a95be46beef23d30484617480f"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co686717.JPG",
+          "key": "palma-fuentes/201522/009-95e97dfac014.jpg",
+          "status": "ok",
+          "bytes": 35491,
+          "width": 791,
+          "height": 448,
+          "sha256": "95e97dfac014e33822678e231d690fc71ccda75059177281ab4c775b74f51590"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094codfb25e.JPG",
+          "key": "palma-fuentes/201522/010-f0025ab43404.jpg",
+          "status": "ok",
+          "bytes": 40871,
+          "width": 795,
+          "height": 440,
+          "sha256": "f0025ab434048001dfb134d8c96a2098762bb4c8edd87e8bc6d342e1d8cb793b"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cobf78cb.JPG",
+          "key": "palma-fuentes/201522/011-7fe40d4a1221.jpg",
+          "status": "ok",
+          "bytes": 50736,
+          "width": 791,
+          "height": 443,
+          "sha256": "7fe40d4a122154fa8a8254579a39fbecec98018d61227644cc7daada3023bfd2"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cofddae4.JPG",
+          "key": "palma-fuentes/201522/012-31594a9bfdfd.jpg",
+          "status": "ok",
+          "bytes": 39305,
+          "width": 793,
+          "height": 443,
+          "sha256": "31594a9bfdfd3d2875098a6650ad2fca409d87dcb490ca8c6526ec94d4ffe003"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coa98510.JPG",
+          "key": "palma-fuentes/201522/013-db4a020bfbf4.jpg",
+          "status": "ok",
+          "bytes": 25830,
+          "width": 786,
+          "height": 440,
+          "sha256": "db4a020bfbf4aed05b90d80d5f2d69e0d6d57684af6a6bbb5027259615468a56"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co57bd98.JPG",
+          "key": "palma-fuentes/201522/014-7c2228eefb94.jpg",
+          "status": "ok",
+          "bytes": 34655,
+          "width": 787,
+          "height": 446,
+          "sha256": "7c2228eefb94aa0d5fc05dcb1c9680a4d954b8b5fd7010929e2a631330728681"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod31674.JPG",
+          "key": "palma-fuentes/201522/015-e73e481e2ac6.jpg",
+          "status": "ok",
+          "bytes": 30561,
+          "width": 788,
+          "height": 445,
+          "sha256": "e73e481e2ac60d9d05896de81e2842f95118a93f900849dfd9ae0578de7e0ae8"
+        },
+        {
+          "index": 16,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coac87bd.JPG",
+          "key": "palma-fuentes/201522/016-1fb0ccdc0325.jpg",
+          "status": "ok",
+          "bytes": 49361,
+          "width": 790,
+          "height": 449,
+          "sha256": "1fb0ccdc03256688b4a7cbca95eacbfa168dfdbedc7b8785fe4668c8b03f1c10"
+        },
+        {
+          "index": 17,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co8788c7.JPG",
+          "key": "palma-fuentes/201522/017-184368144f26.jpg",
+          "status": "ok",
+          "bytes": 29288,
+          "width": 791,
+          "height": 442,
+          "sha256": "184368144f26d79c324118f160733d6db33c50b7bc4f14aceb141e26b3b5a777"
+        },
+        {
+          "index": 18,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coff5907.JPG",
+          "key": "palma-fuentes/201522/018-d6a99f4fbfb3.jpg",
+          "status": "ok",
+          "bytes": 62198,
+          "width": 792,
+          "height": 440,
+          "sha256": "d6a99f4fbfb322a6ed7eb8954a34f06cc6d3e6c17c17b9e3f744509ba64761e5"
         }
       ]
     },
@@ -1581,7 +3071,7 @@
       "sourceId": "201517",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/201517-departamental-macul",
       "galleryCount": 19,
-      "selectedCount": 8,
+      "selectedCount": 19,
       "images": [
         {
           "index": 1,
@@ -1662,6 +3152,116 @@
           "width": 680,
           "height": 508,
           "sha256": "c28300efcea93195e0cddd23d30fe505bb99881dde663a7e567eb8a153a22d9f"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co2d7f98.JPG",
+          "key": "palma-fuentes/201517/009-f5690f67adde.jpg",
+          "status": "ok",
+          "bytes": 53030,
+          "width": 680,
+          "height": 509,
+          "sha256": "f5690f67addea33be78688299ca09ec7884314ddc28e8c8b1232320e86b9abd4"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co8807e0.JPG",
+          "key": "palma-fuentes/201517/010-24851a976aa6.jpg",
+          "status": "ok",
+          "bytes": 56231,
+          "width": 677,
+          "height": 510,
+          "sha256": "24851a976aa6d174ee34fcd3a70addffdf92ec94f5ec90e7a41108fa7e18f9e3"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co8d9169.JPG",
+          "key": "palma-fuentes/201517/011-b05af9538d1e.jpg",
+          "status": "ok",
+          "bytes": 47480,
+          "width": 674,
+          "height": 508,
+          "sha256": "b05af9538d1efefda672fe64e34fd3b5f1ee098a60e58c371f2fa4535974448d"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co925489.JPG",
+          "key": "palma-fuentes/201517/012-50728c8a0160.jpg",
+          "status": "ok",
+          "bytes": 42988,
+          "width": 671,
+          "height": 507,
+          "sha256": "50728c8a0160bdbd1bc2b69cc56c6028d90ce85c4cc3f3455e47085fcda6542b"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co41ab75.JPG",
+          "key": "palma-fuentes/201517/013-9cb281a36582.jpg",
+          "status": "ok",
+          "bytes": 22551,
+          "width": 668,
+          "height": 509,
+          "sha256": "9cb281a36582b58c0c20dcb0cfaa90fdc3b28f10880d7234405fe756239377ef"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094codd4e6f.JPG",
+          "key": "palma-fuentes/201517/014-69c14ec81af4.jpg",
+          "status": "ok",
+          "bytes": 31380,
+          "width": 673,
+          "height": 506,
+          "sha256": "69c14ec81af4a7c96d63957591864ca18866482ca5d676e54458584b708c0071"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co13d8c8.JPG",
+          "key": "palma-fuentes/201517/015-9bfa40c5c00a.jpg",
+          "status": "ok",
+          "bytes": 39468,
+          "width": 672,
+          "height": 506,
+          "sha256": "9bfa40c5c00a03716ffd5d30ffabe8e8c72321e7139ade821cf1639f8eb5b067"
+        },
+        {
+          "index": 16,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co96e617.JPG",
+          "key": "palma-fuentes/201517/016-6c092e8b2dec.jpg",
+          "status": "ok",
+          "bytes": 44570,
+          "width": 678,
+          "height": 510,
+          "sha256": "6c092e8b2dec12edef166a474d45b24458e644e255c64e23b7e8cdd072d60f6c"
+        },
+        {
+          "index": 17,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co799894.JPG",
+          "key": "palma-fuentes/201517/017-1a32b9a2fb31.jpg",
+          "status": "ok",
+          "bytes": 38585,
+          "width": 677,
+          "height": 505,
+          "sha256": "1a32b9a2fb3181d51ea00ce5b59cbbc4d516cc2140284130fa7ebb4b4c2c6512"
+        },
+        {
+          "index": 18,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co754c04.JPG",
+          "key": "palma-fuentes/201517/018-e32170a4831c.jpg",
+          "status": "ok",
+          "bytes": 22005,
+          "width": 679,
+          "height": 504,
+          "sha256": "e32170a4831cbd1e0e16bcd83d5dff0ace4ad8cf85aa25c73baed503df95b98e"
+        },
+        {
+          "index": 19,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co95796c.JPG",
+          "key": "palma-fuentes/201517/019-acffd83d0d7f.jpg",
+          "status": "ok",
+          "bytes": 29990,
+          "width": 678,
+          "height": 512,
+          "sha256": "acffd83d0d7f50ceaae9d18b8ed1feb20c2d84a8a1d6d04cc1886b953c3a0a1a"
         }
       ]
     },
@@ -1669,7 +3269,7 @@
       "sourceId": "200819",
       "sourceListingUrl": "https://www.corredorapalmafuentes.cl/propiedad/200819-varas-mena-san-miguel",
       "galleryCount": 37,
-      "selectedCount": 8,
+      "selectedCount": 37,
       "images": [
         {
           "index": 1,
@@ -1750,6 +3350,296 @@
           "width": 800,
           "height": 600,
           "sha256": "9dda790dd653507121a1fd95cbf16becaf54d063e39e17082231669e9d15ab79"
+        },
+        {
+          "index": 9,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co43726d.jpeg",
+          "key": "palma-fuentes/200819/009-35de81c2c284.jpg",
+          "status": "ok",
+          "bytes": 83856,
+          "width": 600,
+          "height": 800,
+          "sha256": "35de81c2c284e1f067a81a92b9e85ca611500832a2661a4260ffcd172d560463"
+        },
+        {
+          "index": 10,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coa09152.jpeg",
+          "key": "palma-fuentes/200819/010-6b997dfd6914.jpg",
+          "status": "ok",
+          "bytes": 103543,
+          "width": 600,
+          "height": 800,
+          "sha256": "6b997dfd691410e47c94e65554455b92a74d0db016248dbeb703d40df955f95e"
+        },
+        {
+          "index": 11,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co7ea030.jpeg",
+          "key": "palma-fuentes/200819/011-b8399c4f6232.jpg",
+          "status": "ok",
+          "bytes": 113825,
+          "width": 600,
+          "height": 800,
+          "sha256": "b8399c4f6232184758e63b5b1b7f6b8f8b04a9dc91615ee101bae7283ca2828c"
+        },
+        {
+          "index": 12,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co76b2ed.jpeg",
+          "key": "palma-fuentes/200819/012-2cd97e9701b9.jpg",
+          "status": "ok",
+          "bytes": 97012,
+          "width": 600,
+          "height": 800,
+          "sha256": "2cd97e9701b936bc39b08227c8cbf866346fc158a61b2152354bc19b306f3094"
+        },
+        {
+          "index": 13,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co38bd3e.jpeg",
+          "key": "palma-fuentes/200819/013-531766eeefbd.jpg",
+          "status": "ok",
+          "bytes": 84057,
+          "width": 600,
+          "height": 800,
+          "sha256": "531766eeefbd0e49cfe6d6fe2a98c3ecf2b45f083103846cf45313079a28dd86"
+        },
+        {
+          "index": 14,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co37e9c2.jpeg",
+          "key": "palma-fuentes/200819/014-da12a79debb3.jpg",
+          "status": "ok",
+          "bytes": 68546,
+          "width": 600,
+          "height": 800,
+          "sha256": "da12a79debb3031cde4fb2507446a0917ea671d8643f9605fc5cceb4f78a89e9"
+        },
+        {
+          "index": 15,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod659f6.jpeg",
+          "key": "palma-fuentes/200819/015-2e379c84015e.jpg",
+          "status": "ok",
+          "bytes": 65739,
+          "width": 600,
+          "height": 800,
+          "sha256": "2e379c84015ed5088315872201b5665d1aff6da9b8feebac5266b5ccc5e2c9f8"
+        },
+        {
+          "index": 16,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co345cf6.jpeg",
+          "key": "palma-fuentes/200819/016-b21e590edf71.jpg",
+          "status": "ok",
+          "bytes": 140199,
+          "width": 600,
+          "height": 800,
+          "sha256": "b21e590edf713402615a698ce879dfd43f0d0bafe49f1c895ba4a432f732f335"
+        },
+        {
+          "index": 17,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co62bf42.jpeg",
+          "key": "palma-fuentes/200819/017-50159f398bbe.jpg",
+          "status": "ok",
+          "bytes": 82005,
+          "width": 800,
+          "height": 600,
+          "sha256": "50159f398bbed4fc6dcbbb01e110a83bd04e88b90a8c901e68af65f9b5c6b9f9"
+        },
+        {
+          "index": 18,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co6e69bf.jpeg",
+          "key": "palma-fuentes/200819/018-fe6eb8450d85.jpg",
+          "status": "ok",
+          "bytes": 164608,
+          "width": 800,
+          "height": 600,
+          "sha256": "fe6eb8450d8558b1300bebb2bce0e16fe803de7ec4f3492b9e3120a174c1d818"
+        },
+        {
+          "index": 19,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co7c54fc.jpeg",
+          "key": "palma-fuentes/200819/019-d0a433f5348c.jpg",
+          "status": "ok",
+          "bytes": 92688,
+          "width": 600,
+          "height": 800,
+          "sha256": "d0a433f5348c4cb09f2c242c856950316ba8547368eac8e13adf210a019acb86"
+        },
+        {
+          "index": 20,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coa42e35.jpeg",
+          "key": "palma-fuentes/200819/020-c71afe7f1698.jpg",
+          "status": "ok",
+          "bytes": 76222,
+          "width": 600,
+          "height": 800,
+          "sha256": "c71afe7f16983d197cd96812d396f21006f3304b153a21186a862785e41af9b0"
+        },
+        {
+          "index": 21,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094codd746c.jpeg",
+          "key": "palma-fuentes/200819/021-27d8e48c2546.jpg",
+          "status": "ok",
+          "bytes": 58726,
+          "width": 600,
+          "height": 800,
+          "sha256": "27d8e48c25463531dbdd5ca90465cd264f1ebc207bbdbd3b1f9f8c9ed9fd5945"
+        },
+        {
+          "index": 22,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co872b1a.jpeg",
+          "key": "palma-fuentes/200819/022-2749720d0766.jpg",
+          "status": "ok",
+          "bytes": 66277,
+          "width": 600,
+          "height": 800,
+          "sha256": "2749720d0766580e8fa80fae3ae4832d919af8e83eaa551576795728dd3d7603"
+        },
+        {
+          "index": 23,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coaf32b1.jpeg",
+          "key": "palma-fuentes/200819/023-71df9451e126.jpg",
+          "status": "ok",
+          "bytes": 78738,
+          "width": 800,
+          "height": 600,
+          "sha256": "71df9451e126d6dc2f0e8c4038b84446698fa7b2ec0935385694c29d65572d44"
+        },
+        {
+          "index": 24,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coa6ccde.jpeg",
+          "key": "palma-fuentes/200819/024-0362f5698134.jpg",
+          "status": "ok",
+          "bytes": 80478,
+          "width": 600,
+          "height": 800,
+          "sha256": "0362f569813462d262ac731981acdafa127ec9524ee9ed23bee51595a1721b34"
+        },
+        {
+          "index": 25,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cod71753.jpeg",
+          "key": "palma-fuentes/200819/025-7237b27a5ea8.jpg",
+          "status": "ok",
+          "bytes": 96287,
+          "width": 800,
+          "height": 600,
+          "sha256": "7237b27a5ea854803e8ba374795f866a04612f121248cadd5ad2db7ba4d1fde0"
+        },
+        {
+          "index": 26,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coa52bb2.jpeg",
+          "key": "palma-fuentes/200819/026-9dda790dd653.jpg",
+          "status": "ok",
+          "bytes": 82798,
+          "width": 800,
+          "height": 600,
+          "sha256": "9dda790dd653507121a1fd95cbf16becaf54d063e39e17082231669e9d15ab79"
+        },
+        {
+          "index": 27,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co9baf90.jpeg",
+          "key": "palma-fuentes/200819/027-35de81c2c284.jpg",
+          "status": "ok",
+          "bytes": 83856,
+          "width": 600,
+          "height": 800,
+          "sha256": "35de81c2c284e1f067a81a92b9e85ca611500832a2661a4260ffcd172d560463"
+        },
+        {
+          "index": 28,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094cof726d7.jpeg",
+          "key": "palma-fuentes/200819/028-6b997dfd6914.jpg",
+          "status": "ok",
+          "bytes": 103543,
+          "width": 600,
+          "height": 800,
+          "sha256": "6b997dfd691410e47c94e65554455b92a74d0db016248dbeb703d40df955f95e"
+        },
+        {
+          "index": 29,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coe00b96.jpeg",
+          "key": "palma-fuentes/200819/029-b8399c4f6232.jpg",
+          "status": "ok",
+          "bytes": 113825,
+          "width": 600,
+          "height": 800,
+          "sha256": "b8399c4f6232184758e63b5b1b7f6b8f8b04a9dc91615ee101bae7283ca2828c"
+        },
+        {
+          "index": 30,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coe31f5b.jpeg",
+          "key": "palma-fuentes/200819/030-2cd97e9701b9.jpg",
+          "status": "ok",
+          "bytes": 97012,
+          "width": 600,
+          "height": 800,
+          "sha256": "2cd97e9701b936bc39b08227c8cbf866346fc158a61b2152354bc19b306f3094"
+        },
+        {
+          "index": 31,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094coafde0e.jpeg",
+          "key": "palma-fuentes/200819/031-531766eeefbd.jpg",
+          "status": "ok",
+          "bytes": 84057,
+          "width": 600,
+          "height": 800,
+          "sha256": "531766eeefbd0e49cfe6d6fe2a98c3ecf2b45f083103846cf45313079a28dd86"
+        },
+        {
+          "index": 32,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co24073d.jpeg",
+          "key": "palma-fuentes/200819/032-da12a79debb3.jpg",
+          "status": "ok",
+          "bytes": 68546,
+          "width": 600,
+          "height": 800,
+          "sha256": "da12a79debb3031cde4fb2507446a0917ea671d8643f9605fc5cceb4f78a89e9"
+        },
+        {
+          "index": 33,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co577f6e.jpeg",
+          "key": "palma-fuentes/200819/033-2e379c84015e.jpg",
+          "status": "ok",
+          "bytes": 65739,
+          "width": 600,
+          "height": 800,
+          "sha256": "2e379c84015ed5088315872201b5665d1aff6da9b8feebac5266b5ccc5e2c9f8"
+        },
+        {
+          "index": 34,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co63db28.jpeg",
+          "key": "palma-fuentes/200819/034-b21e590edf71.jpg",
+          "status": "ok",
+          "bytes": 140199,
+          "width": 600,
+          "height": 800,
+          "sha256": "b21e590edf713402615a698ce879dfd43f0d0bafe49f1c895ba4a432f732f335"
+        },
+        {
+          "index": 35,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co75a0b0.jpeg",
+          "key": "palma-fuentes/200819/035-50159f398bbe.jpg",
+          "status": "ok",
+          "bytes": 82005,
+          "width": 800,
+          "height": 600,
+          "sha256": "50159f398bbed4fc6dcbbb01e110a83bd04e88b90a8c901e68af65f9b5c6b9f9"
+        },
+        {
+          "index": 36,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co98e6d1.jpeg",
+          "key": "palma-fuentes/200819/036-fe6eb8450d85.jpg",
+          "status": "ok",
+          "bytes": 164608,
+          "width": 800,
+          "height": 600,
+          "sha256": "fe6eb8450d8558b1300bebb2bce0e16fe803de7ec4f3492b9e3120a174c1d818"
+        },
+        {
+          "index": 37,
+          "sourceUrl": "https://www.toppropiedades.cl/imagenes/c752u2094co1c39c0.jpeg",
+          "key": "palma-fuentes/200819/037-d0a433f5348c.jpg",
+          "status": "ok",
+          "bytes": 92688,
+          "width": 600,
+          "height": 800,
+          "sha256": "d0a433f5348c4cb09f2c242c856950316ba8547368eac8e13adf210a019acb86"
         }
       ]
     }

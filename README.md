@@ -52,7 +52,7 @@ src/
 
 ## Inventario importado
 
-El 12 de noviembre de 2026 se capturaron 20 avisos públicos de [Corredora Palma Fuentes](https://www.corredorapalmafuentes.cl/): 17 ventas y 3 arriendos. El origen verificable está en `db/palma-fuentes-source.json`; `db/import-palma-fuentes-images.json` registra las 159 fotos seleccionadas (hasta ocho por ficha), sus URL y hashes. El SQL de importación se genera con `python scripts/generar-import-palma-fuentes.py --verify-images` cuando las fotos descargadas están en `.wrangler/state/palma-fuentes/`.
+El 12 de noviembre de 2026 se capturaron 20 avisos públicos de [Corredora Palma Fuentes](https://www.corredorapalmafuentes.cl/): 17 ventas y 3 arriendos. El origen verificable está en `db/palma-fuentes-source.json`; `db/import-palma-fuentes-images.json` registra las 348 fotos de sus galerías, sus URL y hashes. El SQL de importación se genera con `python scripts/generar-import-palma-fuentes.py --verify-images` cuando las fotos descargadas están en `.wrangler/state/palma-fuentes/`.
 
 Para una base nueva, ejecuta `npm run db:local-schema` o `npm run db:schema`. En una base anterior, aplica una vez `db/migrations/20261112_titulo.sql`. Después de subir las fotos al bucket R2 `cota-clara-fotos` con las claves del manifiesto, ejecuta `npm run db:local-seed` o `npm run db:seed`. La importación elimina los ocho avisos ficticios iniciales, es repetible y conserva los cambios posteriores de las fichas importadas.
 

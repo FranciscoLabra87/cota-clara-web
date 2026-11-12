@@ -126,6 +126,11 @@
   height: 24px;
 }
 
+/* La ficha ya ofrece WhatsApp junto al formulario; el botón flotante lo tapa. */
+body:has(.property) .wa-float {
+  display: none;
+}
+
 @media (max-width: 640px) {
   .wa-float {
     justify-content: center;
