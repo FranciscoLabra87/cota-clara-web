@@ -20,7 +20,9 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Se despliega en **Cloudflare Workers** con `@opennextjs/cloudflare`. Bindings en `wrangler.jsonc`: `DB` (D1) e `IMAGES`.
 - Comandos: `npm install` · `npm run dev` (http://localhost:3000) · `npm run build` · `npm start`.
 - Base local: `npm run db:local-schema` la crea, `npm run db:local-consulta -- "SELECT ..."` la consulta. `next dev` la monta sola desde `.wrangler/state`.
-- **El build de OpenNext no corre en Windows.** `npm run dev` y `npm run build` sí. `npm run preview` y `npm run deploy` necesitan WSL o Linux; el deploy real lo hace GitHub Actions (`.github/workflows/deploy.yml`) en cada push a `main`.
+- `npm run preview` compila el Worker y lo corre en workerd, el runtime real. La documentación de OpenNext dice que Windows no está soportado, pero acá funciona; si algún día se rompe, la salida es WSL.
+- El deploy lo hace GitHub Actions (`.github/workflows/deploy.yml`) en cada push a `main`. Sin los secretos de Cloudflare compila igual y se salta el deploy.
+- El Worker pesa ~1,2 MiB comprimido (`npx wrangler deploy --dry-run` lo informa); el límite del plan gratis es 3 MiB.
 - Turbopack es el bundler por defecto en `dev` y `build`; no hace falta `--turbopack`.
 - En rutas dinámicas, `params` es una Promise: `const { slug } = await params`.
 - Alias `@/*` → `src/*`. `next build` no corre lint (en Next 16 `next lint` y la opción `eslint` del config ya no existen).

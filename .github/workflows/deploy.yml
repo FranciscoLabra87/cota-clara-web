@@ -1,6 +1,6 @@
 name: Desplegar a Cloudflare Workers
 
-# El build de OpenNext no corre en Windows, así que el despliegue se hace acá.
+# Despliegue automático en cada push a main.
 #
 # Mientras no existan los secretos del repo (Settings > Secrets and variables >
 # Actions) este workflow igual compila el sitio, pero se salta el deploy en vez
