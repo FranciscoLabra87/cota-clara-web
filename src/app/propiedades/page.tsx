@@ -10,7 +10,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Propiedades en venta y arriendo',
-  description: 'Departamentos, casas y oficinas en venta y arriendo en Providencia, Las Condes, Vitacura, Ñuñoa, La Reina y Lo Barnechea.',
+  description: 'Departamentos, casas y oficinas en venta y arriendo en las regiones Metropolitana, de Valparaíso y de Coquimbo.',
 };
 
 export default async function PropiedadesPage() {
@@ -21,7 +21,7 @@ export default async function PropiedadesPage() {
       <PageHero
         migas={[{ href: '/', label: 'Inicio' }, { label: 'Propiedades' }]}
         title="Propiedades en venta y arriendo"
-        lead="Cada precio está respaldado por un informe de valor. Filtra por comuna, tipo y presupuesto."
+        lead="Explora las propiedades disponibles y filtra por comuna, tipo y presupuesto."
       />
       <section className="section section--tint section--after-hero">
         <div className="container">

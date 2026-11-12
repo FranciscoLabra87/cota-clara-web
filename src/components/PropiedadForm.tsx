@@ -38,6 +38,7 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
     const datos = new FormData(e.currentTarget);
     const cuerpo = {
       slug: datos.get('slug'),
+      titulo: datos.get('titulo'),
       tipo: datos.get('tipo'),
       operacion: datos.get('operacion'),
       comuna: datos.get('comuna'),
@@ -231,6 +232,12 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
               </label>
               <input className="field__control" defaultValue={propiedad?.sector ?? ''} {...campo('sector')} />
             </div>
+          </div>
+          <div className="field">
+            <label className="field__label" htmlFor={`${id}-titulo`}>
+              Título <span className="field__optional">(opcional)</span>
+            </label>
+            <input className="field__control" maxLength={160} defaultValue={propiedad?.titulo ?? ''} placeholder="Casa en Peña Blanca" {...campo('titulo')} />
           </div>
           <div className="field">
             <label className="field__label" htmlFor={`${id}-slug`}>

@@ -46,6 +46,12 @@ describe('claves de R2', () => {
     expect(claveFoto(1, 'image/png')).not.toBe(claveFoto(1, 'image/png'));
   });
 
+  it('acepta una foto importada con ID, orden y hash de contenido', () => {
+    expect(claveValida('palma-fuentes/202057/001-46fe146278d3.jpg')).toBe(true);
+    expect(claveValida('palma-fuentes/202057/001-46fe146278d3.svg')).toBe(false);
+    expect(claveValida('palma-fuentes/202057/../001-46fe146278d3.jpg')).toBe(false);
+  });
+
   it('rechaza salirse de la carpeta o inventar una clave', () => {
     const malas = [
       'propiedades/1/../../etc/passwd',

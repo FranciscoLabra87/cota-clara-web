@@ -31,30 +31,30 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 function galeria(p: Propiedad): GalleryItem[] {
-  const fotos: GalleryItem[] = p.imagenes?.length
-    ? p.imagenes.map((src, i) => ({ kind: 'foto', src, label: `Foto ${i + 1}` }))
-    : [
-        { kind: 'ilustracion', label: 'Fachada', variant: varianteTipo(p.tipo), seed: p.ilustracion.seed, tono: p.ilustracion.tono },
-        {
-          kind: 'ilustracion',
-          label: 'Vista al atardecer',
-          variant: varianteTipo(p.tipo),
-          seed: p.ilustracion.seed,
-          tono: p.ilustracion.tono === 'dia' ? 'atardecer' : 'dia',
-        },
-      ];
-  return [
-    ...fotos,
+  if (p.imagenes?.length) return p.imagenes.map((src, i) => ({ kind: 'foto' as const, src, label: `Foto ${i + 1}` }));
+  const fotos: GalleryItem[] = [
+    { kind: 'ilustracion', label: 'Fachada', variant: varianteTipo(p.tipo), seed: p.ilustracion.seed, tono: p.ilustracion.tono },
     {
+      kind: 'ilustracion',
+      label: 'Vista al atardecer',
+      variant: varianteTipo(p.tipo),
+      seed: p.ilustracion.seed,
+      tono: p.ilustracion.tono === 'dia' ? 'atardecer' : 'dia',
+    },
+  ];
+  const items = [...fotos];
+  if (p.superficieUtil > 0) {
+    items.push({
       kind: 'ilustracion',
       label: 'Planta referencial',
       variant: 'plano',
       dormitorios: p.dormitorios,
       superficie: p.superficieUtil,
       planta: p.tipo === 'oficina' ? 'oficina' : 'vivienda',
-    },
-    { kind: 'ilustracion', label: 'Entorno', variant: 'mapa', seed: p.ilustracion.seed, etiqueta: p.sector },
-  ];
+    });
+  }
+  if (p.sector) items.push({ kind: 'ilustracion', label: 'Entorno', variant: 'mapa', seed: p.ilustracion.seed, etiqueta: p.sector });
+  return items;
 }
 
 export default async function PropiedadPage({ params }: Params) {
@@ -63,24 +63,25 @@ export default async function PropiedadPage({ params }: Params) {
   if (!p) notFound();
 
   const periodo = periodoPrecio(p.precio);
+  const ubicacion = [p.sector, p.comuna].filter(Boolean).join(', ');
   const publicadas = await propiedadesPublicadas();
   const relacionadas = publicadas.filter((o) => o.slug !== p.slug && (o.comuna === p.comuna || o.operacion === p.operacion)).slice(0, 3);
 
   const ficha = [
     p.dormitorios > 0 ? { icono: 'bed' as const, label: 'Dormitorios', valor: String(p.dormitorios) } : null,
-    { icono: 'bath' as const, label: 'Baños', valor: String(p.banos) },
-    { icono: 'car' as const, label: 'Estacionamientos', valor: String(p.estacionamientos) },
-    { icono: 'area' as const, label: 'Superficie útil', valor: `${formatNumero(p.superficieUtil)} m²` },
-    p.terreno
+    p.banos > 0 ? { icono: 'bath' as const, label: 'Baños', valor: String(p.banos) } : null,
+    p.estacionamientos > 0 ? { icono: 'car' as const, label: 'Estacionamientos', valor: String(p.estacionamientos) } : null,
+    p.superficieUtil > 0 ? { icono: 'area' as const, label: 'Superficie útil', valor: `${formatNumero(p.superficieUtil)} m²` } : null,
+    p.terreno && p.terreno > 0
       ? { icono: 'area' as const, label: 'Terreno', valor: `${formatNumero(p.terreno)} m²` }
-      : { icono: 'area' as const, label: 'Superficie total', valor: `${formatNumero(p.superficieTotal)} m²` },
+      : p.superficieTotal > p.superficieUtil ? { icono: 'area' as const, label: 'Superficie total', valor: `${formatNumero(p.superficieTotal)} m²` } : null,
   ].filter((x): x is NonNullable<typeof x> => x !== null);
 
   const datos = [
-    { label: 'Orientación', valor: p.orientacion },
-    { label: 'Año de construcción', valor: String(p.anio) },
+    p.orientacion ? { label: 'Orientación', valor: p.orientacion } : null,
+    p.anio > 0 ? { label: 'Año de construcción', valor: String(p.anio) } : null,
     p.piso ? { label: 'Piso', valor: String(p.piso) } : null,
-    { label: 'Bodegas', valor: String(p.bodegas) },
+    p.bodegas > 0 ? { label: 'Bodegas', valor: String(p.bodegas) } : null,
     p.gastosComunes ? { label: 'Gastos comunes', valor: `$${formatNumero(p.gastosComunes)} aprox.` } : null,
   ].filter((x): x is NonNullable<typeof x> => x !== null);
 
@@ -99,7 +100,7 @@ export default async function PropiedadPage({ params }: Params) {
               </span>
             ))}
             <span className="property-head__location">
-              <Icon name="pin" /> {p.sector}, {p.comuna}
+              <Icon name="pin" /> {ubicacion}
             </span>
           </div>
           <p className="property-head__price">
@@ -114,7 +115,7 @@ export default async function PropiedadPage({ params }: Params) {
           <div className="property__main">
             <Gallery items={galeria(p)} />
 
-            <ul className="specs">
+            {ficha.length ? <ul className="specs">
               {ficha.map((f) => (
                 <li key={f.label} className="specs__item">
                   <Icon name={f.icono} className="specs__icon" />
@@ -122,7 +123,7 @@ export default async function PropiedadPage({ params }: Params) {
                   <span className="specs__label">{f.label}</span>
                 </li>
               ))}
-            </ul>
+            </ul> : null}
 
             <div className="property__block">
               <h2 className="property__title">Descripción</h2>
@@ -131,14 +132,14 @@ export default async function PropiedadPage({ params }: Params) {
                   <p key={parrafo.slice(0, 24)}>{parrafo}</p>
                 ))}
               </div>
-              <dl className="facts">
+              {datos.length ? <dl className="facts">
                 {datos.map((d) => (
                   <div key={d.label} className="facts__item">
                     <dt className="facts__label">{d.label}</dt>
                     <dd className="facts__value">{d.valor}</dd>
                   </div>
                 ))}
-              </dl>
+              </dl> : null}
             </div>
 
             <div className="property__block">
@@ -155,12 +156,12 @@ export default async function PropiedadPage({ params }: Params) {
 
             <div className="property__block">
               <h2 className="property__title">Ubicación</h2>
-              <p className="property__text">
-                {p.sector}, {p.comuna}. La dirección exacta se entrega al coordinar la visita.
-              </p>
-              <div className="property__map">
-                <Illustration variant="mapa" seed={p.ilustracion.seed} etiqueta={p.sector} label={`Mapa referencial de ${p.sector}`} />
-              </div>
+              <p className="property__text">{ubicacion}.</p>
+              {p.sector ? (
+                <div className="property__map">
+                  <Illustration variant="mapa" seed={p.ilustracion.seed} etiqueta={p.sector} label={`Mapa referencial de ${ubicacion}`} />
+                </div>
+              ) : null}
             </div>
 
             {p.operacion === 'venta' && p.precio.moneda === 'UF' ? (

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Icon } from './Icon';
 import { Logo } from './Logo';
-import { comunas, site, whatsappHref } from '@/data/site';
+import { site, whatsappHref } from '@/data/site';
 import { servicios } from '@/data/services';
 
 export function Footer() {
@@ -29,16 +29,12 @@ export function Footer() {
             </ul>
           </nav>
 
-          <nav className="site-footer__col" aria-label="Propiedades por comuna">
+          <nav className="site-footer__col" aria-label="Propiedades">
             <h2 className="site-footer__title">Propiedades</h2>
             <ul className="site-footer__list">
-              {comunas.slice(0, 5).map((c) => (
-                <li key={c}>
-                  <Link className="site-footer__link" href={`/propiedades?comuna=${encodeURIComponent(c)}`}>
-                    {c}
-                  </Link>
-                </li>
-              ))}
+              <li><Link className="site-footer__link" href="/propiedades">Ver todas</Link></li>
+              <li><Link className="site-footer__link" href="/propiedades?operacion=venta">En venta</Link></li>
+              <li><Link className="site-footer__link" href="/propiedades?operacion=arriendo">En arriendo</Link></li>
             </ul>
           </nav>
 

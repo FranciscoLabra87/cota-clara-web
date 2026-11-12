@@ -11,6 +11,7 @@ export type PropiedadAdmin = Propiedad & { id: number; estado: Estado };
 type Fila = {
   id: number;
   slug: string;
+  titulo: string;
   tipo: TipoPropiedad;
   operacion: Operacion;
   comuna: string;
@@ -40,7 +41,7 @@ type Fila = {
   ilustracion_tono: 'dia' | 'atardecer';
 };
 
-const COLUMNAS = `id, slug, tipo, operacion, comuna, sector, precio_valor, precio_moneda, precio_periodo,
+const COLUMNAS = `id, slug, titulo, tipo, operacion, comuna, sector, precio_valor, precio_moneda, precio_periodo,
   dormitorios, banos, estacionamientos, bodegas, superficie_util, superficie_total, terreno, piso,
   orientacion, anio, gastos_comunes, etiquetas, resumen, descripcion, caracteristicas,
   destacada, publicada, estado, ilustracion_seed, ilustracion_tono`;
@@ -65,6 +66,7 @@ function aPropiedad(f: Fila, fotos: string[]): PropiedadAdmin {
     id: f.id,
     estado: f.estado,
     slug: f.slug,
+    titulo: f.titulo,
     tipo: f.tipo,
     operacion: f.operacion,
     comuna: f.comuna,
@@ -186,6 +188,7 @@ export async function propiedadPorId(id: number): Promise<PropiedadAdmin | null>
 
 export type DatosPropiedad = {
   slug: string;
+  titulo?: string;
   tipo: TipoPropiedad;
   operacion: Operacion;
   comuna: string;
@@ -219,6 +222,7 @@ const periodoDe = (d: DatosPropiedad) => (d.operacion === 'arriendo' ? 'mes' : n
 
 const valores = (d: DatosPropiedad) => [
   d.slug,
+  d.titulo ?? '',
   d.tipo,
   d.operacion,
   d.comuna,
@@ -253,7 +257,7 @@ export async function crearPropiedad(d: DatosPropiedad): Promise<number> {
   const fila = await db
     .prepare(
       `INSERT INTO propiedades (
-         slug, tipo, operacion, comuna, sector, precio_valor, precio_moneda, precio_periodo,
+         slug, titulo, tipo, operacion, comuna, sector, precio_valor, precio_moneda, precio_periodo,
          dormitorios, banos, estacionamientos, bodegas, superficie_util, superficie_total, terreno, piso,
          orientacion, anio, gastos_comunes, etiquetas, resumen, descripcion, caracteristicas,
          destacada, publicada, estado, ilustracion_seed, ilustracion_tono
@@ -269,7 +273,7 @@ export async function actualizarPropiedad(id: number, d: DatosPropiedad): Promis
   await db
     .prepare(
       `UPDATE propiedades SET
-         slug = ?, tipo = ?, operacion = ?, comuna = ?, sector = ?, precio_valor = ?, precio_moneda = ?,
+         slug = ?, titulo = ?, tipo = ?, operacion = ?, comuna = ?, sector = ?, precio_valor = ?, precio_moneda = ?,
          precio_periodo = ?, dormitorios = ?, banos = ?, estacionamientos = ?, bodegas = ?,
          superficie_util = ?, superficie_total = ?, terreno = ?, piso = ?, orientacion = ?, anio = ?,
          gastos_comunes = ?, etiquetas = ?, resumen = ?, descripcion = ?, caracteristicas = ?,

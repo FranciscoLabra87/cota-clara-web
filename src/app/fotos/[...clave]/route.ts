@@ -23,7 +23,8 @@ export async function GET(request: Request, { params }: Params) {
   cabeceras.set('Content-Type', objeto.httpMetadata?.contentType ?? 'application/octet-stream');
   cabeceras.set('X-Content-Type-Options', 'nosniff');
   cabeceras.set('ETag', objeto.httpEtag);
-  // La clave lleva un UUID y nunca se reutiliza: el archivo es inmutable.
+  // Las claves del panel llevan UUID y las importadas un hash de contenido:
+  // en ambos casos el archivo es inmutable.
   cabeceras.set('Cache-Control', 'public, max-age=31536000, immutable');
 
   if (request.headers.get('If-None-Match') === objeto.httpEtag) {

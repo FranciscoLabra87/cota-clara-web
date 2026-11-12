@@ -3,11 +3,10 @@
 import { useRouter } from 'next/navigation';
 import { useId, useState, type FormEvent } from 'react';
 import { Icon } from './Icon';
-import { comunas } from '@/data/site';
 import { tipos, type Operacion } from '@/data/properties';
-import { rangosPrecio } from '@/lib/filters';
+import type { OpcionPrecio } from '@/lib/filters';
 
-export function SearchBar() {
+export function SearchBar({ comunas, opcionesPrecio }: { comunas: string[]; opcionesPrecio: Record<Operacion, OpcionPrecio[]> }) {
   const router = useRouter();
   const id = useId();
   const [operacion, setOperacion] = useState<Operacion>('venta');
@@ -72,7 +71,7 @@ export function SearchBar() {
           </label>
           <select className="field__control field__control--select" id={`${id}-precio`} name="precio" defaultValue="" key={operacion}>
             <option value="">Sin límite</option>
-            {rangosPrecio[operacion].map((r) => (
+            {opcionesPrecio[operacion].map((r) => (
               <option key={r.value} value={r.value}>
                 {r.label}
               </option>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Propiedad } from '@/data/properties';
-import { filtrarPropiedades, filtrosVacios, rangosPrecio } from '@/lib/filters';
+import { filtrarPropiedades, filtrosVacios, opcionesPrecioDisponibles, rangosPrecio } from '@/lib/filters';
 
 const propiedad = (p: Partial<Propiedad> & { slug: string }): Propiedad => ({
   tipo: 'departamento',
@@ -87,5 +87,22 @@ describe('filtros', () => {
   it('los rangos que se ofrecen están en la moneda de su operación', () => {
     expect(rangosPrecio.venta.map((r) => r.label)).toEqual(expect.arrayContaining([expect.stringContaining('UF')]));
     expect(rangosPrecio.arriendo.map((r) => r.label)).toEqual(expect.arrayContaining([expect.stringContaining('$')]));
+  });
+
+  it('filtra explícitamente por moneda cuando una operación mezcla UF y pesos', () => {
+    const mixto = [
+      ...inventario,
+      propiedad({ slug: 'venta-pesos', precio: { valor: 125000000, moneda: 'CLP' } }),
+      propiedad({ slug: 'arriendo-uf', operacion: 'arriendo', precio: { valor: 35, moneda: 'UF', periodo: 'mes' } }),
+    ];
+    const filtrar = (operacion: string, precio: string) =>
+      filtrarPropiedades(mixto, { ...filtrosVacios, operacion, precio }).map((p) => p.slug);
+
+    expect(filtrar('venta', '8000')).toEqual(['depto-barato']);
+    expect(filtrar('venta', 'CLP:130000000')).toEqual(['venta-pesos']);
+    expect(filtrar('arriendo', 'UF:40')).toEqual(['arriendo-uf']);
+    expect(filtrar('arriendo', '1500000')).toEqual(['arriendo-oficina']);
+    expect(opcionesPrecioDisponibles(mixto, 'venta').some((r) => r.value === 'CLP:125000000')).toBe(true);
+    expect(opcionesPrecioDisponibles(mixto, 'arriendo').some((r) => r.value === 'UF:35')).toBe(true);
   });
 });

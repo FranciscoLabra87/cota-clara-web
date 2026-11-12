@@ -35,17 +35,16 @@ export async function POST(request: Request) {
   const envio = await enviarLead(lead);
 
   if (envio.estado === 'error') {
-    // El correo no salió: dejamos el lead en el log para no perderlo y avisamos al
-    // formulario, que ofrece el correo de respaldo.
-    console.error('[lead] no se pudo enviar:', envio.detalle, JSON.stringify(lead));
+    console.error('[lead] no se pudo enviar:', envio.detalle);
     return NextResponse.json({ ok: false, error: 'No pudimos enviar tu solicitud' }, { status: 502 });
   }
 
   if (envio.estado === 'sin-configurar') {
-    console.warn('[lead] falta RESEND_API_KEY o LEADS_FROM: el lead solo queda en este log');
+    console.error('[lead] falta RESEND_API_KEY o LEADS_FROM');
+    return NextResponse.json({ ok: false, error: 'El formulario no está disponible temporalmente' }, { status: 503 });
   }
 
-  console.info('[lead]', envio.estado, JSON.stringify(lead));
+  console.info('[lead] enviado', envio.id);
 
   return NextResponse.json({ ok: true });
 }

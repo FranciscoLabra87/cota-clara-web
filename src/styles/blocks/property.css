@@ -53,6 +53,10 @@
   max-width: 70ch;
 }
 
+.property__text p {
+  white-space: pre-line;
+}
+
 .property__map {
   aspect-ratio: 16 / 9;
   border: 1px solid var(--color-borde);

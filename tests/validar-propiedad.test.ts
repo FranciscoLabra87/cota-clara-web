@@ -79,7 +79,8 @@ describe('lo que acepta', () => {
 
 describe('lo que corta', () => {
   it('no deja pasar textos más largos que la columna', () => {
-    const datos = datosDe({ ...base(), resumen: 'a'.repeat(500), comuna: 'b'.repeat(200) });
+    const datos = datosDe({ ...base(), titulo: 'c'.repeat(300), resumen: 'a'.repeat(500), comuna: 'b'.repeat(200) });
+    expect(datos.titulo).toHaveLength(160);
     expect(datos.resumen).toHaveLength(300);
     expect(datos.comuna).toHaveLength(60);
   });

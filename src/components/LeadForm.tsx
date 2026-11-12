@@ -209,7 +209,7 @@ export function LeadForm({ variante, titulo, bajada, propiedad, boton }: Props) 
 
       {estado === 'error' ? (
         <p className="lead-form__alert" role="alert">
-          No pudimos enviar tu solicitud. Inténtalo de nuevo o escríbenos a contacto@cotaclara.cl.
+          No pudimos enviar tu solicitud. Inténtalo más tarde.
         </p>
       ) : null}
 

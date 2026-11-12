@@ -95,6 +95,7 @@ export function validarPropiedad(body: Record<string, unknown>): Resultado {
     ok: true,
     datos: {
       slug,
+      titulo: texto(body.titulo, 160),
       tipo: tipo as DatosPropiedad['tipo'],
       operacion: operacion as DatosPropiedad['operacion'],
       comuna,
@@ -108,7 +109,7 @@ export function validarPropiedad(body: Record<string, unknown>): Resultado {
       orientacion: texto(body.orientacion, 40),
       etiquetas: listaTexto(body.etiquetas, 8, 60),
       resumen,
-      descripcion: listaTexto(body.descripcion, 12, 2000),
+      descripcion: listaTexto(body.descripcion, 40, 2000),
       caracteristicas: listaTexto(body.caracteristicas, 40, 120),
       destacada: body.destacada === true || body.destacada === 'true' || body.destacada === 'on',
       publicada,

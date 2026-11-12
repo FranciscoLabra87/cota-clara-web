@@ -65,6 +65,7 @@ CREATE INDEX IF NOT EXISTS idx_log_accion_ip_fecha ON log_eventos(accion, ip, fe
 CREATE TABLE IF NOT EXISTS propiedades (
   id               INTEGER PRIMARY KEY AUTOINCREMENT,
   slug             TEXT NOT NULL UNIQUE,
+  titulo           TEXT NOT NULL DEFAULT '',
   tipo             TEXT NOT NULL CHECK(tipo IN ('departamento','casa','oficina')),
   operacion        TEXT NOT NULL CHECK(operacion IN ('venta','arriendo')),
   comuna           TEXT NOT NULL,

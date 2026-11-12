@@ -42,8 +42,9 @@ export function claveFoto(propiedadId: number, mime: MimeImagen) {
   return `propiedades/${propiedadId}/${Date.now()}-${crypto.randomUUID()}.${extensionDe(mime)}`;
 }
 
-// Las claves que llegan por URL se usan para leer de R2: solo se aceptan las
-// que esta misma función podría haber generado.
+// Las claves que llegan por URL se usan para leer de R2. Se aceptan también
+// las fotos migradas, identificadas por el ID de origen y un hash de contenido.
 export function claveValida(clave: string) {
-  return /^propiedades\/\d+\/\d+-[0-9a-f-]{36}\.(jpg|png|webp)$/.test(clave);
+  return /^propiedades\/\d+\/\d+-[0-9a-f-]{36}\.(jpg|png|webp)$/.test(clave)
+    || /^palma-fuentes\/\d+\/\d+-[0-9a-f]{12}\.(jpg|png|webp)$/.test(clave);
 }

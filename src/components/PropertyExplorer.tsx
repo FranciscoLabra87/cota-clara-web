@@ -3,9 +3,8 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useId, useMemo, useState } from 'react';
 import { PropertyCard } from './PropertyCard';
-import { comunas } from '@/data/site';
-import { tipos, type Operacion, type Propiedad } from '@/data/properties';
-import { filtrarPropiedades, filtrosVacios, rangosPrecio, type Filtros } from '@/lib/filters';
+import { comunasDisponibles, tipos, type Operacion, type Propiedad } from '@/data/properties';
+import { filtrarPropiedades, filtrosVacios, opcionesPrecioDisponibles, type Filtros } from '@/lib/filters';
 
 export function PropertyExplorer({ propiedades }: { propiedades: Propiedad[] }) {
   const params = useSearchParams();
@@ -23,6 +22,8 @@ export function PropertyExplorer({ propiedades }: { propiedades: Propiedad[] }) 
   }));
 
   const resultados = useMemo(() => filtrarPropiedades([...propiedades], filtros), [propiedades, filtros]);
+  const comunas = useMemo(() => comunasDisponibles(propiedades), [propiedades]);
+  const monedasMixtas = new Set(resultados.map((p) => p.precio.moneda)).size > 1;
   const activos = Object.entries(filtros).some(([k, v]) => v && !(k === 'orden' && v === 'recientes'));
 
   function aplicar(next: Filtros) {
@@ -39,7 +40,9 @@ export function PropertyExplorer({ propiedades }: { propiedades: Propiedad[] }) 
     aplicar(next);
   };
 
-  const opcionesPrecio = filtros.operacion ? rangosPrecio[filtros.operacion as Operacion] : [];
+  const opcionesPrecio = filtros.operacion === 'venta' || filtros.operacion === 'arriendo'
+    ? opcionesPrecioDisponibles(propiedades, filtros.operacion as Operacion)
+    : [];
 
   return (
     <div className="explorer">
@@ -118,8 +121,8 @@ export function PropertyExplorer({ propiedades }: { propiedades: Propiedad[] }) 
           </label>
           <select className="field__control field__control--select" id={`${id}-orden`} value={filtros.orden} onChange={set('orden')}>
             <option value="recientes">Más recientes</option>
-            <option value="precio-asc">Menor precio</option>
-            <option value="precio-desc">Mayor precio</option>
+            <option value="precio-asc">{monedasMixtas ? 'UF primero · menor precio' : 'Menor precio'}</option>
+            <option value="precio-desc">{monedasMixtas ? 'UF primero · mayor precio' : 'Mayor precio'}</option>
             <option value="superficie">Mayor superficie</option>
           </select>
         </div>

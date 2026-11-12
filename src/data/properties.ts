@@ -9,6 +9,7 @@ export type Precio = {
 
 export type Propiedad = {
   slug: string;
+  titulo?: string;
   tipo: TipoPropiedad;
   operacion: Operacion;
   comuna: string;
@@ -33,7 +34,7 @@ export type Propiedad = {
   publicada: string;
   /** Semilla y tono de la ilustración de reemplazo mientras no haya fotos reales. */
   ilustracion: { seed: number; tono: 'dia' | 'atardecer' };
-  /** Rutas a fotos reales en /public. Si existen, reemplazan a las ilustraciones. */
+  /** Fotos servidas desde R2 en /fotos/. Si existen, reemplazan a las ilustraciones. */
   imagenes?: string[];
 };
 
@@ -45,7 +46,10 @@ export const tipos: { value: TipoPropiedad; label: string }[] = [
 
 export const nombreTipo = (tipo: TipoPropiedad) => tipos.find((t) => t.value === tipo)?.label ?? tipo;
 
-export const tituloPropiedad = (p: Propiedad) => `${nombreTipo(p.tipo)} · ${p.comuna}`;
+export const tituloPropiedad = (p: Propiedad) => p.titulo?.trim() || `${nombreTipo(p.tipo)} · ${p.comuna}`;
+
+export const comunasDisponibles = (propiedades: Propiedad[]) =>
+  [...new Set(propiedades.map((p) => p.comuna.trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es-CL'));
 
 // El inventario vive en D1, no acá: ver src/lib/propiedades.ts. Este archivo
 // quedó solo con los tipos y los helpers de presentación, que usan tanto el

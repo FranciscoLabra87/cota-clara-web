@@ -84,6 +84,11 @@ describe('crear y leer', () => {
     expect(p!.imagenes).toBeUndefined();
   });
 
+  it('guarda el título propio cuando el aviso lo tiene', async () => {
+    const otro = await crearPropiedad(datos({ slug: 'casa-pena-blanca', titulo: 'Casa en Peña Blanca' }));
+    expect((await propiedadPorId(otro))!.titulo).toBe('Casa en Peña Blanca');
+  });
+
   it('deriva el periodo mensual del arriendo, no se pide', async () => {
     const arriendo = await crearPropiedad(datos({ slug: 'oficina-arriendo', operacion: 'arriendo', precioMoneda: 'CLP', precioValor: 1200000 }));
     expect((await propiedadPorId(arriendo))!.precio).toEqual({ valor: 1200000, moneda: 'CLP', periodo: 'mes' });
