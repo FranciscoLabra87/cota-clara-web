@@ -16,21 +16,20 @@
   // Optimización de imágenes de next/image sobre Workers.
   "images": { "binding": "IMAGES" },
 
-  // Base del acceso corporativo: usuarios, sesiones y bitácora.
-  // El database_id lo entrega `npx wrangler d1 create cota-clara-db` y hay que
-  // pegarlo aquí antes del primer deploy. En local no se usa: `next dev` monta
-  // una D1 de mentira en .wrangler/state.
+  // Base del acceso corporativo, usuarios, sesiones, bitácora y el inventario
+  // de propiedades. En local no se usa: `next dev` monta una D1 aparte en
+  // .wrangler/state, y las tablas de la real se crean con `npm run db:schema`.
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "cota-clara-db",
-      "database_id": "PENDIENTE-CORRER-WRANGLER-D1-CREATE"
+      "database_id": "607ed92b-1635-447e-9923-54a80b3714b5"
     }
   ],
 
   // Fotos de las propiedades. Crear el bucket antes del primer deploy con
   // `npx wrangler r2 bucket create cota-clara-fotos`, si no el deploy falla.
-  // No es público: se sirve por /api/propiedades/foto/.
+  // No es público: se sirve por /fotos/.
   "r2_buckets": [
     {
       "binding": "FOTOS",
