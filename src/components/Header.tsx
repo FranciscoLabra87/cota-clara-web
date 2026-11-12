@@ -24,10 +24,19 @@ export function Header() {
   }, [pathname]);
 
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
+    const previousOverflow = document.body.style.overflow;
+    if (open) document.body.style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    const onResize = () => {
+      if (window.innerWidth > 1060) setOpen(false);
+    };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    window.addEventListener('resize', onResize);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', onResize);
+    };
   }, [open]);
 
   const transparent = !scrolled && !open;
@@ -38,7 +47,7 @@ export function Header() {
   return (
     <header className={`site-header ${modifiers}`.trim()}>
       <div className="site-header__inner container">
-        <Link href="/" className="site-header__brand" aria-label="Cota Clara, ir al inicio">
+        <Link href="/" className="site-header__brand" aria-label="Cota Clara, ir al inicio" onClick={() => setOpen(false)}>
           <Logo variant={transparent || open ? 'negativo' : 'color'} />
         </Link>
 
@@ -79,32 +88,58 @@ export function Header() {
           <button
             type="button"
             className="site-header__toggle"
+            aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
             aria-expanded={open}
             aria-controls="menu-movil"
             onClick={() => setOpen((v) => !v)}
           >
-            <Icon name={open ? 'close' : 'menu'} className="site-header__toggle-icon" />
-            <span className="visually-hidden">{open ? 'Cerrar menú' : 'Abrir menú'}</span>
+            <span className="site-header__toggle-bars" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
           </button>
         </div>
       </div>
 
-      <div id="menu-movil" className="mobile-menu" hidden={!open}>
+      <nav
+        id="menu-movil"
+        className={`mobile-menu${open ? ' mobile-menu--open' : ''}`}
+        aria-label="Menú móvil"
+        aria-hidden={!open}
+        inert={!open}
+      >
+        <p className="mobile-menu__eyebrow">Explora Cota Clara</p>
         <ul className="mobile-menu__list">
           {navegacion.map((item) => (
             <li key={item.href}>
-              <Link href={item.href} className="mobile-menu__link">
+              <Link
+                href={item.href}
+                className={`mobile-menu__link${isActive(item.href) ? ' mobile-menu__link--active' : ''}`}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                onClick={() => setOpen(false)}
+              >
                 {item.label}
               </Link>
             </li>
           ))}
           <li>
-            <Link href="/contacto" className="mobile-menu__link">
+            <Link
+              href="/contacto"
+              className={`mobile-menu__link${isActive('/contacto') ? ' mobile-menu__link--active' : ''}`}
+              aria-current={isActive('/contacto') ? 'page' : undefined}
+              onClick={() => setOpen(false)}
+            >
               Contacto
             </Link>
           </li>
           <li>
-            <Link href="/acceso" className="mobile-menu__link mobile-menu__link--acceso">
+            <Link
+              href="/acceso"
+              className={`mobile-menu__link mobile-menu__link--acceso${isActive('/acceso') ? ' mobile-menu__link--active' : ''}`}
+              aria-current={isActive('/acceso') ? 'page' : undefined}
+              onClick={() => setOpen(false)}
+            >
               <Icon name="key" /> Acceso Corporativo
             </Link>
           </li>
@@ -117,7 +152,7 @@ export function Header() {
             <Icon name="whatsapp" /> Escríbenos por WhatsApp
           </a>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }

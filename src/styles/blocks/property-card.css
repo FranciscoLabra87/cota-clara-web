@@ -33,8 +33,8 @@
   background: var(--color-blanco);
   overflow: hidden;
   transition:
-    transform 0.3s var(--ease),
-    box-shadow 0.3s var(--ease);
+    transform 0.36s var(--ease),
+    box-shadow 0.36s var(--ease);
 }
 
 .property-card:hover {
@@ -60,7 +60,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.7s var(--ease);
+  transition: transform 0.84s var(--ease);
 }
 
 .property-card:hover .property-card__image {
@@ -182,8 +182,8 @@
   background: var(--color-terracota-600);
   color: var(--color-blanco);
   transition:
-    background-color 0.2s var(--ease),
-    transform 0.2s var(--ease);
+    background-color 0.24s var(--ease),
+    transform 0.24s var(--ease);
 }
 
 .property-card:hover .property-card__go {

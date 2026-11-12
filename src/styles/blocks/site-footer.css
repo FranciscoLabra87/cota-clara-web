@@ -68,7 +68,7 @@
 .site-footer__link {
   text-decoration: none;
   color: rgb(255 255 255 / 0.74);
-  transition: color 0.2s var(--ease);
+  transition: color 0.24s var(--ease);
 }
 
 .site-footer__link:hover {
@@ -124,8 +124,8 @@
   color: var(--color-blanco);
   box-shadow: var(--shadow-lg);
   transition:
-    transform 0.2s var(--ease),
-    background-color 0.2s var(--ease);
+    transform 0.24s var(--ease),
+    background-color 0.24s var(--ease);
 }
 
 .wa-float:hover {

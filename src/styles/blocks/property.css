@@ -107,7 +107,7 @@
   color: var(--color-petroleo);
   box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: background-color 0.2s var(--ease);
+  transition: background-color 0.24s var(--ease);
 }
 
 .gallery__nav:hover {
@@ -184,8 +184,8 @@
   overflow: hidden;
   cursor: pointer;
   transition:
-    opacity 0.2s var(--ease),
-    border-color 0.2s var(--ease);
+    opacity 0.24s var(--ease),
+    border-color 0.24s var(--ease);
 }
 
 .gallery__thumb:hover {
@@ -399,8 +399,8 @@
   border-radius: var(--radius-sm);
   color: var(--color-petroleo);
   transition:
-    background-color 0.2s var(--ease),
-    color 0.2s var(--ease);
+    background-color 0.24s var(--ease),
+    color 0.24s var(--ease);
 }
 
 .agent-card__action:hover {

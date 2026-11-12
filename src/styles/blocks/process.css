@@ -69,8 +69,8 @@
   text-decoration: none;
   overflow: hidden;
   transition:
-    background-color 0.25s var(--ease),
-    transform 0.25s var(--ease);
+    background-color 0.3s var(--ease),
+    transform 0.3s var(--ease);
 }
 
 /* Cruz de medición de la marca, en la esquina. */
@@ -119,7 +119,7 @@
   width: 22px;
   height: 22px;
   color: var(--color-terracota-claro);
-  transition: transform 0.25s var(--ease);
+  transition: transform 0.3s var(--ease);
 }
 
 .zone-card:hover .zone-card__icon {
@@ -175,7 +175,7 @@
   width: 22px;
   height: 22px;
   color: var(--color-terracota-600);
-  transition: transform 0.25s var(--ease);
+  transition: transform 0.3s var(--ease);
 }
 
 .faq__item[open] .faq__icon {
