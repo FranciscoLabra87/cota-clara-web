@@ -39,6 +39,10 @@ jobs:
       - name: Instalar dependencias
         run: npm ci
 
+      # Antes de compilar: si la suite se cae, no se despliega.
+      - name: Pruebas
+        run: npm test
+
       - name: Build de Next
         run: npm run build
 

@@ -117,6 +117,17 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - `public/_headers` cubre los archivos estáticos, que sirve Workers Assets sin pasar por el Worker.
 - Al tocar la CSP hay que probar en el navegador, no solo con curl: una directiva de más no cambia los códigos HTTP, pero rompe la página en silencio.
 
+## Pruebas
+
+- `npm test` corre la suite una vez; `npm run test:watch` la deja mirando los archivos. El workflow de deploy la corre antes del build: si se cae, no se despliega.
+- Vitest con `@cloudflare/vitest-plugin`, así que **corren dentro de workerd**, el mismo runtime del deploy, con una D1 de miniflare. Por eso PBKDF2, `crypto.subtle` y las consultas se prueban contra las APIs reales.
+- La configuración va en `vitest.config.mts`. Tiene que ser `.mts`: el plugin es solo ESM y con `.ts` Vite lo carga con `require` y falla.
+- No lee `wrangler.jsonc` (`config: false`), que todavía tiene un `database_id` de relleno. Declara solo la D1.
+- `tests/esquema.ts` aplica `db/schema.sql` y vacía las tablas antes de cada prueba. Lee el esquema de verdad, no una copia: si una migración rompe una consulta, se cae la suite.
+- `tests/propiedades.test.ts` reemplaza `@/lib/db` con la D1 de miniflare. Es la única forma de probar `propiedades.ts` sin el contexto de Cloudflare.
+- Cubren `src/lib`: RUT y contraseñas (`crypto`), firma real de las imágenes y claves de R2 (`imagenes`), límites del formulario (`validar-propiedad`), filtros y orden del listado (`filters`), formatos en es-CL (`format`) y el inventario sobre D1, con el orden de las fotos (`propiedades`).
+- Lo que no cubren: los route handlers, los componentes y el acceso completo (`auth.ts` necesita `next/headers`).
+
 ## Contenido de ejemplo (reemplazar antes de publicar)
 
 - **Propiedades:** las 8 que vienen en `db/seed-propiedades.sql` son ficticias. Se reemplazan desde el panel, no editando archivos.
@@ -132,4 +143,4 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 4. Datos de contacto reales, y reemplazar las propiedades de ejemplo desde el panel.
 5. Verificar cotaclara.cl en Resend y dejar `RESEND_API_KEY` y `LEADS_FROM` en `.env.local`.
 6. Dominio cotaclara.cl apuntando al Worker.
-7. No hay pruebas automatizadas: todo se ha verificado a mano.
+7. Las pruebas cubren `src/lib`; las rutas de API y los componentes siguen verificándose a mano.
