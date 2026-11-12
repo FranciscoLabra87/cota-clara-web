@@ -1,0 +1,129 @@
+/* Bloques: page-hero, breadcrumb, property-head */
+.page-hero {
+  position: relative;
+  isolation: isolate;
+  padding: calc(var(--header-h) + clamp(2.5rem, 6vw, 4.5rem)) 0 clamp(2.5rem, 6vw, 4rem);
+  background: var(--color-petroleo);
+  color: var(--color-blanco);
+  overflow: hidden;
+}
+
+.page-hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.55;
+}
+
+.page-hero__media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--color-petroleo) 15%, rgb(11 47 74 / 0.55) 60%, rgb(11 47 74 / 0.15));
+}
+
+.page-hero__art {
+  width: 100%;
+  height: 100%;
+}
+
+.page-hero__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.page-hero__title {
+  max-width: 24ch;
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--color-blanco);
+}
+
+.page-hero__lead {
+  max-width: 60ch;
+  font-size: var(--fs-lg);
+  color: rgb(255 255 255 / 0.84);
+}
+
+.page-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: rgb(255 255 255 / 0.72);
+}
+
+.breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.breadcrumb__item + .breadcrumb__item::before {
+  content: '/';
+  color: rgb(255 255 255 / 0.4);
+}
+
+.breadcrumb__link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.breadcrumb__link:hover {
+  color: var(--color-blanco);
+  text-decoration: underline;
+}
+
+.property-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4) var(--space-8);
+  width: 100%;
+}
+
+.property-head__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.property-head__location {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgb(255 255 255 / 0.85);
+}
+
+.property-head__location .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-terracota-claro);
+}
+
+.property-head__price {
+  font-family: var(--ff-display);
+  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-blanco);
+}
+
+.property-head__period {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgb(255 255 255 / 0.75);
+}

@@ -1,0 +1,135 @@
+/* Bloques: appraisal (tasación en portada), lead-form */
+.appraisal-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.appraisal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(2.5rem, 6vw, 5rem);
+}
+
+.appraisal__copy {
+  flex: 1 1 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+}
+
+.appraisal__title {
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--color-blanco);
+}
+
+.appraisal__lead {
+  font-size: var(--fs-lg);
+  color: rgb(255 255 255 / 0.82);
+}
+
+.appraisal__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  color: rgb(255 255 255 / 0.9);
+}
+
+.appraisal__list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+
+.appraisal__list .icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  color: var(--color-terracota-claro);
+  stroke-width: 2.2;
+}
+
+.appraisal__form {
+  flex: 1 1 460px;
+  min-width: 0;
+}
+
+.lead-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border-radius: var(--radius-md);
+  background: var(--color-blanco);
+  color: var(--color-texto);
+  box-shadow: var(--shadow-lg);
+}
+
+.lead-form__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.lead-form__title {
+  font-family: var(--ff-display);
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-petroleo);
+}
+
+.lead-form__intro {
+  font-size: 0.9375rem;
+  color: var(--color-texto-suave);
+}
+
+.lead-form__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.lead-form__row > .field {
+  flex: 1 1 180px;
+}
+
+.lead-form__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.lead-form__alert {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: #fdecea;
+  font-size: 0.9375rem;
+  color: var(--color-error);
+}
+
+.lead-form--done {
+  align-items: flex-start;
+}
+
+.lead-form__done-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-petroleo-100);
+  color: var(--color-petroleo);
+}
+
+.lead-form__done-icon .icon {
+  width: 26px;
+  height: 26px;
+  stroke-width: 2.2;
+}

@@ -1,0 +1,74 @@
+.logo {
+  --logo-ink: var(--color-petroleo);
+  --logo-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: var(--logo-ink);
+}
+
+.logo--negativo {
+  --logo-ink: var(--color-blanco);
+}
+
+.logo__symbol {
+  flex-shrink: 0;
+  width: calc(var(--logo-size) * 0.97);
+  height: var(--logo-size);
+  overflow: visible;
+}
+
+.logo__c {
+  fill: var(--logo-ink);
+}
+
+.logo__cross {
+  fill: none;
+  stroke: var(--logo-ink);
+  stroke-width: 2.8;
+}
+
+.logo__mark {
+  fill: var(--color-terracota);
+}
+
+.logo__divider {
+  align-self: stretch;
+  width: 1.5px;
+  margin-block: 2px;
+  background: var(--logo-ink);
+  opacity: 0.85;
+}
+
+.logo__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+  line-height: 1;
+}
+
+.logo__name {
+  font-family: var(--ff-display);
+  font-size: calc(var(--logo-size) * 0.5);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--logo-ink);
+}
+
+.logo__tagline {
+  font-family: var(--ff-display);
+  font-size: calc(var(--logo-size) * 0.175);
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--logo-ink);
+}
+
+@media (max-width: 640px) {
+  .logo {
+    --logo-size: 36px;
+  }
+}

@@ -1,0 +1,21 @@
+/* Cota Clara — estilos globales. Metodología BEM: un bloque por archivo en styles/blocks. */
+@import '../styles/tokens.css';
+@import '../styles/base.css';
+@import '../styles/blocks/button.css';
+@import '../styles/blocks/logo.css';
+@import '../styles/blocks/site-header.css';
+@import '../styles/blocks/hero.css';
+@import '../styles/blocks/field.css';
+@import '../styles/blocks/section.css';
+@import '../styles/blocks/services.css';
+@import '../styles/blocks/property-card.css';
+@import '../styles/blocks/report.css';
+@import '../styles/blocks/appraisal.css';
+@import '../styles/blocks/process.css';
+@import '../styles/blocks/page-hero.css';
+@import '../styles/blocks/explorer.css';
+@import '../styles/blocks/property.css';
+@import '../styles/blocks/mortgage.css';
+@import '../styles/blocks/fees.css';
+@import '../styles/blocks/contact.css';
+@import '../styles/blocks/site-footer.css';

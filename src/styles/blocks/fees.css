@@ -1,0 +1,51 @@
+/* Bloque: fees ("Qué cobramos y por qué") */
+.fees {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border: 1px solid var(--color-borde);
+  border-top: 4px solid var(--color-terracota);
+  border-radius: var(--radius-md);
+  background: var(--color-gris-50);
+}
+
+.fees__title {
+  font-family: var(--ff-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-petroleo);
+}
+
+.fees__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.fees__item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.fees__item:first-child {
+  padding-top: 0;
+}
+
+.fees__concept {
+  font-family: var(--ff-display);
+  font-weight: 600;
+  color: var(--color-petroleo);
+}
+
+.fees__detail {
+  margin: 0;
+}
+
+.fees__note {
+  font-size: 0.875rem;
+  color: var(--color-texto-suave);
+}
