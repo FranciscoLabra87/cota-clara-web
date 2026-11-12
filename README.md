@@ -58,4 +58,4 @@ Para una base nueva, ejecuta `npm run db:local-schema` o `npm run db:schema`. En
 
 Las direcciones del origen están truncadas; se publica la comuna sin inventar un sector. El aviso 202039 mezcla Valparaíso en el título y descripción con Concón en el texto de dirección. El proyecto 201760 ofrece varias tipologías y no tiene un programa único; los campos ausentes quedan sin mostrar. Verifica la vigencia y disponibilidad de cada aviso antes de operar con clientes.
 
-Antes de usar el sitio para captar solicitudes, revisa el contacto y los honorarios en `src/data/site.ts` y `src/data/services.ts`, configura los secretos de Resend para el envío de formularios y activa el dominio final. El valor actual de `site.url` apunta a `www.cotaclara.cl`.
+Antes de usar el sitio para captar solicitudes, revisa el contacto y los honorarios en `src/data/site.ts` y `src/data/services.ts`, configura los secretos `RESEND_API_KEY` y `LEADS_FROM` para el envío de formularios y activa el dominio final. El valor actual de `site.url` apunta a `www.cotaclara.cl`.

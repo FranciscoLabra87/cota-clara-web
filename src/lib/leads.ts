@@ -96,7 +96,7 @@ export async function enviarLead(lead: Lead): Promise<EnvioLead> {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.LEADS_FROM;
 
-  // Sin credenciales el lead no se pierde: queda en el log del servidor.
+  // Sin credenciales, la API responde 503 para que el usuario pueda reintentar.
   if (!apiKey || !from) return { estado: 'sin-configurar' };
 
   try {
