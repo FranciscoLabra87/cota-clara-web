@@ -47,7 +47,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-CL" className={`${montserrat.variable} ${sourceSans.variable}`}>
+    <html lang="es-CL" data-scroll-behavior="smooth" className={`${montserrat.variable} ${sourceSans.variable}`}>
       <body>
         <a className="skip-link" href="#contenido">
           Saltar al contenido

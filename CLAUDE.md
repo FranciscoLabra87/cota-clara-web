@@ -12,15 +12,15 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 ## Estado
 
 - Repo: https://github.com/FranciscoLabra87/cota-clara-web (rama `main`). Carpeta local: `C:\Users\franc\dev\cota-clara-web`.
-- En GitHub solo está el "Initial commit" (`.gitattributes`). El sitio completo llegó en un zip, sin commitear.
-- **Primera tarea:** `npm install`, verificar `npm run build`, y luego commit y push de todo a `main`.
+- El sitio completo ya está commiteado y pusheado a `main`.
 
 ## Stack y comandos
 
-- Next.js 15 (App Router), React 19 y TypeScript. Sin Tailwind ni CSS-in-JS: CSS plano con BEM.
+- Next.js 16 (App Router), React 19 y TypeScript. Sin Tailwind ni CSS-in-JS: CSS plano con BEM.
 - Comandos: `npm install` · `npm run dev` (http://localhost:3000) · `npm run build` · `npm start`.
-- En rutas dinámicas, `params` es una Promise (Next 15): `const { slug } = await params`.
-- Alias `@/*` → `src/*`. ESLint se omite en el build (`next.config.ts`).
+- Turbopack es el bundler por defecto en `dev` y `build`; no hace falta `--turbopack`.
+- En rutas dinámicas, `params` es una Promise: `const { slug } = await params`.
+- Alias `@/*` → `src/*`. `next build` no corre lint (en Next 16 `next lint` y la opción `eslint` del config ya no existen).
 
 ## Marca
 
@@ -75,7 +75,6 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 
 ## Pendientes sugeridos
 
-1. Primer commit y push (ver Estado).
-2. Datos de contacto reales y fotos.
-3. Envío real de los leads desde `/api/contacto`.
-4. Deploy en Vercel y dominio cotaclara.cl.
+1. Datos de contacto reales y fotos.
+2. Envío real de los leads desde `/api/contacto`.
+3. Deploy en Vercel y dominio cotaclara.cl.
