@@ -100,6 +100,15 @@ describe('crear y leer', () => {
     expect(p).not.toHaveProperty('terreno');
     expect(p).not.toHaveProperty('piso');
     expect(p).not.toHaveProperty('gastosComunes');
+    expect(p).not.toHaveProperty('latitud');
+    expect(p).not.toHaveProperty('longitud');
+  });
+
+  it('guarda y actualiza las coordenadas de cada ficha', async () => {
+    const otro = await crearPropiedad(datos({ slug: 'casa-con-mapa', latitud: -33.4290625, longitud: -70.6080233 }));
+    expect(await propiedadPorId(otro)).toMatchObject({ latitud: -33.4290625, longitud: -70.6080233 });
+    await actualizarPropiedad(otro, datos({ slug: 'casa-con-mapa', latitud: -33.43, longitud: -70.61 }));
+    expect(await propiedadPorId(otro)).toMatchObject({ latitud: -33.43, longitud: -70.61 });
   });
 
   it('devuelve null cuando el id no existe', async () => {

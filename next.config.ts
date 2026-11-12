@@ -37,8 +37,8 @@ const CSP_PAGINAS = [
   "style-src 'self' 'unsafe-inline'",
   // Las tipografías son locales (next/font/local), no hay CDN de fuentes.
   "font-src 'self'",
-  // data: y blob: los usa next/image; las fotos van en public/.
-  "img-src 'self' data: blob:",
+  // Las teselas del mapa se descargan solo cuando el usuario llega a esa sección.
+  "img-src 'self' data: blob: https://tile.openstreetmap.org",
   `connect-src 'self' ${TURNSTILE}`,
   `frame-src ${TURNSTILE}`,
   "frame-ancestors 'none'",

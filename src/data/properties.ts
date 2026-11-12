@@ -14,6 +14,9 @@ export type Propiedad = {
   operacion: Operacion;
   comuna: string;
   sector: string;
+  /** Coordenadas publicadas para ubicar el pin en el mapa. */
+  latitud?: number;
+  longitud?: number;
   precio: Precio;
   dormitorios: number;
   banos: number;

@@ -3,12 +3,14 @@ import { Icon, type IconName } from '@/components/Icon';
 import { Illustration } from '@/components/Illustration';
 import { LeadForm } from '@/components/LeadForm';
 import { PropertyCard } from '@/components/PropertyCard';
+import { PropertyMap, type MapProperty } from '@/components/PropertyMap';
 import { SearchBar } from '@/components/SearchBar';
 import { SectionHead } from '@/components/SectionHead';
-import { comunasDisponibles } from '@/data/properties';
+import { comunasDisponibles, tituloPropiedad } from '@/data/properties';
 import { servicios } from '@/data/services';
 import { site, whatsappHref } from '@/data/site';
 import { opcionesPrecioDisponibles } from '@/lib/filters';
+import { formatPrecio } from '@/lib/format';
 import { propiedadesPublicadas } from '@/lib/propiedades';
 
 // La portada muestra las destacadas y cuenta propiedades por comuna, así que
@@ -56,7 +58,20 @@ export default async function HomePage() {
   const propiedades = await propiedadesPublicadas();
   const destacadas = propiedades.filter((p) => p.destacada);
   const comunasConPropiedades = comunasDisponibles(propiedades);
-  const porComuna = comunasConPropiedades.map((c) => ({ comuna: c, total: propiedades.filter((p) => p.comuna === c).length }));
+  const propiedadesMapa: MapProperty[] = propiedades.flatMap((p) =>
+    p.latitud != null && p.longitud != null && Number.isFinite(p.latitud) && Number.isFinite(p.longitud)
+      ? [{
+          slug: p.slug,
+          titulo: tituloPropiedad(p),
+          comuna: p.comuna,
+          sector: p.sector,
+          latitud: p.latitud,
+          longitud: p.longitud,
+          precio: formatPrecio(p.precio),
+          operacion: p.operacion,
+        }]
+      : [],
+  );
 
   return (
     <>
@@ -297,21 +312,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {porComuna.length ? (
+      {propiedadesMapa.length ? (
         <section className="section section--tint" aria-labelledby="comunas-titulo">
           <div className="container">
             <SectionHead id="comunas-titulo" eyebrow="Explora por comuna" title="Encuentra propiedades por ubicación" lead="Revisa las propiedades disponibles en cada comuna." />
-            <ul className="zones">
-              {porComuna.map(({ comuna, total }) => (
-                <li key={comuna} className="zones__item">
-                  <Link className="zone-card" href={`/propiedades?comuna=${encodeURIComponent(comuna)}`}>
-                    <span className="zone-card__name">{comuna}</span>
-                    <span className="zone-card__count">{total === 1 ? '1 propiedad' : `${total} propiedades`}</span>
-                    <Icon name="arrow" className="zone-card__icon" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <PropertyMap propiedades={propiedadesMapa} />
           </div>
         </section>
       ) : null}

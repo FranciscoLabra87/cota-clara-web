@@ -29,6 +29,15 @@ function opcional(v: unknown, max: number): number | null | undefined {
   return Number.isNaN(n) ? undefined : n;
 }
 
+/** Coordenada decimal opcional; no redondeamos la precisión del mapa. */
+function coordenada(v: unknown, minimo: number, maximo: number): number | null | undefined {
+  if (v === null || v === undefined || v === '') return null;
+  if (typeof v !== 'string' && typeof v !== 'number') return undefined;
+  if (typeof v === 'string' && !v.trim()) return null;
+  const n = Number(v);
+  return Number.isFinite(n) && n >= minimo && n <= maximo ? n : undefined;
+}
+
 function listaTexto(v: unknown, maxItems: number, maxLargo: number): string[] {
   const bruto = Array.isArray(v) ? v : typeof v === 'string' ? v.split('\n') : [];
   return bruto
@@ -57,6 +66,15 @@ export function validarPropiedad(body: Record<string, unknown>): Resultado {
 
   const estado = texto(body.estado, 20) || 'BORRADOR';
   if (!ESTADOS.includes(estado as (typeof ESTADOS)[number])) return { ok: false, error: 'El estado no es válido' };
+
+  const latitud = coordenada(body.latitud, -90, 90);
+  const longitud = coordenada(body.longitud, -180, 180);
+  if (latitud === undefined || longitud === undefined || (latitud === null) !== (longitud === null)) {
+    return { ok: false, error: 'Escribe una latitud y longitud válidas, o deja ambas vacías' };
+  }
+  if (estado === 'PUBLICADA' && latitud === null) {
+    return { ok: false, error: 'Indica latitud y longitud antes de publicar la propiedad' };
+  }
 
   const ilustracionTono = texto(body.ilustracionTono, 20) || 'dia';
   if (!TONOS.includes(ilustracionTono as (typeof TONOS)[number])) return { ok: false, error: 'El tono de la ilustración no es válido' };
@@ -100,6 +118,8 @@ export function validarPropiedad(body: Record<string, unknown>): Resultado {
       operacion: operacion as DatosPropiedad['operacion'],
       comuna,
       sector: texto(body.sector, 80),
+      latitud,
+      longitud,
       precioValor,
       precioMoneda: precioMoneda as 'UF' | 'CLP',
       ...numeros,

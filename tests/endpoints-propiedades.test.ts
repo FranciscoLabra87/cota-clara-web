@@ -22,6 +22,8 @@ const ficha = (extra: Record<string, unknown> = {}) => ({
   operacion: 'venta',
   comuna: 'Providencia',
   sector: 'Pedro de Valdivia',
+  latitud: '-33.4290625',
+  longitud: '-70.6080233',
   precioMoneda: 'UF',
   precioValor: '7890',
   publicada: '2026-11-12',
@@ -103,6 +105,12 @@ describe('crear', () => {
     expect((await res.json()) as { error: string }).toMatchObject({ error: expect.stringMatching(/precio/i) });
   });
 
+  it('no crea una propiedad publicada sin ubicación para el mapa', async () => {
+    const res = await crear(pedir('/api/panel/propiedades', cookie, comoJson(ficha({ estado: 'PUBLICADA', latitud: '', longitud: '' }))));
+    expect(res.status).toBe(422);
+    expect(await propiedadesPublicadas()).toHaveLength(0);
+  });
+
   it('devuelve 400 si el cuerpo no es JSON', async () => {
     const res = await crear(
       pedir('/api/panel/propiedades', cookie, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: 'esto no es json' }),
@@ -172,6 +180,13 @@ describe('publicar y despublicar', () => {
     await cambiarEstado(pedir(`/api/panel/propiedades/${id}/estado`, cookie, comoJson({ estado: 'BORRADOR' })), ruta(id));
     expect(await propiedadesPublicadas()).toHaveLength(0);
     expect(await propiedadPorId(id)).not.toBeNull();
+  });
+
+  it('rechaza publicar un borrador sin coordenadas', async () => {
+    const { id } = await crearFicha({ latitud: '', longitud: '' });
+    const res = await cambiarEstado(pedir(`/api/panel/propiedades/${id}/estado`, cookie, comoJson({ estado: 'PUBLICADA' })), ruta(id));
+    expect(res.status).toBe(422);
+    expect(await propiedadesPublicadas()).toHaveLength(0);
   });
 
   it('rechaza un estado inventado', async () => {

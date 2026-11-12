@@ -43,6 +43,8 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
       operacion: datos.get('operacion'),
       comuna: datos.get('comuna'),
       sector: datos.get('sector'),
+      latitud: datos.get('latitud'),
+      longitud: datos.get('longitud'),
       precioValor: datos.get('precioValor'),
       precioMoneda: datos.get('precioMoneda'),
       dormitorios: datos.get('dormitorios'),
@@ -232,7 +234,20 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
               </label>
               <input className="field__control" defaultValue={propiedad?.sector ?? ''} {...campo('sector')} />
             </div>
+            <div className="field">
+              <label className="field__label" htmlFor={`${id}-latitud`}>
+                Latitud <span className="field__optional">(opcional en borradores)</span>
+              </label>
+              <input className="field__control" type="number" step="any" min="-90" max="90" defaultValue={propiedad?.latitud ?? ''} placeholder="-33.4290625" {...campo('latitud')} />
+            </div>
+            <div className="field">
+              <label className="field__label" htmlFor={`${id}-longitud`}>
+                Longitud <span className="field__optional">(opcional en borradores)</span>
+              </label>
+              <input className="field__control" type="number" step="any" min="-180" max="180" defaultValue={propiedad?.longitud ?? ''} placeholder="-70.6080233" {...campo('longitud')} />
+            </div>
           </div>
+          <p className="field__hint">Estas coordenadas ubican el pin público en el mapa. Completa ambas antes de publicar; confirma con quien ofrece la propiedad que se puede mostrar esa ubicación.</p>
           <div className="field">
             <label className="field__label" htmlFor={`${id}-titulo`}>
               Título <span className="field__optional">(opcional)</span>

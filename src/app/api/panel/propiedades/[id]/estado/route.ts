@@ -27,6 +27,9 @@ export async function POST(request: Request, { params }: Params) {
 
   const propiedad = await propiedadPorId(id);
   if (!propiedad) return errorJson('No existe esa propiedad', 404);
+  if (estado === 'PUBLICADA' && (propiedad.latitud === undefined || propiedad.longitud === undefined)) {
+    return errorJson('Indica latitud y longitud antes de publicar la propiedad', 422);
+  }
 
   await cambiarEstado(id, estado as Estado);
   await registrar(estado === 'PUBLICADA' ? 'PROPIEDAD_PUBLICADA' : 'PROPIEDAD_DESPUBLICADA', {

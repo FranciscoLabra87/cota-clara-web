@@ -1,0 +1,305 @@
+/* Explorador de propiedades sobre OpenStreetMap. */
+.property-map {
+  overflow: hidden;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-lg);
+  background: var(--color-blanco);
+  box-shadow: var(--shadow-md);
+}
+
+.property-map__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-petroleo);
+  color: var(--color-blanco);
+}
+
+.property-map__eyebrow {
+  margin-bottom: var(--space-1);
+  font-family: var(--ff-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-terracota-claro);
+}
+
+.property-map__summary {
+  font-family: var(--ff-display);
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  font-weight: 600;
+}
+
+.property-map__filter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.property-map__filter select {
+  min-width: 205px;
+  min-height: 44px;
+  padding: 0.55rem 2rem 0.55rem 0.8rem;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: var(--radius-sm);
+  background: var(--color-blanco);
+  color: var(--color-petroleo);
+  font: 600 0.875rem var(--ff-display);
+  cursor: pointer;
+}
+
+.property-map__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(285px, 0.85fr);
+}
+
+.property-map__canvas-wrap {
+  position: relative;
+  min-width: 0;
+  height: 540px;
+  background: #dce7ea;
+}
+
+.property-map__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.property-map__canvas.leaflet-container {
+  font-family: var(--ff-body);
+  background: #dce7ea;
+}
+
+.property-map__loading {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: var(--space-8);
+  background: linear-gradient(140deg, #e8eff1, #cddfdf);
+  color: var(--color-petroleo);
+  text-align: center;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.property-map__hint {
+  position: absolute;
+  bottom: var(--space-4);
+  left: var(--space-4);
+  z-index: 400;
+  max-width: calc(100% - 110px);
+  padding: 0.4rem 0.65rem;
+  border-radius: var(--radius-sm);
+  background: rgb(255 255 255 / 0.93);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-petroleo);
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+.property-map__pin {
+  border: 0;
+  background: none;
+}
+
+.property-map__pin span {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  transform: rotate(45deg);
+  border: 2px solid var(--color-blanco);
+  border-radius: 50% 50% 50% 3px;
+  background: var(--color-terracota-600);
+  box-shadow: 0 3px 9px rgb(7 31 49 / 0.4);
+}
+
+.property-map__pin span::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-blanco);
+}
+
+.property-map__popup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-family: var(--ff-body);
+}
+
+.property-map__popup-location {
+  font-size: 0.75rem;
+  color: var(--color-texto-suave);
+}
+
+.property-map__popup-title {
+  font-family: var(--ff-display);
+  font-size: 0.875rem;
+  line-height: 1.35;
+  color: var(--color-petroleo);
+}
+
+.property-map__popup-price {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-carbon);
+}
+
+.property-map__popup-link {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+  color: var(--color-terracota-700);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.property-map__results {
+  height: 540px;
+  overflow-y: auto;
+  border-left: 1px solid var(--color-borde);
+  scrollbar-color: var(--color-petroleo-100) transparent;
+}
+
+.property-map__list {
+  list-style: none;
+}
+
+.property-map__item {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-borde);
+  transition: background-color 0.3s var(--ease);
+}
+
+.property-map__item:hover,
+.property-map__item--selected {
+  background: var(--color-petroleo-100);
+}
+
+.property-map__focus {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.property-map__item-dot {
+  flex: 0 0 9px;
+  width: 9px;
+  height: 9px;
+  margin-top: 0.42rem;
+  border-radius: 50%;
+  background: var(--color-terracota);
+  box-shadow: 0 0 0 4px var(--color-terracota-100);
+}
+
+.property-map__item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.property-map__item-location {
+  font-size: 0.75rem;
+  color: var(--color-texto-suave);
+}
+
+.property-map__item-title {
+  font-family: var(--ff-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-petroleo);
+}
+
+.property-map__item-price {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.property-map__item-link {
+  display: inline-block;
+  margin: var(--space-2) 0 0 calc(9px + var(--space-3));
+  color: var(--color-terracota-700);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.property-map__item-link:hover,
+.property-map__popup-link:hover {
+  text-decoration: underline;
+}
+
+.property-map__credit {
+  padding: 0.7rem var(--space-6);
+  border-top: 1px solid var(--color-borde);
+  color: var(--color-texto-suave);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 800px) {
+  .property-map__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .property-map__canvas-wrap {
+    height: 400px;
+  }
+
+  .property-map__results {
+    height: 300px;
+    border-top: 1px solid var(--color-borde);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 540px) {
+  .property-map__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+    padding: var(--space-5);
+  }
+
+  .property-map__filter {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .property-map__filter select {
+    width: 100%;
+  }
+
+  .property-map__canvas-wrap {
+    height: 350px;
+  }
+
+  .property-map__hint {
+    display: none;
+  }
+}

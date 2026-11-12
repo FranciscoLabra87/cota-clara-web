@@ -75,6 +75,11 @@ describe('lo que acepta', () => {
     const datos = datosDe({ ...base(), terreno: '', piso: '   ', gastosComunes: null });
     expect([datos.terreno, datos.piso, datos.gastosComunes]).toEqual([null, null, null]);
   });
+
+  it('acepta coordenadas decimales para ubicar el pin', () => {
+    const datos = datosDe({ ...base(), estado: 'PUBLICADA', latitud: '-33.42906250', longitud: '-70.60802330' });
+    expect([datos.latitud, datos.longitud]).toEqual([-33.4290625, -70.6080233]);
+  });
 });
 
 describe('lo que corta', () => {
@@ -128,5 +133,13 @@ describe('lo que rechaza', () => {
 
   it('no deja un enlace vacío', () => {
     expect(errorDe({ ...base(), slug: '!!!', comuna: '¿?', sector: '' })).toMatch(/enlace/i);
+  });
+
+  it('exige las dos coordenadas al publicar y valida sus rangos', () => {
+    expect(errorDe({ ...base(), estado: 'PUBLICADA' })).toMatch(/latitud y longitud/i);
+    expect(errorDe({ ...base(), latitud: '-33.4' })).toMatch(/ambas vacías/i);
+    expect(errorDe({ ...base(), latitud: '-91', longitud: '-70.6' })).toMatch(/válidas/i);
+    expect(errorDe({ ...base(), latitud: '-33.4', longitud: '-181' })).toMatch(/válidas/i);
+    expect(errorDe({ ...base(), latitud: 'NaN', longitud: '-70.6' })).toMatch(/válidas/i);
   });
 });

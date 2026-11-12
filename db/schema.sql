@@ -70,6 +70,8 @@ CREATE TABLE IF NOT EXISTS propiedades (
   operacion        TEXT NOT NULL CHECK(operacion IN ('venta','arriendo')),
   comuna           TEXT NOT NULL,
   sector           TEXT NOT NULL DEFAULT '',
+  latitud          REAL,
+  longitud         REAL,
   precio_valor     INTEGER NOT NULL,
   precio_moneda    TEXT NOT NULL CHECK(precio_moneda IN ('UF','CLP')),
   precio_periodo   TEXT,                                  -- 'mes' en arriendo
