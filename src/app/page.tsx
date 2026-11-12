@@ -79,6 +79,7 @@ export default async function HomePage() {
       <section className="hero" aria-labelledby="hero-titulo">
         <div className="hero__media" aria-hidden="true">
           <Illustration variant="skyline" seed={8} tono="atardecer" className="hero__art" />
+          <div className="hero__photo" />
         </div>
         <div className="hero__overlay" aria-hidden="true" />
         <div className="hero__inner container">

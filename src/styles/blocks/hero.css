@@ -4,7 +4,7 @@
   isolation: isolate;
   display: flex;
   align-items: flex-end;
-  min-height: min(100svh, 940px);
+  min-height: min(100svh, 900px);
   padding: calc(var(--header-h) + var(--space-16)) 0 var(--space-16);
   background: var(--color-petroleo-900);
   color: var(--color-blanco);
@@ -22,13 +22,19 @@
   height: 100%;
 }
 
+.hero__photo {
+  position: absolute;
+  inset: 0;
+  background: url('/images/santiago-hero.webp') center 54% / cover no-repeat;
+}
+
 .hero__overlay {
   position: absolute;
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(90deg, rgb(7 31 49 / 0.94) 0%, rgb(7 31 49 / 0.7) 38%, rgb(7 31 49 / 0.1) 75%),
-    linear-gradient(0deg, rgb(7 31 49 / 0.9) 0%, rgb(7 31 49 / 0) 50%);
+    linear-gradient(90deg, rgb(7 31 49 / 0.93) 0%, rgb(7 31 49 / 0.77) 42%, rgb(7 31 49 / 0.2) 100%),
+    linear-gradient(0deg, rgb(7 31 49 / 0.86) 0%, rgb(7 31 49 / 0.08) 62%);
 }
 
 .hero__inner {
@@ -54,7 +60,7 @@
 }
 
 .hero__title-accent {
-  color: var(--color-terracota-claro);
+  color: var(--color-blanco);
 }
 
 .hero__lead {
@@ -128,6 +134,14 @@
 @media (max-width: 640px) {
   .hero {
     padding-bottom: var(--space-10);
+  }
+
+  .hero__photo {
+    background-position: 63% center;
+  }
+
+  .hero__overlay {
+    background: linear-gradient(0deg, rgb(7 31 49 / 0.96), rgb(7 31 49 / 0.7) 72%, rgb(7 31 49 / 0.45));
   }
 
   .search__submit {

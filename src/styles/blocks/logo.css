@@ -1,5 +1,6 @@
 .logo {
   --logo-ink: var(--color-petroleo);
+  --logo-mark: var(--color-terracota);
   --logo-size: 44px;
   display: inline-flex;
   align-items: center;
@@ -9,6 +10,11 @@
 
 .logo--negativo {
   --logo-ink: var(--color-blanco);
+}
+
+.logo--monocromo {
+  --logo-ink: var(--color-carbon);
+  --logo-mark: var(--color-carbon);
 }
 
 .logo__symbol {
@@ -29,7 +35,7 @@
 }
 
 .logo__mark {
-  fill: var(--color-terracota);
+  fill: var(--logo-mark);
 }
 
 .logo__divider {

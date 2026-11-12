@@ -49,7 +49,7 @@
 
 .property-card__media {
   position: relative;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 16 / 10;
   background: var(--color-gris);
   overflow: hidden;
 }

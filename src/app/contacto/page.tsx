@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Icon } from '@/components/Icon';
-import { Illustration } from '@/components/Illustration';
 import { LeadForm } from '@/components/LeadForm';
 import { PageHero } from '@/components/PageHero';
 import { site, whatsappHref } from '@/data/site';
@@ -60,8 +59,10 @@ export default function ContactoPage() {
                 </div>
               </li>
             </ul>
-            <div className="contact__map">
-              <Illustration variant="mapa" seed={2} etiqueta="Cota Clara" label={`Ubicación referencial: ${site.direccion}`} />
+            <div className="contact__brand">
+              <span className="contact__brand-label">Cota Clara · Patrimonio Inmobiliario</span>
+              <p className="contact__brand-motto">{site.lema}</p>
+              <p className="contact__brand-location">{site.direccion}</p>
             </div>
             <div className="contact__privacy" id="privacidad">
               <p className="contact__label">Privacidad</p>

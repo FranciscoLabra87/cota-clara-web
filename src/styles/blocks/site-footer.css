@@ -23,9 +23,21 @@
 }
 
 .site-footer__motto {
+  position: relative;
+  padding-top: var(--space-5);
   font-size: 1.375rem;
   font-style: italic;
   color: var(--color-blanco);
+}
+
+.site-footer__motto::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 3px;
+  background: var(--color-terracota);
 }
 
 .site-footer__col {

@@ -1,5 +1,5 @@
 type LogoProps = {
-  variant?: 'color' | 'negativo';
+  variant?: 'color' | 'negativo' | 'monocromo';
   className?: string;
 };
 
