@@ -14,8 +14,12 @@ import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 
 // HSTS y upgrade-insecure-requests solo cuando se despliega de verdad. En
 // localhost dejarían el origen pineado a https y romperían cualquier otro
-// servidor local por http. El workflow de deploy define COTA_HSTS.
-const enProduccion = process.env.COTA_HSTS === '1';
+// servidor local por http.
+//
+// WORKERS_CI=1 lo pone Cloudflare Workers Builds en cada build suyo, así que
+// el sitio sale con HSTS sin que nadie tenga que acordarse de una variable en
+// el panel. COTA_HSTS queda para forzarlo a mano desde otro lado.
+const enProduccion = process.env.COTA_HSTS === '1' || process.env.WORKERS_CI === '1';
 
 // React usa eval() en modo desarrollo para reconstruir stacks y para el Fast
 // Refresh. Sin esto la consola se llena de errores al trabajar en local. En

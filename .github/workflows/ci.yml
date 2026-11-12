@@ -6,8 +6,8 @@ name: Pruebas y build
 #
 # Ojo con lo que esto no garantiza: Cloudflare despliega por su cuenta y no
 # espera a este workflow, así que una prueba caída se ve acá pero no frena el
-# deploy. Para que frenara habría que correr `npm test` también en el build
-# command de Cloudflare.
+# deploy. Para que frenara habría que dejar el build command de Cloudflare en
+# `npm test && npm run build`.
 
 on:
   push:
@@ -40,5 +40,6 @@ jobs:
       - name: Pruebas
         run: npm test
 
-      - name: Build de Next
+      # El mismo build que corre Cloudflare: compila Next y arma el Worker.
+      - name: Build del Worker
         run: npm run build

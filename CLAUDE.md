@@ -19,10 +19,11 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Next.js 16 (App Router), React 19 y TypeScript. Sin Tailwind ni CSS-in-JS: CSS plano con BEM.
 - Se despliega en **Cloudflare Workers** con `@opennextjs/cloudflare`. Bindings en `wrangler.jsonc`: `DB` (D1) e `IMAGES`.
 - Comandos: `npm install` · `npm run dev` (http://localhost:3000) · `npm run build` · `npm start`.
+- **`npm run build` es `opennextjs-cloudflare build`**, no `next build`: compila Next y empaqueta el Worker en `.open-next/`, que es lo que se despliega. Tarda más, pero es lo que sale al aire. Para una revisión rápida de tipos y compilación está `npm run build:next`.
+- Por eso `open-next.config.ts` fija `buildCommand: 'next build'`. Si no, OpenNext correría `npm run build`, que ahora es él mismo, y se llamaría en círculo.
 - Base local: `npm run db:local-schema` la crea, `npm run db:local-consulta -- "SELECT ..."` la consulta. `next dev` la monta sola desde `.wrangler/state`.
 - `npm run preview` compila el Worker y lo corre en workerd, el runtime real. La documentación de OpenNext dice que Windows no está soportado, pero acá funciona; si algún día se rompe, la salida es WSL.
-- **El deploy lo hace Cloudflare Workers Builds**, conectado al repo desde el panel de Cloudflare: despliega en cada push a `main`. En Settings → Build del proyecto, el *build command* es `npx opennextjs-cloudflare build` y el *deploy command* `npx opennextjs-cloudflare deploy`. Con `npm run build` a secas falla: `next build` no genera `.open-next/` y el deploy no encuentra el Worker compilado.
-- Ahí mismo, en Variables, tiene que estar `COTA_HSTS=1`. Es variable de build, no de runtime.
+- **El deploy lo hace Cloudflare Workers Builds**, conectado al repo desde el panel de Cloudflare: despliega en cada push a `main`. Funciona con los comandos que Cloudflare trae por defecto (`npm run build` y `npx wrangler deploy`) justamente porque `npm run build` arma el Worker; no hay que configurar nada en el panel. El deploy busca `.open-next/.build/open-next.config.edge.mjs`: si ese archivo no está, responde «Could not find compiled Open Next config».
 - GitHub Actions (`.github/workflows/ci.yml`) **no despliega**: corre las pruebas y el build como control. Cloudflare no lo espera, así que una prueba caída se ve en GitHub pero no frena el deploy; para que lo frenara habría que correr `npm test` también en el build command de Cloudflare.
 - El Worker pesa ~1,2 MiB comprimido (`npx wrangler deploy --dry-run` lo informa); el límite del plan gratis es 3 MiB.
 - Turbopack es el bundler por defecto en `dev` y `build`; no hace falta `--turbopack`.
@@ -115,7 +116,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Las páginas llevan CSP, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` y `Cross-Origin-Opener-Policy`. La API lleva una CSP de `default-src 'none'` con `sandbox`, más `no-store` y `Cross-Origin-Resource-Policy`.
 - El patrón `/:ruta((?!api/).*)` existe para que la API no reciba dos CSP; si recibe dos, el navegador aplica la intersección y rompe cosas.
 - `script-src` necesita `'unsafe-inline'`: Next inyecta el payload RSC en scripts inline y sin middleware no hay nonce por request. La CSP igual bloquea scripts de terceros, iframes ajenos y `form-action` fuera del sitio.
-- **HSTS y `upgrade-insecure-requests` solo si `COTA_HSTS=1`**, que se define en las variables de build de Cloudflare. En localhost dejarían el origen pineado a https y romperían cualquier otro servidor local por http. Las cabeceras se fijan al compilar, así que la variable tiene que estar puesta ya en el `npm run build`.
+- **HSTS y `upgrade-insecure-requests` solo si `WORKERS_CI=1` o `COTA_HSTS=1`.** El primero lo pone Cloudflare Workers Builds en cada build suyo, así que el sitio sale con HSTS sin depender de que alguien configure una variable; el segundo queda para forzarlo desde otro lado. En localhost dejarían el origen pineado a https y romperían cualquier otro servidor local por http. Las cabeceras se fijan al compilar, así que la variable tiene que estar puesta ya en el `npm run build`.
 - `public/_headers` cubre los archivos estáticos, que sirve Workers Assets sin pasar por el Worker.
 - Al tocar la CSP hay que probar en el navegador, no solo con curl: una directiva de más no cambia los códigos HTTP, pero rompe la página en silencio.
 
@@ -144,7 +145,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 
 1. Crear la D1 real (`npx wrangler d1 create cota-clara-db`), pegar el `database_id` en `wrangler.jsonc` —que hoy tiene un placeholder— y armarle las tablas con `npm run db:schema`.
 2. Crear el bucket: `npx wrangler r2 bucket create cota-clara-fotos`. Sin él, el deploy falla.
-3. En Cloudflare Workers Builds: dejar el *build command* en `npx opennextjs-cloudflare build` y agregar la variable de build `COTA_HSTS=1`.
+3. Verificar que el primer deploy de Cloudflare Workers Builds llegue hasta el final: hasta que existan la D1 y el bucket, falla al publicar el Worker.
 4. Datos de contacto reales, y reemplazar las propiedades de ejemplo desde el panel.
 5. Verificar cotaclara.cl en Resend y dejar `RESEND_API_KEY` y `LEADS_FROM` en `.env.local`.
 6. Dominio cotaclara.cl apuntando al Worker.

@@ -4,7 +4,8 @@
   "description": "Sitio web de Cota Clara, Patrimonio Inmobiliario",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "opennextjs-cloudflare build",
+    "build:next": "next build",
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
