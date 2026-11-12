@@ -17,13 +17,15 @@ export default async function PanelPage() {
       </p>
 
       <div className="panel__grid">
-        <article className="panel__card panel__card--pendiente">
+        <article className="panel__card">
           <h2 className="panel__card-title">Propiedades</h2>
           <p className="panel__card-text">
-            Cargar, editar y publicar propiedades con sus fotos. Entra en la siguiente etapa, cuando las propiedades pasen
-            de los archivos del sitio a la base de datos.
+            Carga, edita y publica propiedades con sus fotos. Lo que publiques aparece en el sitio al tiro, sin esperar un
+            despliegue.
           </p>
-          <span className="panel__badge">Próximamente</span>
+          <Link className="button button--primary button--sm" href="/panel/propiedades">
+            Gestionar propiedades
+          </Link>
         </article>
 
         {esAdmin(sesion.rol) ? (

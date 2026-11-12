@@ -1,10 +1,15 @@
 import type { MetadataRoute } from 'next';
-import { propiedades } from '@/data/properties';
+import { slugsPublicados } from '@/lib/propiedades';
 import { servicios } from '@/data/services';
 import { site } from '@/data/site';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+// Lee el inventario de D1, así que se arma en cada petición.
+export const dynamic = 'force-dynamic';
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = site.url;
+  const propiedades = await slugsPublicados();
+
   return [
     { url: `${base}/`, changeFrequency: 'weekly', priority: 1 },
     { url: `${base}/propiedades`, changeFrequency: 'daily', priority: 0.9 },

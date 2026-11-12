@@ -31,6 +31,11 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             <Link className="panel__nav-link" href="/panel">
               Inicio
             </Link>
+            {sesion.password_temporal ? null : (
+              <Link className="panel__nav-link" href="/panel/propiedades">
+                Propiedades
+              </Link>
+            )}
             {mostrarUsuarios ? (
               <Link className="panel__nav-link" href="/panel/usuarios">
                 Usuarios

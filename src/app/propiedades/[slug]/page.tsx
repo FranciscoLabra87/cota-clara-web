@@ -9,19 +9,20 @@ import { MortgageCalculator } from '@/components/MortgageCalculator';
 import { PageHero } from '@/components/PageHero';
 import { PropertyCard } from '@/components/PropertyCard';
 import { varianteTipo } from '@/components/PropertyMedia';
-import { buscarPropiedad, propiedades, tituloPropiedad, type Propiedad } from '@/data/properties';
+import { tituloPropiedad, type Propiedad } from '@/data/properties';
 import { site, whatsappHref } from '@/data/site';
 import { formatNumero, formatPrecio, periodoPrecio } from '@/lib/format';
+import { propiedadPorSlug, propiedadesPublicadas } from '@/lib/propiedades';
 
 type Params = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  return propiedades.map((p) => ({ slug: p.slug }));
-}
+// Sin generateStaticParams: las fichas salen de D1 y se arman en cada visita,
+// para que publicar desde el panel no dependa de un deploy.
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const p = buscarPropiedad(slug);
+  const p = await propiedadPorSlug(slug);
   if (!p) return { title: 'Propiedad no encontrada' };
   return {
     title: `${tituloPropiedad(p)} · ${formatPrecio(p.precio)}`,
@@ -58,11 +59,12 @@ function galeria(p: Propiedad): GalleryItem[] {
 
 export default async function PropiedadPage({ params }: Params) {
   const { slug } = await params;
-  const p = buscarPropiedad(slug);
+  const p = await propiedadPorSlug(slug);
   if (!p) notFound();
 
   const periodo = periodoPrecio(p.precio);
-  const relacionadas = propiedades.filter((o) => o.slug !== p.slug && (o.comuna === p.comuna || o.operacion === p.operacion)).slice(0, 3);
+  const publicadas = await propiedadesPublicadas();
+  const relacionadas = publicadas.filter((o) => o.slug !== p.slug && (o.comuna === p.comuna || o.operacion === p.operacion)).slice(0, 3);
 
   const ficha = [
     p.dormitorios > 0 ? { icono: 'bed' as const, label: 'Dormitorios', valor: String(p.dormitorios) } : null,

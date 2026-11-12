@@ -17,12 +17,18 @@ import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 // servidor local por http. El workflow de deploy define COTA_HSTS.
 const enProduccion = process.env.COTA_HSTS === '1';
 
+// React usa eval() en modo desarrollo para reconstruir stacks y para el Fast
+// Refresh. Sin esto la consola se llena de errores al trabajar en local. En
+// producción React nunca lo usa, así que el permiso no sale del build de dev.
+const esDesarrollo = process.env.NODE_ENV !== 'production';
+const evalDeDesarrollo = esDesarrollo ? " 'unsafe-eval'" : '';
+
 const TURNSTILE = 'https://challenges.cloudflare.com';
 
 const CSP_PAGINAS = [
   "default-src 'self'",
   // 'unsafe-inline': ver el comentario de arriba. Turnstile carga su widget.
-  `script-src 'self' 'unsafe-inline' ${TURNSTILE}`,
+  `script-src 'self' 'unsafe-inline'${evalDeDesarrollo} ${TURNSTILE}`,
   // Los atributos style= que emite React caen acá.
   "style-src 'self' 'unsafe-inline'",
   // Las tipografías son locales (next/font/local), no hay CDN de fuentes.

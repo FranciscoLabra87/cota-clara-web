@@ -1,6 +1,6 @@
-import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { cookies } from 'next/headers';
 import { generarToken, hashToken } from './crypto';
+import { obtenerDB } from './db';
 
 // Sesiones y acceso a la base. Las funciones puras (hashing, RUT, política de
 // contraseñas) viven en crypto.ts, que no importa nada de Next ni Cloudflare.
@@ -32,10 +32,7 @@ export type Sesion = {
   password_temporal: number;
 };
 
-export async function obtenerDB(): Promise<D1Database> {
-  const { env } = await getCloudflareContext({ async: true });
-  return env.DB;
-}
+export { obtenerDB } from './db';
 
 // ─── Respuestas ───
 

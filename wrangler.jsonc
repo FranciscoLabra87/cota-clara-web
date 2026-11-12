@@ -26,8 +26,15 @@
       "database_name": "cota-clara-db",
       "database_id": "PENDIENTE-CORRER-WRANGLER-D1-CREATE"
     }
-  ]
+  ],
 
-  // El bucket R2 de fotos entra en la etapa 2, junto con la subida de imágenes.
-  // Declararlo antes haría fallar el deploy, porque el bucket aún no existe.
+  // Fotos de las propiedades. Crear el bucket antes del primer deploy con
+  // `npx wrangler r2 bucket create cota-clara-fotos`, si no el deploy falla.
+  // No es público: se sirve por /api/propiedades/foto/.
+  "r2_buckets": [
+    {
+      "binding": "FOTOS",
+      "bucket_name": "cota-clara-fotos"
+    }
+  ]
 }

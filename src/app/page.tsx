@@ -5,9 +5,13 @@ import { LeadForm } from '@/components/LeadForm';
 import { PropertyCard } from '@/components/PropertyCard';
 import { SearchBar } from '@/components/SearchBar';
 import { SectionHead } from '@/components/SectionHead';
-import { propiedades, propiedadesDestacadas } from '@/data/properties';
 import { servicios } from '@/data/services';
 import { comunas, site, whatsappHref } from '@/data/site';
+import { propiedadesPublicadas } from '@/lib/propiedades';
+
+// La portada muestra las destacadas y cuenta propiedades por comuna, así que
+// también lee de D1 en cada visita.
+export const dynamic = 'force-dynamic';
 
 const pilares: { icono: IconName; titulo: string; texto: string }[] = [
   { icono: 'target', titulo: 'Precisión técnica', texto: 'Valoramos con comparables reales y metodología, no con intuición.' },
@@ -46,7 +50,9 @@ const preguntas = [
 const informe = { bajo: 9400, base: 9640, alto: 9850, publicar: 9990, min: 9200, max: 10200 };
 const pos = (v: number) => `${((v - informe.min) / (informe.max - informe.min)) * 100}%`;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const propiedades = await propiedadesPublicadas();
+  const destacadas = propiedades.filter((p) => p.destacada);
   const porComuna = comunas.map((c) => ({ comuna: c, total: propiedades.filter((p) => p.comuna === c).length }));
 
   return (
@@ -157,7 +163,7 @@ export default function HomePage() {
             link={{ href: '/propiedades', label: 'Ver todas las propiedades' }}
           />
           <ul className="properties">
-            {propiedadesDestacadas.map((p) => (
+            {destacadas.map((p) => (
               <li key={p.slug} className="properties__item">
                 <PropertyCard propiedad={p} />
               </li>

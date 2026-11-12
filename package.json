@@ -11,6 +11,8 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "db:schema": "wrangler d1 execute cota-clara-db --remote --file=db/schema.sql",
     "db:local-schema": "wrangler d1 execute cota-clara-db --local --persist-to .wrangler/state --file=db/schema.sql",
+    "db:seed": "wrangler d1 execute cota-clara-db --remote --file=db/seed-propiedades.sql",
+    "db:local-seed": "wrangler d1 execute cota-clara-db --local --persist-to .wrangler/state --file=db/seed-propiedades.sql",
     "db:local-consulta": "wrangler d1 execute cota-clara-db --local --persist-to .wrangler/state --command"
   },
   "dependencies": {

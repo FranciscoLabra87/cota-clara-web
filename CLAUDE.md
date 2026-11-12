@@ -57,8 +57,9 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `propiedades/`: listado con filtros, y la ficha en `[slug]`.
   - `servicios/[slug]`: corretaje, tasaciones, asesoria, gestion-patrimonial.
   - `contacto/` y `api/contacto/route.ts`.
-  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/` y `usuarios/`.
-  - `api/auth/` (login, logout, cambiar-clave) y `api/panel/usuarios/`.
+  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/` y `propiedades/`.
+  - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/` y `api/panel/propiedades/`.
+  - `fotos/[...clave]`: entrega las fotos desde R2. Va fuera de `api/` porque a esas rutas se les aplica una CSP con `sandbox` que rompe el visor del navegador.
   - `sitemap.ts`, `robots.ts`, `not-found.tsx`, `icon.svg`.
 - `src/components`:
   - Layout: Header (transparente hasta hacer scroll, con menú móvil), Footer, WhatsAppButton, SectionHead, PageHero.
@@ -77,6 +78,11 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `auth.ts`: sesiones, cookies y bitácora sobre D1. Reexporta lo de `crypto.ts`.
   - `guardias.ts`: `exigirSesion` y `exigirAdmin` para Server Components. Van aparte porque `redirect()` no sirve dentro de un route handler.
   - `turnstile.ts`: verificación anti-bot, opcional.
+  - `db.ts`: bindings de Cloudflare (`DB` y `FOTOS`). Aparte de `auth.ts` para que los módulos de datos no arrastren `next/headers`.
+  - `propiedades.ts`: el inventario sobre D1, de lectura pública y de escritura desde el panel.
+  - `validar-propiedad.ts`: límites del formulario, compartidos por crear y editar.
+  - `imagenes.ts`: valida las imágenes por sus bytes reales, no por la extensión ni el Content-Type.
+  - `panel-api.ts`: los chequeos de sesión que repite cada endpoint del panel.
 
 ## Acceso corporativo
 
@@ -88,6 +94,17 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Cambiar o resetear una contraseña cierra todas las sesiones de esa persona. Desactivar una cuenta también.
 - Turnstile es opcional: sin `TURNSTILE_SECRET_KEY` el login funciona sin widget. Apenas se define el secreto pasa a ser obligatorio.
 - Todo queda en `log_eventos`: `LOGIN_OK`, `LOGIN_FAIL`, `CLAVE_CAMBIADA`, `USUARIO_CREADO`, etc.
+
+## Inventario de propiedades
+
+- Vive en D1, no en archivos. `src/data/properties.ts` quedó solo con los tipos y los helpers de presentación.
+- `src/lib/propiedades.ts` es la única puerta a la tabla. Los arreglos (etiquetas, descripción, características) se guardan como JSON en TEXT.
+- Dos estados: `BORRADOR` no se ve en el sitio, `PUBLICADA` sí. El sitio público filtra siempre por `estado = 'PUBLICADA'`.
+- **La portada, el listado, las fichas y el sitemap son `force-dynamic`.** Es el precio de que publicar desde el panel aparezca al tiro, sin pasar por un deploy. Si el tráfico lo pide, el camino es ISR con caché incremental en R2, no volver a los archivos.
+- `PropertyExplorer` filtra en el navegador sobre la lista completa. Sirve bien hasta unos cientos de propiedades; más que eso, los filtros tienen que pasar a SQL.
+- Las fotos van a R2 con una clave `propiedades/<id>/<timestamp>-<uuid>.<ext>` y se sirven por `/fotos/`. El bucket no es público.
+- Borrar una propiedad borra también sus objetos de R2: el `ON DELETE CASCADE` solo limpia la tabla, no el bucket.
+- Seed inicial: `npm run db:local-seed` o `npm run db:seed`.
 
 ## Cabeceras de seguridad
 
@@ -101,7 +118,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 
 ## Contenido de ejemplo (reemplazar antes de publicar)
 
-- **Propiedades:** son ficticias. Sin fotos se muestra una ilustración SVG de `Illustration.tsx` (`ilustracion: { seed, tono }`). Para usar fotos reales, deja los archivos en `public/propiedades/` y agrega `imagenes: ['/propiedades/x.jpg']` a la propiedad.
+- **Propiedades:** las 8 que vienen en `db/seed-propiedades.sql` son ficticias. Se reemplazan desde el panel, no editando archivos.
 - **Contacto:** en `site.ts`, teléfono, WhatsApp, email y dirección son placeholders. `site.url` es `https://www.cotaclara.cl`.
 - **Honorarios:** los de `services.ts` son referenciales; hay que confirmarlos con el cliente.
 - **Leads:** `api/contacto` valida nombre, email, el consentimiento `acepto` y el honeypot `empresa`, y manda el lead por correo con Resend (`src/lib/leads.ts`). Necesita `RESEND_API_KEY` y `LEADS_FROM` en `.env.local`; las variables están documentadas en `.env.example`. Sin esas dos el lead solo queda en el log del servidor y la ruta responde `ok`. Si Resend falla, responde 502 y el `LeadForm` muestra su alerta con el correo de respaldo. Falta verificar el dominio cotaclara.cl en Resend.
@@ -109,8 +126,9 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 ## Pendientes sugeridos
 
 1. Crear la D1 real (`npx wrangler d1 create cota-clara-db`) y pegar el `database_id` en `wrangler.jsonc`, que hoy tiene un placeholder.
-2. Dejar `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` como secretos del repo para que corra el workflow.
-3. Etapa 2 del panel: propiedades en D1, CRUD y fotos en R2. Hoy siguen en `src/data/properties.ts` y las fichas son estáticas.
-4. Datos de contacto reales y fotos.
+2. Crear el bucket: `npx wrangler r2 bucket create cota-clara-fotos`. Sin él, el deploy falla.
+3. Dejar `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` como secretos del repo para que corra el workflow.
+4. Datos de contacto reales, y reemplazar las propiedades de ejemplo desde el panel.
 5. Verificar cotaclara.cl en Resend y dejar `RESEND_API_KEY` y `LEADS_FROM` en `.env.local`.
 6. Dominio cotaclara.cl apuntando al Worker.
+7. No hay pruebas automatizadas: todo se ha verificado a mano.

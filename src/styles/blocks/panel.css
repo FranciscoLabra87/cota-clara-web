@@ -262,3 +262,98 @@
 .panel__form .field {
   width: 100%;
 }
+
+.panel__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.panel__cabecera .panel__title {
+  margin-bottom: 0;
+}
+
+.panel__volver {
+  display: inline-block;
+  margin-bottom: var(--space-5);
+  font-family: var(--ff-display);
+  font-size: var(--fs-sm);
+  color: var(--color-petroleo-700);
+}
+
+.panel__aviso {
+  margin: 0 0 var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--color-petroleo);
+  border-radius: var(--radius-sm);
+  background: var(--color-petroleo-100);
+  font-size: var(--fs-sm);
+  color: var(--color-petroleo);
+}
+
+.panel__form--ancho {
+  max-width: none;
+}
+
+.panel__fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.panel__legend {
+  padding: 0;
+  font-family: var(--ff-display);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-terracota-600);
+}
+
+/* Rejilla elástica: las columnas se acomodan solas según el ancho. */
+.panel__rejilla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+}
+
+.panel__rejilla .field {
+  flex: 1 1 12rem;
+}
+
+.panel__accion--peligro {
+  color: var(--color-error);
+}
+
+.panel__fotos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  margin: 0 0 var(--space-8);
+  padding: 0;
+  list-style: none;
+}
+
+.panel__foto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.panel__foto-img {
+  display: block;
+  width: 12rem;
+  height: 9rem;
+  object-fit: cover;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-md);
+  background: var(--color-gris);
+}
