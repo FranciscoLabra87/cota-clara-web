@@ -1,0 +1,44 @@
+name: Pruebas y build
+
+# Control en cada push a main. Acá NO se despliega: el deploy lo hace
+# Cloudflare Workers Builds, conectado al repo desde el panel de Cloudflare.
+# Si los dos desplegaran, cada push saldría al aire dos veces.
+#
+# Ojo con lo que esto no garantiza: Cloudflare despliega por su cuenta y no
+# espera a este workflow, así que una prueba caída se ve acá pero no frena el
+# deploy. Para que frenara habría que correr `npm test` también en el build
+# command de Cloudflare.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  revisar:
+    runs-on: ubuntu-latest
+    env:
+      # Mismo valor que usa el build de producción, para que el chequeo compile
+      # con las mismas cabeceras de seguridad que salen al aire.
+      COTA_HSTS: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Pruebas
+        run: npm test
+
+      - name: Build de Next
+        run: npm run build

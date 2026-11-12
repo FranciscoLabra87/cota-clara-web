@@ -21,7 +21,9 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Comandos: `npm install` · `npm run dev` (http://localhost:3000) · `npm run build` · `npm start`.
 - Base local: `npm run db:local-schema` la crea, `npm run db:local-consulta -- "SELECT ..."` la consulta. `next dev` la monta sola desde `.wrangler/state`.
 - `npm run preview` compila el Worker y lo corre en workerd, el runtime real. La documentación de OpenNext dice que Windows no está soportado, pero acá funciona; si algún día se rompe, la salida es WSL.
-- El deploy lo hace GitHub Actions (`.github/workflows/deploy.yml`) en cada push a `main`. Sin los secretos de Cloudflare compila igual y se salta el deploy.
+- **El deploy lo hace Cloudflare Workers Builds**, conectado al repo desde el panel de Cloudflare: despliega en cada push a `main`. En Settings → Build del proyecto, el *build command* es `npx opennextjs-cloudflare build` y el *deploy command* `npx opennextjs-cloudflare deploy`. Con `npm run build` a secas falla: `next build` no genera `.open-next/` y el deploy no encuentra el Worker compilado.
+- Ahí mismo, en Variables, tiene que estar `COTA_HSTS=1`. Es variable de build, no de runtime.
+- GitHub Actions (`.github/workflows/ci.yml`) **no despliega**: corre las pruebas y el build como control. Cloudflare no lo espera, así que una prueba caída se ve en GitHub pero no frena el deploy; para que lo frenara habría que correr `npm test` también en el build command de Cloudflare.
 - El Worker pesa ~1,2 MiB comprimido (`npx wrangler deploy --dry-run` lo informa); el límite del plan gratis es 3 MiB.
 - Turbopack es el bundler por defecto en `dev` y `build`; no hace falta `--turbopack`.
 - En rutas dinámicas, `params` es una Promise: `const { slug } = await params`.
@@ -113,13 +115,13 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Las páginas llevan CSP, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` y `Cross-Origin-Opener-Policy`. La API lleva una CSP de `default-src 'none'` con `sandbox`, más `no-store` y `Cross-Origin-Resource-Policy`.
 - El patrón `/:ruta((?!api/).*)` existe para que la API no reciba dos CSP; si recibe dos, el navegador aplica la intersección y rompe cosas.
 - `script-src` necesita `'unsafe-inline'`: Next inyecta el payload RSC en scripts inline y sin middleware no hay nonce por request. La CSP igual bloquea scripts de terceros, iframes ajenos y `form-action` fuera del sitio.
-- **HSTS y `upgrade-insecure-requests` solo si `COTA_HSTS=1`**, que define el workflow de deploy. En localhost dejarían el origen pineado a https y romperían cualquier otro servidor local por http. Las cabeceras se fijan al compilar, así que la variable tiene que estar puesta ya en el `npm run build`.
+- **HSTS y `upgrade-insecure-requests` solo si `COTA_HSTS=1`**, que se define en las variables de build de Cloudflare. En localhost dejarían el origen pineado a https y romperían cualquier otro servidor local por http. Las cabeceras se fijan al compilar, así que la variable tiene que estar puesta ya en el `npm run build`.
 - `public/_headers` cubre los archivos estáticos, que sirve Workers Assets sin pasar por el Worker.
 - Al tocar la CSP hay que probar en el navegador, no solo con curl: una directiva de más no cambia los códigos HTTP, pero rompe la página en silencio.
 
 ## Pruebas
 
-- `npm test` corre la suite una vez; `npm run test:watch` la deja mirando los archivos. El workflow de deploy la corre antes del build: si se cae, no se despliega.
+- `npm test` corre la suite una vez; `npm run test:watch` la deja mirando los archivos. El workflow de GitHub la corre en cada push, pero no frena el deploy: ver la sección de stack.
 - Vitest con `@cloudflare/vitest-plugin`, así que **corren dentro de workerd**, el mismo runtime del deploy, con una D1 de miniflare. Por eso PBKDF2, `crypto.subtle` y las consultas se prueban contra las APIs reales.
 - La configuración va en `vitest.config.mts`. Tiene que ser `.mts`: el plugin es solo ESM y con `.ts` Vite lo carga con `require` y falla.
 - No lee `wrangler.jsonc` (`config: false`), que todavía tiene un `database_id` de relleno. Declara solo la D1.
@@ -140,9 +142,9 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 
 ## Pendientes sugeridos
 
-1. Crear la D1 real (`npx wrangler d1 create cota-clara-db`) y pegar el `database_id` en `wrangler.jsonc`, que hoy tiene un placeholder.
+1. Crear la D1 real (`npx wrangler d1 create cota-clara-db`), pegar el `database_id` en `wrangler.jsonc` —que hoy tiene un placeholder— y armarle las tablas con `npm run db:schema`.
 2. Crear el bucket: `npx wrangler r2 bucket create cota-clara-fotos`. Sin él, el deploy falla.
-3. Dejar `CLOUDFLARE_API_TOKEN` y `CLOUDFLARE_ACCOUNT_ID` como secretos del repo para que corra el workflow.
+3. En Cloudflare Workers Builds: dejar el *build command* en `npx opennextjs-cloudflare build` y agregar la variable de build `COTA_HSTS=1`.
 4. Datos de contacto reales, y reemplazar las propiedades de ejemplo desde el panel.
 5. Verificar cotaclara.cl en Resend y dejar `RESEND_API_KEY` y `LEADS_FROM` en `.env.local`.
 6. Dominio cotaclara.cl apuntando al Worker.
