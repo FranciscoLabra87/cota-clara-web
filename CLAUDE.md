@@ -17,7 +17,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 ## Stack y comandos
 
 - Next.js 16 (App Router), React 19 y TypeScript. Sin Tailwind ni CSS-in-JS: CSS plano con BEM.
-- Se despliega en **Cloudflare Workers** con `@opennextjs/cloudflare`. Bindings en `wrangler.jsonc`: `DB` (D1) e `IMAGES`.
+- Se despliega en **Cloudflare Workers** con `@opennextjs/cloudflare`. Bindings en `wrangler.jsonc`: `DB` (D1), `FOTOS` (R2) e `IMAGES`.
+- En vivo en `https://cota-clara-web.franciscolabra87.workers.dev`. El dominio `cotaclara.cl` todavía no apunta al Worker.
 - Comandos: `npm install` · `npm run dev` (http://localhost:3000) · `npm run build` · `npm start`.
 - **`npm run build` es `opennextjs-cloudflare build`**, no `next build`: compila Next y empaqueta el Worker en `.open-next/`, que es lo que se despliega. Tarda más, pero es lo que sale al aire. Para una revisión rápida de tipos y compilación está `npm run build:next`.
 - Por eso `open-next.config.ts` fija `buildCommand: 'next build'`. Si no, OpenNext correría `npm run build`, que ahora es él mismo, y se llamaría en círculo.
@@ -67,12 +68,12 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `sitemap.ts`, `robots.ts`, `not-found.tsx`, `icon.svg`.
 - `src/components`:
   - Layout: Header (transparente hasta hacer scroll, con menú móvil), Footer, WhatsAppButton, SectionHead, PageHero.
-  - Propiedades: PropertyCard, PropertyMedia, PropertyExplorer (filtros sincronizados con la URL), SearchBar, MortgageCalculator, Gallery (lightbox con `<dialog>`).
+  - Propiedades: PropertyCard, PropertyMedia, PropertyExplorer (filtros sincronizados con la URL), SearchBar, MortgageCalculator, Gallery (lightbox con `<dialog>`), PropertyMap (mapa de la portada con Leaflet y teselas de OpenStreetMap; carga la librería recién cuando la sección entra en pantalla).
   - Formularios: LeadForm, con variantes `tasacion`, `contacto` y `visita`.
   - Gráficos: Illustration, Icon, Logo.
 - `src/data`:
   - `site.ts`: contacto, navegación, comunas y `whatsappHref`.
-  - `properties.ts`: 8 propiedades de ejemplo.
+  - `properties.ts`: tipos y helpers de presentación (`tituloPropiedad`, `comunasDisponibles`). El inventario no vive acá.
   - `services.ts`: 4 servicios, cada uno con lo que incluye, pasos, honorarios y preguntas frecuentes.
 - `src/lib`:
   - `format.ts`: números en es-CL y precios en UF/CLP.
@@ -87,6 +88,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `validar-propiedad.ts`: límites del formulario, compartidos por crear y editar.
   - `imagenes.ts`: valida las imágenes por sus bytes reales, no por la extensión ni el Content-Type.
   - `panel-api.ts`: los chequeos de sesión que repite cada endpoint del panel.
+  - `dominio.ts`: decide si el host de la petición es el dominio público. Lo usa `robots.ts` para no dejar indexar la dirección `…workers.dev`.
 
 ## Acceso corporativo
 
@@ -109,7 +111,11 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Las fotos van a R2 con una clave `propiedades/<id>/<timestamp>-<uuid>.<ext>` y se sirven por `/fotos/`. El bucket no es público.
 - La primera foto es la portada. Se reordenan con las flechas del panel: `PUT /api/panel/propiedades/<id>/fotos` recibe el arreglo completo de ids y lo rechaza entero (409) si no calza exactamente con las fotos de esa propiedad, así que una pestaña con la lista vieja no deja la galería a medio ordenar.
 - Borrar una propiedad borra también sus objetos de R2: el `ON DELETE CASCADE` solo limpia la tabla, no el bucket.
-- Seed inicial: `npm run db:local-seed` o `npm run db:seed`.
+- **El inventario actual son 20 avisos y 348 fotos capturados del sitio de Corredora Palma Fuentes** (`db/import-palma-fuentes.sql`, con su origen en `db/palma-fuentes-source.json`). `npm run db:seed` y `npm run db:local-seed` corren esa importación; es repetible y no pisa lo editado desde el panel. Las fotos importadas usan claves `palma-fuentes/<id>/<orden>-<hash>.<ext>`, que `claveValida()` acepta además de las del panel.
+- Los cambios de esquema sobre una base que ya existe van en `db/migrations/`, y `db/schema.sql` los incluye para bases nuevas. **Una migración se aplica a la D1 real antes de pushear el código que la necesita**: las consultas nombran sus columnas, así que si el deploy llega primero, todas las páginas públicas responden 500.
+- Cada propiedad puede llevar `latitud` y `longitud` para su pin en el mapa de la portada. Publicar exige las dos: lo validan `validar-propiedad.ts` y el endpoint de estado.
+- El listado manda al navegador una versión recortada de cada propiedad (sin descripción, características ni galería): `PropertyExplorer` solo necesita lo que muestra la tarjeta.
+- Las fotos se sirven con `unoptimized`: el original de R2, sin redimensionar. Las portadas pesan unos 200 KB cada una.
 
 ## Cabeceras de seguridad
 
@@ -119,6 +125,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - `script-src` necesita `'unsafe-inline'`: Next inyecta el payload RSC en scripts inline y sin middleware no hay nonce por request. La CSP igual bloquea scripts de terceros, iframes ajenos y `form-action` fuera del sitio.
 - **HSTS y `upgrade-insecure-requests` solo si `WORKERS_CI=1` o `COTA_HSTS=1`.** El primero lo pone Cloudflare Workers Builds en cada build suyo, así que el sitio sale con HSTS sin depender de que alguien configure una variable; el segundo queda para forzarlo desde otro lado. En localhost dejarían el origen pineado a https y romperían cualquier otro servidor local por http. Las cabeceras se fijan al compilar, así que la variable tiene que estar puesta ya en el `npm run build`.
 - `public/_headers` cubre los archivos estáticos, que sirve Workers Assets sin pasar por el Worker.
+- `img-src` permite `https://tile.openstreetmap.org`, de donde salen las teselas del mapa. Es el único origen externo de imágenes.
+- `robots.txt` cierra el sitio entero (`Disallow: /`) cuando el host no es el dominio público, para que los buscadores no indexen la dirección `…workers.dev`. Se abre solo cuando `cotaclara.cl` apunte al Worker.
 - Al tocar la CSP hay que probar en el navegador, no solo con curl: una directiva de más no cambia los códigos HTTP, pero rompe la página en silencio.
 
 ## Pruebas
@@ -126,7 +134,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - `npm test` corre la suite una vez; `npm run test:watch` la deja mirando los archivos. El workflow de GitHub la corre en cada push, pero no frena el deploy: ver la sección de stack.
 - Vitest con `@cloudflare/vitest-plugin`, así que **corren dentro de workerd**, el mismo runtime del deploy, con una D1 de miniflare. Por eso PBKDF2, `crypto.subtle` y las consultas se prueban contra las APIs reales.
 - La configuración va en `vitest.config.mts`. Tiene que ser `.mts`: el plugin es solo ESM y con `.ts` Vite lo carga con `require` y falla.
-- No lee `wrangler.jsonc` (`config: false`), que todavía tiene un `database_id` de relleno. Declara solo la D1.
+- No lee `wrangler.jsonc` (`config: false`): así las pruebas nunca tocan la base ni el bucket reales. Declara su propia D1 y su propio R2.
 - `tests/esquema.ts` aplica `db/schema.sql` y vacía las tablas antes de cada prueba. Lee el esquema de verdad, no una copia: si una migración rompe una consulta, se cae la suite.
 - Las pruebas que tocan la base reemplazan `@/lib/db` con la D1 y el R2 de miniflare. Es la única forma de probar esos módulos sin el contexto de Cloudflare.
 - Los route handlers se prueban llamándolos directo con un `Request` armado a mano: son funciones que reciben un `Request` y devuelven un `Response`, no hace falta levantar Next. `tests/sesion.ts` arma la cookie de sesión sin pasar por el login.
@@ -137,17 +145,17 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 
 ## Contenido de ejemplo (reemplazar antes de publicar)
 
-- **Propiedades:** las 8 que vienen en `db/seed-propiedades.sql` son ficticias. Se reemplazan desde el panel, no editando archivos.
-- **Contacto:** en `site.ts`, teléfono, WhatsApp, email y dirección son placeholders. `site.url` es `https://www.cotaclara.cl`.
+- **Propiedades:** las 20 publicadas son avisos de otra corredora, Palma Fuentes, con sus fotos. Antes de salir con el dominio propio hay que confirmar que existe autorización para publicarlos, y revisar que cada aviso siga vigente.
+- **Contacto:** en `site.ts`, teléfono, WhatsApp, email y dirección son placeholders **y ya están en vivo**: el botón de WhatsApp del sitio abre un chat con un número que no es de la firma. `site.url` es `https://www.cotaclara.cl`.
 - **Honorarios:** los de `services.ts` son referenciales; hay que confirmarlos con el cliente.
-- **Leads:** `api/contacto` valida nombre, email, el consentimiento `acepto` y el honeypot `empresa`, y manda el lead por correo con Resend (`src/lib/leads.ts`). Necesita `RESEND_API_KEY` y `LEADS_FROM` en `.env.local`; las variables están documentadas en `.env.example`. Sin esas dos el lead solo queda en el log del servidor y la ruta responde `ok`. Si Resend falla, responde 502 y el `LeadForm` muestra su alerta con el correo de respaldo. Falta verificar el dominio cotaclara.cl en Resend.
+- **Leads:** `api/contacto` valida nombre, email, el consentimiento `acepto` y el honeypot `empresa`, y manda el lead por correo con Resend (`src/lib/leads.ts`). Necesita `RESEND_API_KEY` y `LEADS_FROM`: en `.env.local` para desarrollo y como secretos del Worker en producción (`npx wrangler secret put RESEND_API_KEY`). **Sin esas dos la ruta responde 503 y el lead se pierde**: no se guarda en ninguna parte ni queda en el log. Si Resend falla, responde 502. En los dos casos el `LeadForm` muestra una alerta genérica. Falta verificar el dominio cotaclara.cl en Resend.
 
 ## Pendientes sugeridos
 
-1. Crear la D1 real (`npx wrangler d1 create cota-clara-db`), pegar el `database_id` en `wrangler.jsonc` —que hoy tiene un placeholder— y armarle las tablas con `npm run db:schema`.
-2. Crear el bucket: `npx wrangler r2 bucket create cota-clara-fotos`. Sin él, el deploy falla.
-3. Verificar que el primer deploy de Cloudflare Workers Builds llegue hasta el final: hasta que existan la D1 y el bucket, falla al publicar el Worker.
-4. Datos de contacto reales, y reemplazar las propiedades de ejemplo desde el panel.
-5. Verificar cotaclara.cl en Resend y dejar `RESEND_API_KEY` y `LEADS_FROM` en `.env.local`.
-6. Dominio cotaclara.cl apuntando al Worker.
+1. **Crear el primer administrador en producción**: `node scripts/crear-admin.mjs --rut ... --nombre "..." --remote`. La base real tiene 0 usuarios, así que hoy nadie puede entrar al panel.
+2. **Formulario de contacto**: verificar cotaclara.cl en Resend y cargar `RESEND_API_KEY` y `LEADS_FROM` como secretos del Worker. Hasta entonces el formulario le responde error a cada visitante y esa solicitud se pierde.
+3. **Datos de contacto reales** en `site.ts`: teléfono, WhatsApp, correo y dirección.
+4. **Confirmar la autorización** para publicar los avisos y las fotos de Palma Fuentes.
+5. Dominio cotaclara.cl apuntando al Worker. Mientras tanto `robots.txt` mantiene el sitio fuera de los buscadores.
+6. Honorarios de `services.ts`: confirmarlos con el cliente.
 7. Las pruebas cubren `src/lib` y los endpoints; los componentes y las páginas siguen verificándose a mano.
