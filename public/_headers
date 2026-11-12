@@ -1,2 +1,13 @@
+# Cabeceras de los archivos estáticos, que sirve Workers Assets sin pasar por
+# el Worker. Las de las páginas y la API van en next.config.ts.
+#
+# HSTS no va acá a propósito: en `npm run preview` se enviaría por http desde
+# localhost y dejaría el origen pineado a https, rompiendo cualquier otro
+# servidor local.
+
+/*
+  X-Content-Type-Options: nosniff
+  Cross-Origin-Resource-Policy: same-origin
+
 /_next/static/*
   Cache-Control: public,max-age=31536000,immutable

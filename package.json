@@ -27,5 +27,9 @@
     "typescript": "^5.9.3",
     "wrangler": "^4.161.0"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "glob": "^14.0.6",
+    "minimatch": "^11.0.8"
+  }
 }

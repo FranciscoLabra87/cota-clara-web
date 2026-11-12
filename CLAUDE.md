@@ -89,6 +89,16 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Turnstile es opcional: sin `TURNSTILE_SECRET_KEY` el login funciona sin widget. Apenas se define el secreto pasa a ser obligatorio.
 - Todo queda en `log_eventos`: `LOGIN_OK`, `LOGIN_FAIL`, `CLAVE_CAMBIADA`, `USUARIO_CREADO`, etc.
 
+## Cabeceras de seguridad
+
+- Se definen en `headers()` dentro de `next.config.ts`, no en un middleware: `proxy.ts` solo tiene soporte experimental y sin mantención en OpenNext.
+- Las páginas llevan CSP, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` y `Cross-Origin-Opener-Policy`. La API lleva una CSP de `default-src 'none'` con `sandbox`, más `no-store` y `Cross-Origin-Resource-Policy`.
+- El patrón `/:ruta((?!api/).*)` existe para que la API no reciba dos CSP; si recibe dos, el navegador aplica la intersección y rompe cosas.
+- `script-src` necesita `'unsafe-inline'`: Next inyecta el payload RSC en scripts inline y sin middleware no hay nonce por request. La CSP igual bloquea scripts de terceros, iframes ajenos y `form-action` fuera del sitio.
+- **HSTS y `upgrade-insecure-requests` solo si `COTA_HSTS=1`**, que define el workflow de deploy. En localhost dejarían el origen pineado a https y romperían cualquier otro servidor local por http. Las cabeceras se fijan al compilar, así que la variable tiene que estar puesta ya en el `npm run build`.
+- `public/_headers` cubre los archivos estáticos, que sirve Workers Assets sin pasar por el Worker.
+- Al tocar la CSP hay que probar en el navegador, no solo con curl: una directiva de más no cambia los códigos HTTP, pero rompe la página en silencio.
+
 ## Contenido de ejemplo (reemplazar antes de publicar)
 
 - **Propiedades:** son ficticias. Sin fotos se muestra una ilustración SVG de `Illustration.tsx` (`ilustracion: { seed, tono }`). Para usar fotos reales, deja los archivos en `public/propiedades/` y agrega `imagenes: ['/propiedades/x.jpg']` a la propiedad.

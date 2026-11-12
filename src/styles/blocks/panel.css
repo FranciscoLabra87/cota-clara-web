@@ -1,11 +1,14 @@
 /* Bloque: panel — área interna, detrás del acceso corporativo */
 .panel {
   min-height: 100svh;
-  padding-top: var(--header-h);
   background: var(--color-gris-50);
 }
 
+/* La barra se extiende por debajo de la cabecera fija, que hasta el primer
+   scroll es transparente y pinta su logo y sus enlaces en blanco. Sin este
+   fondo oscuro detrás quedaban blancos sobre el gris claro del panel. */
 .panel__bar {
+  padding-top: var(--header-h);
   background: var(--color-petroleo);
   color: var(--color-blanco);
 }

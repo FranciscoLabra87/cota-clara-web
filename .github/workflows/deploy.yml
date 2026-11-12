@@ -25,6 +25,9 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # Enciende HSTS y upgrade-insecure-requests. Las cabeceras se fijan al
+      # compilar, así que tiene que estar puesto ya en el build de Next.
+      COTA_HSTS: '1'
     steps:
       - uses: actions/checkout@v4
 
