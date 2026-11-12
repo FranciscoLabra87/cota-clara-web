@@ -101,7 +101,7 @@ CREATE INDEX IF NOT EXISTS idx_propiedades_estado ON propiedades(estado, publica
 CREATE INDEX IF NOT EXISTS idx_propiedades_destacada ON propiedades(estado, destacada);
 
 -- Fotos en R2. En la base va solo la clave del objeto; los bytes nunca pasan
--- por acá y se sirven por /api/propiedades/foto/.
+-- por acá y se sirven por /fotos/.
 CREATE TABLE IF NOT EXISTS propiedad_fotos (
   id           INTEGER PRIMARY KEY AUTOINCREMENT,
   propiedad_id INTEGER NOT NULL,

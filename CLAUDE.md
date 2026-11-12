@@ -103,6 +103,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - **La portada, el listado, las fichas y el sitemap son `force-dynamic`.** Es el precio de que publicar desde el panel aparezca al tiro, sin pasar por un deploy. Si el tráfico lo pide, el camino es ISR con caché incremental en R2, no volver a los archivos.
 - `PropertyExplorer` filtra en el navegador sobre la lista completa. Sirve bien hasta unos cientos de propiedades; más que eso, los filtros tienen que pasar a SQL.
 - Las fotos van a R2 con una clave `propiedades/<id>/<timestamp>-<uuid>.<ext>` y se sirven por `/fotos/`. El bucket no es público.
+- La primera foto es la portada. Se reordenan con las flechas del panel: `PUT /api/panel/propiedades/<id>/fotos` recibe el arreglo completo de ids y lo rechaza entero (409) si no calza exactamente con las fotos de esa propiedad, así que una pestaña con la lista vieja no deja la galería a medio ordenar.
 - Borrar una propiedad borra también sus objetos de R2: el `ON DELETE CASCADE` solo limpia la tabla, no el bucket.
 - Seed inicial: `npm run db:local-seed` o `npm run db:seed`.
 

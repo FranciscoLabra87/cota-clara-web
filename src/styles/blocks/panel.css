@@ -342,6 +342,7 @@
 }
 
 .panel__foto {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -356,4 +357,45 @@
   border: 1px solid var(--color-borde);
   border-radius: var(--radius-md);
   background: var(--color-gris);
+}
+
+/* La primera foto es la portada: la que sale en el listado y en la ficha.
+   Va encima de la imagen y no en la columna, para que la fila de botones
+   quede a la misma altura en todas las fotos. */
+.panel__foto-portada {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  padding: 0.1rem var(--space-3);
+  border-radius: 999px;
+  background: var(--color-petroleo);
+  font-family: var(--ff-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-blanco);
+}
+
+.panel__acciones--foto {
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Las flechas de orden piden un borde: solas son un blanco muy chico. */
+.panel__accion--orden {
+  min-width: 1.75rem;
+  padding: 0.1rem var(--space-2);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-sm);
+  background: var(--color-blanco);
+  text-align: center;
+}
+
+.panel__accion--orden:hover:not(:disabled) {
+  border-color: var(--color-terracota);
+  text-decoration: none;
+}
+
+.panel__accion--orden:disabled {
+  border-color: var(--color-gris);
 }

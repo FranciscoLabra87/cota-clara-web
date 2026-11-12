@@ -10,6 +10,56 @@ type Params = { params: Promise<{ id: string }> };
 
 const MAX_FOTOS = 20;
 
+/**
+ * Reordena las fotos. Recibe el arreglo completo de ids en el orden deseado,
+ * no un movimiento suelto: así el servidor no tiene que adivinar desde qué
+ * orden partía el navegador, y dos pestañas abiertas no se pisan a medias.
+ * La primera foto es la portada de la ficha.
+ */
+export async function PUT(request: Request, { params }: Params) {
+  const acceso = await exigirSesionApi(request);
+  if (!acceso.ok) return acceso.respuesta;
+
+  const id = idDeRuta((await params).id);
+  if (!id) return errorJson('Propiedad no válida', 400);
+
+  const cuerpo = (await request.json().catch(() => null)) as { orden?: unknown } | null;
+  if (!Array.isArray(cuerpo?.orden)) return errorJson('Falta el orden de las fotos');
+
+  const db = await obtenerDB();
+  const { results } = await db
+    .prepare(`SELECT id FROM propiedad_fotos WHERE propiedad_id = ?`)
+    .bind(id)
+    .all<{ id: number }>();
+  if (!results.length) return errorJson('Esa propiedad no tiene fotos', 404);
+
+  const actuales = new Set(results.map((f) => f.id));
+  const pedido = cuerpo.orden.map(Number);
+  // El orden tiene que nombrar exactamente las fotos de esta propiedad: ni una
+  // de otra ficha, ni repetidas, ni faltando alguna. Si no cuadra se rechaza
+  // entero, para no dejar la galería a medio reordenar.
+  const distintos = new Set(pedido);
+  const cuadra =
+    pedido.length === actuales.size && distintos.size === pedido.length && pedido.every((f) => actuales.has(f));
+  // El caso real es que alguien borró o subió una foto desde otra pantalla y
+  // el navegador está mandando una lista vieja.
+  if (!cuadra) return errorJson('Las fotos ya no son las mismas. Recarga la página y vuelve a ordenarlas.', 409);
+
+  await db.batch([
+    ...pedido.map((fotoId, i) =>
+      db.prepare(`UPDATE propiedad_fotos SET orden = ? WHERE id = ? AND propiedad_id = ?`).bind(i, fotoId, id),
+    ),
+    db.prepare(`UPDATE propiedades SET actualizado_en = datetime('now') WHERE id = ?`).bind(id),
+  ]);
+
+  await registrar('FOTOS_REORDENADAS', {
+    usuarioId: acceso.sesion.usuario_id,
+    detalle: { propiedad_id: id },
+    ip: ipDe(request),
+  });
+  return json({ ok: true });
+}
+
 export async function POST(request: Request, { params }: Params) {
   const acceso = await exigirSesionApi(request);
   if (!acceso.ok) return acceso.respuesta;

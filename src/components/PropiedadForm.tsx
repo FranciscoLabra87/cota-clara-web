@@ -31,6 +31,7 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
   const [aviso, setAviso] = useState<string | null>(null);
   const [listaFotos, setListaFotos] = useState<Foto[]>(fotos);
   const [subiendo, setSubiendo] = useState(false);
+  const [ordenando, setOrdenando] = useState(false);
 
   async function guardar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -125,6 +126,40 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
       setAlerta('No pudimos conectar. Intenta de nuevo.');
     } finally {
       setSubiendo(false);
+    }
+  }
+
+  // Mueve la foto en pantalla al tiro y manda el orden completo. Si el
+  // servidor lo rechaza, la lista vuelve a como estaba.
+  async function moverFoto(desde: number, hacia: number) {
+    if (!propiedad || hacia < 0 || hacia >= listaFotos.length) return;
+
+    const previa = listaFotos;
+    const nueva = [...listaFotos];
+    const [movida] = nueva.splice(desde, 1);
+    nueva.splice(hacia, 0, movida);
+
+    setAlerta(null);
+    setListaFotos(nueva);
+    setOrdenando(true);
+    try {
+      const res = await fetch(`/api/panel/propiedades/${propiedad.id}/fotos`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orden: nueva.map((f) => f.id) }),
+      });
+      if (!res.ok) {
+        const respuesta = (await res.json().catch(() => ({}))) as { error?: string };
+        setListaFotos(previa);
+        setAlerta(respuesta.error ?? 'No pudimos cambiar el orden.');
+        return;
+      }
+      router.refresh();
+    } catch {
+      setListaFotos(previa);
+      setAlerta('No pudimos conectar. Intenta de nuevo.');
+    } finally {
+      setOrdenando(false);
     }
   }
 
@@ -349,7 +384,8 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
         <>
           <h2 className="panel__subtitulo">Fotos</h2>
           <p className="panel__intro">
-            JPG, PNG o WEBP, hasta 5 MB cada una. Si no hay fotos, la ficha muestra la ilustración.
+            JPG, PNG o WEBP, hasta 5 MB cada una. Si no hay fotos, la ficha muestra la ilustración. La primera es la
+            portada: la que sale en el listado y arriba en la ficha. Con las flechas cambias el orden.
           </p>
 
           {listaFotos.length ? (
@@ -358,9 +394,32 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
                 <li className="panel__foto" key={foto.id}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img className="panel__foto-img" src={foto.url} alt={`Foto ${i + 1}`} loading="lazy" />
-                  <button type="button" className="panel__accion" onClick={() => borrarFoto(foto)}>
-                    Borrar
-                  </button>
+                  {i === 0 ? <span className="panel__foto-portada">Portada</span> : null}
+                  <div className="panel__acciones panel__acciones--foto">
+                    <button
+                      type="button"
+                      className="panel__accion panel__accion--orden"
+                      onClick={() => moverFoto(i, i - 1)}
+                      disabled={i === 0 || ordenando}
+                      aria-label={`Mover la foto ${i + 1} hacia atrás`}
+                      title="Mover hacia atrás"
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      className="panel__accion panel__accion--orden"
+                      onClick={() => moverFoto(i, i + 1)}
+                      disabled={i === listaFotos.length - 1 || ordenando}
+                      aria-label={`Mover la foto ${i + 1} hacia adelante`}
+                      title="Mover hacia adelante"
+                    >
+                      →
+                    </button>
+                    <button type="button" className="panel__accion" onClick={() => borrarFoto(foto)} disabled={ordenando}>
+                      Borrar
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
