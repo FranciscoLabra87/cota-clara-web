@@ -38,6 +38,20 @@ function coordenada(v: unknown, minimo: number, maximo: number): number | null |
   return Number.isFinite(n) && n >= minimo && n <= maximo ? n : undefined;
 }
 
+/**
+ * Medida en metros, opcional y con decimales. Acepta la coma decimal, que es
+ * como se escribe acá, y guarda dos decimales: el centímetro.
+ */
+function medida(v: unknown, max: number): number | null | undefined {
+  if (v === null || v === undefined) return null;
+  if (typeof v !== 'string' && typeof v !== 'number') return undefined;
+  const crudo = typeof v === 'string' ? v.trim().replace(',', '.') : v;
+  if (crudo === '') return null;
+  const n = Number(crudo);
+  if (!Number.isFinite(n) || n <= 0 || n > max) return undefined;
+  return Math.round(n * 100) / 100;
+}
+
 function listaTexto(v: unknown, maxItems: number, maxLargo: number): string[] {
   const bruto = Array.isArray(v) ? v : typeof v === 'string' ? v.split('\n') : [];
   return bruto
@@ -106,6 +120,12 @@ export function validarPropiedad(body: Record<string, unknown>): Resultado {
     return { ok: false, error: 'Revisa terreno, piso o gastos comunes: tienen que ser números o quedar vacíos' };
   }
 
+  const frente = medida(body.frente, 10_000);
+  const fondo = medida(body.fondo, 10_000);
+  if (frente === undefined || fondo === undefined) {
+    return { ok: false, error: 'Revisa el frente y el fondo del terreno: van en metros, mayores que cero, o vacíos' };
+  }
+
   const resumen = texto(body.resumen, 300);
   if (!resumen) return { ok: false, error: 'Escribe el resumen que se ve en la tarjeta' };
 
@@ -124,6 +144,8 @@ export function validarPropiedad(body: Record<string, unknown>): Resultado {
       precioMoneda: precioMoneda as 'UF' | 'CLP',
       ...numeros,
       terreno,
+      frente,
+      fondo,
       piso,
       gastosComunes,
       orientacion: texto(body.orientacion, 40),

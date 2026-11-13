@@ -54,6 +54,8 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
       superficieUtil: datos.get('superficieUtil'),
       superficieTotal: datos.get('superficieTotal'),
       terreno: datos.get('terreno'),
+      frente: datos.get('frente'),
+      fondo: datos.get('fondo'),
       piso: datos.get('piso'),
       orientacion: datos.get('orientacion'),
       anio: datos.get('anio'),
@@ -319,7 +321,23 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
               </label>
               <input className="field__control" defaultValue={propiedad?.orientacion ?? ''} placeholder="Nororiente" {...campo('orientacion')} />
             </div>
+            <div className="field">
+              <label className="field__label" htmlFor={`${id}-frente`}>
+                Frente del terreno (m)
+              </label>
+              <input className="field__control" type="number" min="0" step="0.01" defaultValue={propiedad?.frente ?? ''} placeholder="12.5" {...campo('frente')} />
+            </div>
+            <div className="field">
+              <label className="field__label" htmlFor={`${id}-fondo`}>
+                Fondo del terreno (m)
+              </label>
+              <input className="field__control" type="number" min="0" step="0.01" defaultValue={propiedad?.fondo ?? ''} placeholder="30" {...campo('fondo')} />
+            </div>
           </div>
+          <p className="field__hint">
+            El frente y el fondo son las medidas del terreno en metros, y son opcionales. Van aparte de los m²: se muestran en la ficha tal
+            como las escribas.
+          </p>
         </fieldset>
 
         <fieldset className="panel__fieldset">

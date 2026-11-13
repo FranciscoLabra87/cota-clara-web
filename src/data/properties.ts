@@ -25,6 +25,9 @@ export type Propiedad = {
   superficieUtil: number;
   superficieTotal: number;
   terreno?: number;
+  /** Medidas del terreno en metros. Pueden venir las dos, una o ninguna. */
+  frente?: number;
+  fondo?: number;
   piso?: number;
   orientacion: string;
   anio: number;

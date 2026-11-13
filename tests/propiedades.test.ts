@@ -216,3 +216,33 @@ describe('enlaces', () => {
     expect(slugificar('a'.repeat(150))).toHaveLength(100);
   });
 });
+
+describe('dimensiones del terreno', () => {
+  it('se guardan, se leen y se pueden corregir', async () => {
+    const casa = await crearPropiedad(datos({ slug: 'casa-con-medidas', frente: 12.5, fondo: 30 }));
+    expect(await propiedadPorId(casa)).toMatchObject({ frente: 12.5, fondo: 30 });
+
+    await actualizarPropiedad(casa, datos({ slug: 'casa-con-medidas', frente: 14, fondo: 28.75 }));
+    expect(await propiedadPorId(casa)).toMatchObject({ frente: 14, fondo: 28.75 });
+  });
+
+  it('si no se dan, la propiedad no las trae: la ficha no muestra medidas inventadas', async () => {
+    const depto = await crearPropiedad(datos({ slug: 'depto-sin-medidas' }));
+    const p = await propiedadPorId(depto);
+    expect(p).not.toHaveProperty('frente');
+    expect(p).not.toHaveProperty('fondo');
+  });
+
+  it('borrarlas al editar las deja vacías', async () => {
+    const casa = await crearPropiedad(datos({ slug: 'casa-medidas-borradas', frente: 10, fondo: 20 }));
+    await actualizarPropiedad(casa, datos({ slug: 'casa-medidas-borradas', frente: null, fondo: null }));
+    expect(await propiedadPorId(casa)).not.toHaveProperty('frente');
+  });
+
+  it('puede venir una sola', async () => {
+    const casa = await crearPropiedad(datos({ slug: 'casa-solo-frente', frente: 18 }));
+    const p = await propiedadPorId(casa);
+    expect(p).toMatchObject({ frente: 18 });
+    expect(p).not.toHaveProperty('fondo');
+  });
+});

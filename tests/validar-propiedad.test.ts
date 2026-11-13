@@ -143,3 +143,33 @@ describe('lo que rechaza', () => {
     expect(errorDe({ ...base(), latitud: 'NaN', longitud: '-70.6' })).toMatch(/válidas/i);
   });
 });
+
+describe('dimensiones del terreno', () => {
+  it('son opcionales: sin ellas la ficha pasa igual', () => {
+    const datos = datosDe(base());
+    expect([datos.frente, datos.fondo]).toEqual([null, null]);
+    expect([datosDe({ ...base(), frente: '', fondo: '   ' }).frente, datosDe({ ...base(), frente: null }).frente]).toEqual([null, null]);
+  });
+
+  it('acepta decimales, con punto o con coma', () => {
+    const datos = datosDe({ ...base(), frente: '12.5', fondo: '30,25' });
+    expect([datos.frente, datos.fondo]).toEqual([12.5, 30.25]);
+  });
+
+  it('guarda hasta el centímetro', () => {
+    expect(datosDe({ ...base(), frente: '12.3456' }).frente).toBe(12.35);
+  });
+
+  it('se puede dar una sola de las dos', () => {
+    const datos = datosDe({ ...base(), frente: 15 });
+    expect([datos.frente, datos.fondo]).toEqual([15, null]);
+  });
+
+  it('rechaza el cero, los negativos, lo que no es número y lo absurdo', () => {
+    for (const malo of ['0', '-5', 'doce', '1e9', '99999']) {
+      expect(errorDe({ ...base(), frente: malo })).toMatch(/frente y el fondo/i);
+      expect(errorDe({ ...base(), fondo: malo })).toMatch(/frente y el fondo/i);
+    }
+    expect(errorDe({ ...base(), frente: ['12'] })).toMatch(/frente y el fondo/i);
+  });
+});

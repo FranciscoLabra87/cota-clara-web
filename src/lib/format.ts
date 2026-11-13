@@ -9,6 +9,11 @@ export function formatNumero(valor: number, decimales = 0): string {
   }).format(valor);
 }
 
+const metros = new Intl.NumberFormat('es-CL', { maximumFractionDigits: 2 });
+
+/** Metros con hasta dos decimales y sin ceros de relleno: 12,5 m y no 12,50 m. */
+export const formatMetros = (valor: number) => `${metros.format(valor)} m`;
+
 export function formatPrecio(precio: Precio): string {
   const base = precio.moneda === 'UF' ? `UF ${entero.format(precio.valor)}` : `$${entero.format(precio.valor)}`;
   return base;

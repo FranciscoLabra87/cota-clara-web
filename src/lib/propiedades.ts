@@ -28,6 +28,8 @@ type Fila = {
   superficie_util: number;
   superficie_total: number;
   terreno: number | null;
+  frente: number | null;
+  fondo: number | null;
   piso: number | null;
   orientacion: string;
   anio: number;
@@ -44,7 +46,7 @@ type Fila = {
 };
 
 const COLUMNAS = `id, slug, titulo, tipo, operacion, comuna, sector, latitud, longitud, precio_valor, precio_moneda, precio_periodo,
-  dormitorios, banos, estacionamientos, bodegas, superficie_util, superficie_total, terreno, piso,
+  dormitorios, banos, estacionamientos, bodegas, superficie_util, superficie_total, terreno, frente, fondo, piso,
   orientacion, anio, gastos_comunes, etiquetas, resumen, descripcion, caracteristicas,
   destacada, publicada, estado, ilustracion_seed, ilustracion_tono`;
 
@@ -86,6 +88,8 @@ function aPropiedad(f: Fila, fotos: string[]): PropiedadAdmin {
     superficieUtil: f.superficie_util,
     superficieTotal: f.superficie_total,
     ...(f.terreno == null ? {} : { terreno: f.terreno }),
+    ...(f.frente == null ? {} : { frente: f.frente }),
+    ...(f.fondo == null ? {} : { fondo: f.fondo }),
     ...(f.piso == null ? {} : { piso: f.piso }),
     orientacion: f.orientacion,
     anio: f.anio,
@@ -207,6 +211,8 @@ export type DatosPropiedad = {
   superficieUtil: number;
   superficieTotal: number;
   terreno: number | null;
+  frente?: number | null;
+  fondo?: number | null;
   piso: number | null;
   orientacion: string;
   anio: number;
@@ -244,6 +250,8 @@ const valores = (d: DatosPropiedad) => [
   d.superficieUtil,
   d.superficieTotal,
   d.terreno,
+  d.frente ?? null,
+  d.fondo ?? null,
   d.piso,
   d.orientacion,
   d.anio,
@@ -265,7 +273,7 @@ export async function crearPropiedad(d: DatosPropiedad): Promise<number> {
     .prepare(
       `INSERT INTO propiedades (
          slug, titulo, tipo, operacion, comuna, sector, latitud, longitud, precio_valor, precio_moneda, precio_periodo,
-         dormitorios, banos, estacionamientos, bodegas, superficie_util, superficie_total, terreno, piso,
+         dormitorios, banos, estacionamientos, bodegas, superficie_util, superficie_total, terreno, frente, fondo, piso,
          orientacion, anio, gastos_comunes, etiquetas, resumen, descripcion, caracteristicas,
          destacada, publicada, estado, ilustracion_seed, ilustracion_tono
        ) VALUES (${valores(d).map(() => '?').join(', ')}) RETURNING id`,
@@ -282,7 +290,7 @@ export async function actualizarPropiedad(id: number, d: DatosPropiedad): Promis
       `UPDATE propiedades SET
          slug = ?, titulo = ?, tipo = ?, operacion = ?, comuna = ?, sector = ?, latitud = ?, longitud = ?, precio_valor = ?, precio_moneda = ?,
          precio_periodo = ?, dormitorios = ?, banos = ?, estacionamientos = ?, bodegas = ?,
-         superficie_util = ?, superficie_total = ?, terreno = ?, piso = ?, orientacion = ?, anio = ?,
+         superficie_util = ?, superficie_total = ?, terreno = ?, frente = ?, fondo = ?, piso = ?, orientacion = ?, anio = ?,
          gastos_comunes = ?, etiquetas = ?, resumen = ?, descripcion = ?, caracteristicas = ?,
          destacada = ?, publicada = ?, estado = ?, ilustracion_seed = ?, ilustracion_tono = ?,
          actualizado_en = datetime('now')

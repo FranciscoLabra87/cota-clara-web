@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatNumero, formatPrecio, periodoPrecio } from '@/lib/format';
+import { formatMetros, formatNumero, formatPrecio, periodoPrecio } from '@/lib/format';
 
 // Estas pruebas corren en workerd, así que también confirman que el runtime
 // del deploy trae el ICU de es-CL: punto para los miles y coma decimal.
@@ -25,5 +25,17 @@ describe('precios', () => {
   it('el periodo solo aparece en arriendo', () => {
     expect(periodoPrecio({ valor: 1200000, moneda: 'CLP', periodo: 'mes' })).toBe('/ mes');
     expect(periodoPrecio({ valor: 7890, moneda: 'UF' })).toBeNull();
+  });
+});
+
+describe('metros', () => {
+  it('usa coma decimal y no rellena con ceros', () => {
+    expect(formatMetros(12.5)).toBe('12,5 m');
+    expect(formatMetros(30)).toBe('30 m');
+    expect(formatMetros(28.75)).toBe('28,75 m');
+  });
+
+  it('pone punto de miles en los terrenos grandes', () => {
+    expect(formatMetros(1250.5)).toBe('1.250,5 m');
   });
 });

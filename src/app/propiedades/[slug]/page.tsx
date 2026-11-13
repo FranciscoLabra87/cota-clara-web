@@ -11,7 +11,7 @@ import { PropertyCard } from '@/components/PropertyCard';
 import { varianteTipo } from '@/components/PropertyMedia';
 import { tituloPropiedad, type Propiedad } from '@/data/properties';
 import { site, whatsappHref } from '@/data/site';
-import { formatNumero, formatPrecio, periodoPrecio } from '@/lib/format';
+import { formatMetros, formatNumero, formatPrecio, periodoPrecio } from '@/lib/format';
 import { propiedadPorSlug, propiedadesPublicadas } from '@/lib/propiedades';
 
 type Params = { params: Promise<{ slug: string }> };
@@ -82,6 +82,14 @@ export default async function PropiedadPage({ params }: Params) {
     p.anio > 0 ? { label: 'Año de construcción', valor: String(p.anio) } : null,
     p.piso ? { label: 'Piso', valor: String(p.piso) } : null,
     p.bodegas > 0 ? { label: 'Bodegas', valor: String(p.bodegas) } : null,
+    // Con las dos medidas va una sola línea; con una sola, se dice cuál es.
+    p.frente && p.fondo
+      ? { label: 'Dimensiones del terreno', valor: `${formatMetros(p.frente)} de frente × ${formatMetros(p.fondo)} de fondo` }
+      : p.frente
+        ? { label: 'Frente del terreno', valor: formatMetros(p.frente) }
+        : p.fondo
+          ? { label: 'Fondo del terreno', valor: formatMetros(p.fondo) }
+          : null,
     p.gastosComunes ? { label: 'Gastos comunes', valor: `$${formatNumero(p.gastosComunes)} aprox.` } : null,
   ].filter((x): x is NonNullable<typeof x> => x !== null);
 

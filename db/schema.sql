@@ -82,6 +82,10 @@ CREATE TABLE IF NOT EXISTS propiedades (
   superficie_util  INTEGER NOT NULL DEFAULT 0,
   superficie_total INTEGER NOT NULL DEFAULT 0,
   terreno          INTEGER,
+  -- Medidas del terreno en metros, con decimales. Van aparte de los m2 porque
+  -- no se deducen de ellos: 300 m2 pueden ser 10 x 30 o 15 x 20.
+  frente           REAL,
+  fondo            REAL,
   piso             INTEGER,
   orientacion      TEXT NOT NULL DEFAULT '',
   anio             INTEGER NOT NULL DEFAULT 0,
