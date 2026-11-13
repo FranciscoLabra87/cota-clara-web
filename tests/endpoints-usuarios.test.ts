@@ -10,6 +10,7 @@ vi.mock('@/lib/db', () => ({
 const { POST: crearUsuario } = await import('../src/app/api/panel/usuarios/route');
 const { POST: resetearClave } = await import('../src/app/api/panel/usuarios/[id]/reset-clave/route');
 const { POST: cambiarEstadoUsuario } = await import('../src/app/api/panel/usuarios/[id]/estado/route');
+const { POST: cambiarRol } = await import('../src/app/api/panel/usuarios/[id]/rol/route');
 const { validarPassword, verifyPassword } = await import('@/lib/crypto');
 
 const ruta = (id: string | number) => ({ params: Promise.resolve({ id: String(id) }) });
@@ -168,5 +169,86 @@ describe('activar y desactivar', () => {
   it('404 si la cuenta no existe', async () => {
     const { cookie } = await sesionDePrueba();
     expect((await estado(cookie, 9999, false)).status).toBe(404);
+  });
+});
+
+describe('cambiar el rol', () => {
+  const rol = (cookie: string | null, id: number | string, cuerpo: unknown) =>
+    cambiarRol(pedir(`/api/panel/usuarios/${id}/rol`, cookie, comoJson(cuerpo)), ruta(id));
+
+  const rolDe = async (id: number) =>
+    (await env.DB.prepare('SELECT rol FROM usuarios WHERE id = ?').bind(id).first<{ rol: string }>())!.rol;
+
+  it('un administrador puede subir a un editor', async () => {
+    const { cookie } = await sesionDePrueba();
+    const editor = await sesionDePrueba({ rol: 'EDITOR' });
+
+    const res = await rol(cookie, editor.usuarioId, { rol: 'ADMIN' });
+    expect(res.status).toBe(200);
+    expect(await rolDe(editor.usuarioId)).toBe('ADMIN');
+  });
+
+  it('y bajar a otro administrador, que ve el cambio sin volver a entrar', async () => {
+    const { cookie } = await sesionDePrueba();
+    const otro = await sesionDePrueba({ rol: 'ADMIN' });
+
+    expect((await rol(cookie, otro.usuarioId, { rol: 'EDITOR' })).status).toBe(200);
+    expect(await rolDe(otro.usuarioId)).toBe('EDITOR');
+
+    // Su sesión sigue abierta, pero ya no puede administrar cuentas.
+    expect((await crear(otro.cookie)).status).toBe(403);
+  });
+
+  it('nadie puede cambiar su propio rol', async () => {
+    const { cookie, usuarioId } = await sesionDePrueba();
+    expect((await rol(cookie, usuarioId, { rol: 'EDITOR' })).status).toBe(409);
+    expect(await rolDe(usuarioId)).toBe('ADMIN');
+  });
+
+  it('un editor no cambia roles, ni el suyo', async () => {
+    const editor = await sesionDePrueba({ rol: 'EDITOR' });
+    const otro = await sesionDePrueba({ rol: 'EDITOR' });
+    expect((await rol(editor.cookie, otro.usuarioId, { rol: 'ADMIN' })).status).toBe(403);
+    expect((await rol(editor.cookie, editor.usuarioId, { rol: 'ADMIN' })).status).toBe(403);
+    expect(await rolDe(editor.usuarioId)).toBe('EDITOR');
+  });
+
+  it('sin sesión 401, y con la clave temporal pendiente 403', async () => {
+    const editor = await sesionDePrueba({ rol: 'EDITOR' });
+    expect((await rol(null, editor.usuarioId, { rol: 'ADMIN' })).status).toBe(401);
+
+    const { cookie } = await sesionDePrueba({ claveTemporal: true });
+    expect((await rol(cookie, editor.usuarioId, { rol: 'ADMIN' })).status).toBe(403);
+    expect(await rolDe(editor.usuarioId)).toBe('EDITOR');
+  });
+
+  it('rechaza un rol inventado, una cuenta que no existe y un id que no sirve', async () => {
+    const { cookie } = await sesionDePrueba();
+    const editor = await sesionDePrueba({ rol: 'EDITOR' });
+    expect((await rol(cookie, editor.usuarioId, { rol: 'DUEÑO' })).status).toBe(422);
+    expect((await rol(cookie, editor.usuarioId, {})).status).toBe(422);
+    expect((await rol(cookie, 9999, { rol: 'ADMIN' })).status).toBe(404);
+    expect((await rol(cookie, 'abc', { rol: 'ADMIN' })).status).toBe(400);
+  });
+
+  it('queda en la bitácora quién lo cambió, de qué a qué', async () => {
+    const { cookie, usuarioId } = await sesionDePrueba();
+    const editor = await sesionDePrueba({ rol: 'EDITOR' });
+    await rol(cookie, editor.usuarioId, { rol: 'ADMIN' });
+
+    const evento = await env.DB.prepare("SELECT usuario_id, detalle FROM log_eventos WHERE accion = 'ROL_CAMBIADO'").first<{
+      usuario_id: number;
+      detalle: string;
+    }>();
+    expect(evento!.usuario_id).toBe(usuarioId);
+    expect(JSON.parse(evento!.detalle)).toEqual({ objetivo_id: editor.usuarioId, antes: 'EDITOR', rol: 'ADMIN' });
+  });
+
+  it('pedir el rol que ya tiene no hace nada ni deja rastro', async () => {
+    const { cookie } = await sesionDePrueba();
+    const editor = await sesionDePrueba({ rol: 'EDITOR' });
+    expect((await rol(cookie, editor.usuarioId, { rol: 'EDITOR' })).status).toBe(200);
+    const eventos = await env.DB.prepare("SELECT COUNT(*) AS n FROM log_eventos WHERE accion = 'ROL_CAMBIADO'").first<{ n: number }>();
+    expect(eventos!.n).toBe(0);
   });
 });

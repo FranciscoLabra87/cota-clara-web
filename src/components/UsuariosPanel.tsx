@@ -73,7 +73,7 @@ export function UsuariosPanel({ usuarios, yoId }: { usuarios: UsuarioFila[]; yoI
       <h1 className="panel__title">Usuarios</h1>
       <p className="panel__intro">
         Cada cuenta nueva parte con una contraseña temporal que se muestra una sola vez. Pásasela por un medio seguro: la
-        persona la cambia al entrar.
+        persona la cambia al entrar. Puedes cambiar el rol y desactivar cualquier cuenta menos la tuya.
       </p>
 
       {clave ? (
@@ -127,14 +127,24 @@ export function UsuariosPanel({ usuarios, yoId }: { usuarios: UsuarioFila[]; yoI
                     Resetear clave
                   </button>
                   {u.id === yoId ? null : (
-                    <button
-                      type="button"
-                      className="panel__accion"
-                      onClick={() => pedir(`/api/panel/usuarios/${u.id}/estado`, { activo: !u.activo })}
-                      disabled={trabajando}
-                    >
-                      {u.activo ? 'Desactivar' : 'Activar'}
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        className="panel__accion"
+                        onClick={() => pedir(`/api/panel/usuarios/${u.id}/rol`, { rol: u.rol === 'ADMIN' ? 'EDITOR' : 'ADMIN' })}
+                        disabled={trabajando}
+                      >
+                        {u.rol === 'ADMIN' ? 'Hacer editor' : 'Hacer administrador'}
+                      </button>
+                      <button
+                        type="button"
+                        className="panel__accion"
+                        onClick={() => pedir(`/api/panel/usuarios/${u.id}/estado`, { activo: !u.activo })}
+                        disabled={trabajando}
+                      >
+                        {u.activo ? 'Desactivar' : 'Activar'}
+                      </button>
+                    </>
                   )}
                 </td>
               </tr>

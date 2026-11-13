@@ -96,6 +96,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 
 - Enlace **Acceso Corporativo** en la cabecera (en terracota, con el ícono `key`), fuera del array `navegacion`: no es navegación pública.
 - Se entra con RUT y contraseña en `/acceso`. Dos roles: `ADMIN` gestiona usuarios, `EDITOR` no.
+- Desde `/panel/usuarios` un administrador cambia el rol de otra cuenta (`POST /api/panel/usuarios/<id>/rol`). Nadie cambia su propio rol: como quien pide el cambio es un administrador activo, así el panel nunca se queda sin administradores. El cambio rige en la siguiente acción de esa persona, sin cerrarle la sesión, porque el rol se lee de la base en cada request. Queda en la bitácora como `ROL_CAMBIADO`, con el rol de antes y el nuevo.
+- Cuentas en producción: Francisco Labra (16.367.941-8) y Gustavo Palma (16.319.187-3), los dos administradores.
 - La autorización se repite en cada página (`exigirSesion` / `exigirAdmin`) y en cada route handler. No hay middleware: OpenNext todavía no soporta el runtime Node de `proxy.ts`.
 - Clonado del sistema de AG Casco Histórico: PBKDF2 de 100.000 iteraciones con salt, comparación en tiempo constante, token de sesión de 256 bits guardado solo como SHA-256, bloqueo a los 5 intentos, freno de 20 fallos por IP en 15 minutos, cookie `HttpOnly` + `Secure` + `SameSite=Strict`, y hash de descarte para que un RUT inexistente no se delate por tiempo de respuesta.
 - Ninguna contraseña entra al repo. El primer administrador se crea con `node scripts/crear-admin.mjs --rut ... --nombre "..."`, que imprime una clave temporal una sola vez. Desde `/panel/usuarios` se crean las demás cuentas, igual con clave temporal.
@@ -145,7 +147,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Las pruebas que tocan la base reemplazan `@/lib/db` con la D1 y el R2 de miniflare. Es la única forma de probar esos módulos sin el contexto de Cloudflare.
 - Los route handlers se prueban llamándolos directo con un `Request` armado a mano: son funciones que reciben un `Request` y devuelven un `Response`, no hace falta levantar Next. `tests/sesion.ts` arma la cookie de sesión sin pasar por el login.
 - Cubren `src/lib`: RUT y contraseñas (`crypto`), firma real de las imágenes y claves de R2 (`imagenes`), límites del formulario (`validar-propiedad`), filtros y orden del listado (`filters`), formatos en es-CL (`format`) y el inventario sobre D1 (`propiedades`).
-- Y los endpoints: login con bloqueo por intentos y freno por IP, cambio de clave, logout, alta y baja de usuarios, CRUD de propiedades, subida y borrado de fotos, reordenar, y la entrega desde R2 en `/fotos`.
+- Y los endpoints: login con bloqueo por intentos y freno por IP, cambio de clave, logout, alta, baja y cambio de rol de usuarios, CRUD de propiedades, subida y borrado de fotos, reordenar, y la entrega desde R2 en `/fotos`.
 - También el contador de visitas: qué cuenta y qué no, el día en hora de Chile y el tope diario.
 - También el formulario de contacto: que la solicitud quede guardada aunque el correo falle o no esté configurado, que solo avise del error cuando no quedó en ninguna parte, el tope por conexión y el borrado desde el panel. Ahí Resend va mockeado, igual que Turnstile en el login.
 - Turnstile va mockeado en las pruebas del login: sale a pedirle el veredicto a Cloudflare. Lo que se prueba es que el login lo respete.
