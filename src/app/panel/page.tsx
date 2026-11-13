@@ -28,6 +28,17 @@ export default async function PanelPage() {
           </Link>
         </article>
 
+        <article className="panel__card">
+          <h2 className="panel__card-title">Solicitudes</h2>
+          <p className="panel__card-text">
+            Lo que llega por los formularios del sitio: consultas, tasaciones y visitas. Quedan guardadas aunque el aviso por correo no
+            salga.
+          </p>
+          <Link className="button button--primary button--sm" href="/panel/solicitudes">
+            Ver solicitudes
+          </Link>
+        </article>
+
         {esAdmin(sesion.rol) ? (
           <article className="panel__card">
             <h2 className="panel__card-title">Usuarios</h2>

@@ -96,7 +96,8 @@ export async function enviarLead(lead: Lead): Promise<EnvioLead> {
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.LEADS_FROM;
 
-  // Sin credenciales, la API responde 503 para que el usuario pueda reintentar.
+  // Sin credenciales no sale el aviso por correo. La solicitud igual queda
+  // guardada en la base antes de llegar acá: ver src/app/api/contacto/route.ts.
   if (!apiKey || !from) return { estado: 'sin-configurar' };
 
   try {

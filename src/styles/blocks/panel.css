@@ -399,3 +399,37 @@
 .panel__accion--orden:disabled {
   border-color: var(--color-gris);
 }
+
+/* Solicitudes: varios datos cortos apilados dentro de una misma celda. */
+.panel__dato {
+  display: block;
+}
+
+.panel__dato--enlace {
+  color: var(--color-petroleo-700);
+}
+
+/* La tabla no corta líneas, salvo en la celda del mensaje, que es texto libre. */
+.panel__celda-texto {
+  min-width: 18rem;
+  max-width: 32rem;
+  white-space: normal;
+}
+
+.panel__mensaje {
+  margin: var(--space-2) 0 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  color: var(--color-texto);
+}
+
+/* La etiqueta sola en su celda, sin un texto antes del que separarse. */
+.panel__etiqueta--sola {
+  margin-left: 0;
+}
+
+/* Una solicitud cuyo aviso por correo no salió. */
+.panel__etiqueta--alerta {
+  background: var(--color-terracota-100);
+  color: var(--color-terracota-700);
+}

@@ -62,8 +62,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `propiedades/`: listado con filtros, y la ficha en `[slug]`.
   - `servicios/[slug]`: corretaje, tasaciones, asesoria, gestion-patrimonial.
   - `contacto/` y `api/contacto/route.ts`.
-  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/` y `propiedades/`.
-  - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/` y `api/panel/propiedades/`.
+  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/`, `propiedades/` y `solicitudes/`.
+  - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/`, `api/panel/propiedades/` y `api/panel/solicitudes/`.
   - `fotos/[...clave]`: entrega las fotos desde R2. Va fuera de `api/` porque a esas rutas se les aplica una CSP con `sandbox` que rompe el visor del navegador.
   - `sitemap.ts`, `robots.ts`, `not-found.tsx`, `icon.svg`.
 - `src/components`:
@@ -79,6 +79,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `format.ts`: números en es-CL y precios en UF/CLP.
   - `filters.ts`: filtros y orden del listado.
   - `leads.ts`: arma el correo del lead (asunto, texto y HTML) y lo envía con Resend.
+  - `solicitudes.ts`: guarda en D1 lo que llega por los formularios, mide el tope contra el abuso y lo lista para el panel.
   - `crypto.ts`: funciones puras del acceso (PBKDF2, tokens, RUT, política de contraseñas). Sin imports de Next ni Cloudflare, para que `scripts/crear-admin.mjs` las use tal cual.
   - `auth.ts`: sesiones, cookies y bitácora sobre D1. Reexporta lo de `crypto.ts`.
   - `guardias.ts`: `exigirSesion` y `exigirAdmin` para Server Components. Van aparte porque `redirect()` no sirve dentro de un route handler.
@@ -140,20 +141,21 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Los route handlers se prueban llamándolos directo con un `Request` armado a mano: son funciones que reciben un `Request` y devuelven un `Response`, no hace falta levantar Next. `tests/sesion.ts` arma la cookie de sesión sin pasar por el login.
 - Cubren `src/lib`: RUT y contraseñas (`crypto`), firma real de las imágenes y claves de R2 (`imagenes`), límites del formulario (`validar-propiedad`), filtros y orden del listado (`filters`), formatos en es-CL (`format`) y el inventario sobre D1 (`propiedades`).
 - Y los endpoints: login con bloqueo por intentos y freno por IP, cambio de clave, logout, alta y baja de usuarios, CRUD de propiedades, subida y borrado de fotos, reordenar, y la entrega desde R2 en `/fotos`.
+- También el formulario de contacto: que la solicitud quede guardada aunque el correo falle o no esté configurado, que solo avise del error cuando no quedó en ninguna parte, el tope por conexión y el borrado desde el panel. Ahí Resend va mockeado, igual que Turnstile en el login.
 - Turnstile va mockeado en las pruebas del login: sale a pedirle el veredicto a Cloudflare. Lo que se prueba es que el login lo respete.
-- Lo que no cubren: los componentes, los Server Components del panel (`guardias.ts`), el envío de correos de `leads.ts` y la propia llamada a Turnstile.
+- Lo que no cubren: los componentes, los Server Components del panel (`guardias.ts`), la llamada real a Resend de `leads.ts` y la propia llamada a Turnstile.
 
 ## Contenido de ejemplo (reemplazar antes de publicar)
 
 - **Propiedades:** las 20 publicadas son avisos de otra corredora, Palma Fuentes, con sus fotos. Antes de salir con el dominio propio hay que confirmar que existe autorización para publicarlos, y revisar que cada aviso siga vigente.
 - **Contacto:** en `site.ts`, teléfono, WhatsApp, email y dirección son placeholders **y ya están en vivo**: el botón de WhatsApp del sitio abre un chat con un número que no es de la firma. `site.url` es `https://www.cotaclara.cl`.
 - **Honorarios:** los de `services.ts` son referenciales; hay que confirmarlos con el cliente.
-- **Leads:** `api/contacto` valida nombre, email, el consentimiento `acepto` y el honeypot `empresa`, y manda el lead por correo con Resend (`src/lib/leads.ts`). Necesita `RESEND_API_KEY` y `LEADS_FROM`: en `.env.local` para desarrollo y como secretos del Worker en producción (`npx wrangler secret put RESEND_API_KEY`). **Sin esas dos la ruta responde 503 y el lead se pierde**: no se guarda en ninguna parte ni queda en el log. Si Resend falla, responde 502. En los dos casos el `LeadForm` muestra una alerta genérica. Falta verificar el dominio cotaclara.cl en Resend.
+- **Leads:** `api/contacto` valida nombre, email, el consentimiento `acepto` y el honeypot `empresa`. **Primero guarda la solicitud en la tabla `solicitudes` y después intenta el aviso por correo** con Resend (`src/lib/leads.ts`): el correo es solo el aviso, el registro es la base. Responde `ok` si quedó guardada o si el correo salió; recién si fallan las dos cosas responde 503 o 502. Las solicitudes se ven y se borran en `/panel/solicitudes`, y borrarlas es lo que cumple la promesa de privacidad del sitio. Tope contra el abuso: 5 por conexión y 100 en total cada diez minutos; pasado eso responde 429 y no guarda. En el log van el id y el estado, nunca los datos de la persona. Para que además llegue el correo hacen falta `RESEND_API_KEY` y `LEADS_FROM`: en `.env.local` para desarrollo y como secretos del Worker en producción (`npx wrangler secret put RESEND_API_KEY`). Falta verificar el dominio cotaclara.cl en Resend.
 
 ## Pendientes sugeridos
 
 1. **Crear el primer administrador en producción**: `node scripts/crear-admin.mjs --rut ... --nombre "..." --remote`. La base real tiene 0 usuarios, así que hoy nadie puede entrar al panel.
-2. **Formulario de contacto**: verificar cotaclara.cl en Resend y cargar `RESEND_API_KEY` y `LEADS_FROM` como secretos del Worker. Hasta entonces el formulario le responde error a cada visitante y esa solicitud se pierde.
+2. **Aviso por correo de las solicitudes**: verificar cotaclara.cl en Resend y cargar `RESEND_API_KEY` y `LEADS_FROM` como secretos del Worker. Mientras tanto las solicitudes no se pierden, pero solo se ven entrando a `/panel/solicitudes`: nadie recibe un aviso.
 3. **Datos de contacto reales** en `site.ts`: teléfono, WhatsApp, correo y dirección.
 4. **Confirmar la autorización** para publicar los avisos y las fotos de Palma Fuentes.
 5. Dominio cotaclara.cl apuntando al Worker. Mientras tanto `robots.txt` mantiene el sitio fuera de los buscadores.

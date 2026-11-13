@@ -115,3 +115,26 @@ CREATE TABLE IF NOT EXISTS propiedad_fotos (
   FOREIGN KEY (propiedad_id) REFERENCES propiedades(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_fotos_propiedad ON propiedad_fotos(propiedad_id, orden);
+
+-- Solicitudes que llegan por los formularios del sitio. Se guardan antes de
+-- intentar el correo. El correo es solo el aviso y esta tabla es el registro,
+-- así una solicitud no se pierde aunque el envío falle o no esté configurado.
+-- La ip sirve para frenar a quien manda muchas seguidas y se borra con la fila.
+CREATE TABLE IF NOT EXISTS solicitudes (
+  id        INTEGER PRIMARY KEY AUTOINCREMENT,
+  variante  TEXT NOT NULL DEFAULT 'contacto' CHECK(variante IN ('contacto','tasacion','visita')),
+  nombre    TEXT NOT NULL,
+  email     TEXT NOT NULL,
+  telefono  TEXT NOT NULL DEFAULT '',
+  tipo      TEXT NOT NULL DEFAULT '',
+  comuna    TEXT NOT NULL DEFAULT '',
+  motivo    TEXT NOT NULL DEFAULT '',
+  fecha     TEXT NOT NULL DEFAULT '',
+  mensaje   TEXT NOT NULL DEFAULT '',
+  propiedad TEXT NOT NULL DEFAULT '',
+  correo    TEXT NOT NULL DEFAULT 'pendiente' CHECK(correo IN ('pendiente','enviado','sin-configurar','error')),
+  ip        TEXT,
+  creada_en TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_solicitudes_creada ON solicitudes(creada_en);
+CREATE INDEX IF NOT EXISTS idx_solicitudes_ip ON solicitudes(ip, creada_en);
