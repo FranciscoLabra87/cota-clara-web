@@ -142,3 +142,15 @@ CREATE TABLE IF NOT EXISTS solicitudes (
 );
 CREATE INDEX IF NOT EXISTS idx_solicitudes_creada ON solicitudes(creada_en);
 CREATE INDEX IF NOT EXISTS idx_solicitudes_ip ON solicitudes(ip, creada_en);
+
+-- Visitas a las fichas públicas, sumadas por día. Una fila por propiedad y
+-- por día, no una por visita: así la tabla crece con el calendario y no con
+-- el tráfico, y no guarda nada de quién visitó.
+CREATE TABLE IF NOT EXISTS propiedad_visitas (
+  propiedad_id INTEGER NOT NULL,
+  dia          TEXT NOT NULL,                   -- YYYY-MM-DD en hora de Chile
+  total        INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (propiedad_id, dia),
+  FOREIGN KEY (propiedad_id) REFERENCES propiedades(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_visitas_dia ON propiedad_visitas(dia);

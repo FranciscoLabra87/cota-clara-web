@@ -409,6 +409,11 @@
   color: var(--color-petroleo-700);
 }
 
+/* Un dato de apoyo bajo el principal, como las visitas de la semana. */
+.panel__dato--suave {
+  color: var(--color-texto-suave);
+}
+
 /* La tabla no corta líneas, salvo en la celda del mensaje, que es texto libre. */
 .panel__celda-texto {
   min-width: 18rem;

@@ -4,10 +4,17 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { nombreTipo } from '@/data/properties';
-import { formatPrecio } from '@/lib/format';
+import { formatNumero, formatPrecio } from '@/lib/format';
 import type { PropiedadAdmin } from '@/lib/propiedades';
+import type { Visitas } from '@/lib/visitas';
 
-export function PropiedadesPanel({ propiedades }: { propiedades: PropiedadAdmin[] }) {
+type Props = {
+  propiedades: PropiedadAdmin[];
+  /** Por id de propiedad. Las que nunca tuvieron una visita no vienen. */
+  visitas: Record<number, Visitas>;
+};
+
+export function PropiedadesPanel({ propiedades, visitas }: Props) {
   const router = useRouter();
   const [trabajando, setTrabajando] = useState(false);
   const [alerta, setAlerta] = useState<string | null>(null);
@@ -74,6 +81,7 @@ export function PropiedadesPanel({ propiedades }: { propiedades: PropiedadAdmin[
                 <th scope="col">Operación</th>
                 <th scope="col">Precio</th>
                 <th scope="col">Fotos</th>
+                <th scope="col">Visitas</th>
                 <th scope="col">Estado</th>
                 <th scope="col">
                   <span className="visually-hidden">Acciones</span>
@@ -90,6 +98,10 @@ export function PropiedadesPanel({ propiedades }: { propiedades: PropiedadAdmin[
                   <td>{p.operacion === 'venta' ? 'Venta' : 'Arriendo'}</td>
                   <td>{formatPrecio(p.precio)}</td>
                   <td>{p.imagenes?.length ?? 0}</td>
+                  <td>
+                    {formatNumero(visitas[p.id]?.total ?? 0)}
+                    <span className="panel__dato panel__dato--suave">{formatNumero(visitas[p.id]?.semana ?? 0)} en 7 días</span>
+                  </td>
                   <td>{p.estado === 'PUBLICADA' ? 'Publicada' : 'Borrador'}</td>
                   <td className="panel__acciones">
                     <Link className="panel__accion" href={`/panel/propiedades/${p.id}`}>

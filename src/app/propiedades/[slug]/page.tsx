@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { ContadorVisita } from '@/components/ContadorVisita';
 import { Gallery, type GalleryItem } from '@/components/Gallery';
 import { Icon } from '@/components/Icon';
 import { Illustration } from '@/components/Illustration';
@@ -95,6 +96,7 @@ export default async function PropiedadPage({ params }: Params) {
 
   return (
     <>
+      <ContadorVisita slug={p.slug} />
       <PageHero
         migas={[{ href: '/', label: 'Inicio' }, { href: '/propiedades', label: 'Propiedades' }, { label: tituloPropiedad(p) }]}
         title={tituloPropiedad(p)}

@@ -80,6 +80,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `filters.ts`: filtros y orden del listado.
   - `leads.ts`: arma el correo del lead (asunto, texto y HTML) y lo envía con Resend.
   - `solicitudes.ts`: guarda en D1 lo que llega por los formularios, mide el tope contra el abuso y lo lista para el panel.
+  - `visitas.ts`: el contador de visitas de las fichas, sumado por propiedad y por día en hora de Chile.
   - `crypto.ts`: funciones puras del acceso (PBKDF2, tokens, RUT, política de contraseñas). Sin imports de Next ni Cloudflare, para que `scripts/crear-admin.mjs` las use tal cual.
   - `auth.ts`: sesiones, cookies y bitácora sobre D1. Reexporta lo de `crypto.ts`.
   - `guardias.ts`: `exigirSesion` y `exigirAdmin` para Server Components. Van aparte porque `redirect()` no sirve dentro de un route handler.
@@ -98,6 +99,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - La autorización se repite en cada página (`exigirSesion` / `exigirAdmin`) y en cada route handler. No hay middleware: OpenNext todavía no soporta el runtime Node de `proxy.ts`.
 - Clonado del sistema de AG Casco Histórico: PBKDF2 de 100.000 iteraciones con salt, comparación en tiempo constante, token de sesión de 256 bits guardado solo como SHA-256, bloqueo a los 5 intentos, freno de 20 fallos por IP en 15 minutos, cookie `HttpOnly` + `Secure` + `SameSite=Strict`, y hash de descarte para que un RUT inexistente no se delate por tiempo de respuesta.
 - Ninguna contraseña entra al repo. El primer administrador se crea con `node scripts/crear-admin.mjs --rut ... --nombre "..."`, que imprime una clave temporal una sola vez. Desde `/panel/usuarios` se crean las demás cuentas, igual con clave temporal.
+- Si nadie puede entrar a resetear una clave (por ejemplo, el único administrador la perdió), está `node scripts/resetear-clave.mjs --rut ... [--clave ...] --remote`. Sin `--clave` genera una al azar; con `--clave` usa la indicada. En los dos casos queda temporal, desbloquea la cuenta, cierra sus sesiones y lo anota en la bitácora.
+- El administrador principal es el RUT 16.367.941-8. Su clave inicial se dejó, a pedido suyo, como los 4 últimos números del RUT antes del guion; al primer ingreso el sistema obliga a cambiarla. Para las cuentas de los socios el panel genera claves al azar, a propósito: una clave derivada del RUT la adivina cualquiera que lo conozca, y la cuenta queda expuesta hasta el primer ingreso de su dueño.
 - Cambiar o resetear una contraseña cierra todas las sesiones de esa persona. Desactivar una cuenta también.
 - Turnstile es opcional: sin `TURNSTILE_SECRET_KEY` el login funciona sin widget. Apenas se define el secreto pasa a ser obligatorio.
 - Todo queda en `log_eventos`: `LOGIN_OK`, `LOGIN_FAIL`, `CLAVE_CAMBIADA`, `USUARIO_CREADO`, etc.
@@ -118,6 +121,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - También puede llevar `frente` y `fondo`: las medidas del terreno en metros, con hasta dos decimales. Son opcionales y pueden venir las dos, una o ninguna. Van aparte de los m² porque no se deducen de ellos, y la ficha las muestra como «16 m de frente × 22,5 m de fondo».
 - El listado manda al navegador una versión recortada de cada propiedad (sin descripción, características ni galería): `PropertyExplorer` solo necesita lo que muestra la tarjeta.
 - Las fotos se sirven con `unoptimized`: el original de R2, sin redimensionar. Las portadas pesan unos 200 KB cada una.
+- **Visitas:** la ficha avisa con un `POST /api/visitas` desde el navegador al abrirse (`ContadorVisita`), una vez por ficha y por pestaña. Se cuenta desde el navegador y no al renderizar en el servidor porque Next precarga las fichas cuando sus enlaces aparecen en pantalla, y eso inflaría la cuenta. No cuentan los borradores, las visitas del equipo con sesión abierta ni los buscadores. Se suman en `propiedad_visitas`, una fila por propiedad y por día en hora de Chile, sin guardar nada de quién visitó. Tope de 20.000 visitas contadas por día entre todas las propiedades, para que un script no gaste la cuota de escrituras de D1 y tumbe el formulario y el panel. El panel muestra el total y los últimos 7 días. Son aproximadas: un script podría inflarlas hasta el tope.
 
 ## Cabeceras de seguridad
 
@@ -142,6 +146,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Los route handlers se prueban llamándolos directo con un `Request` armado a mano: son funciones que reciben un `Request` y devuelven un `Response`, no hace falta levantar Next. `tests/sesion.ts` arma la cookie de sesión sin pasar por el login.
 - Cubren `src/lib`: RUT y contraseñas (`crypto`), firma real de las imágenes y claves de R2 (`imagenes`), límites del formulario (`validar-propiedad`), filtros y orden del listado (`filters`), formatos en es-CL (`format`) y el inventario sobre D1 (`propiedades`).
 - Y los endpoints: login con bloqueo por intentos y freno por IP, cambio de clave, logout, alta y baja de usuarios, CRUD de propiedades, subida y borrado de fotos, reordenar, y la entrega desde R2 en `/fotos`.
+- También el contador de visitas: qué cuenta y qué no, el día en hora de Chile y el tope diario.
 - También el formulario de contacto: que la solicitud quede guardada aunque el correo falle o no esté configurado, que solo avise del error cuando no quedó en ninguna parte, el tope por conexión y el borrado desde el panel. Ahí Resend va mockeado, igual que Turnstile en el login.
 - Turnstile va mockeado en las pruebas del login: sale a pedirle el veredicto a Cloudflare. Lo que se prueba es que el login lo respete.
 - Lo que no cubren: los componentes, los Server Components del panel (`guardias.ts`), la llamada real a Resend de `leads.ts` y la propia llamada a Turnstile.
@@ -155,7 +160,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 
 ## Pendientes sugeridos
 
-1. **Crear el primer administrador en producción**: `node scripts/crear-admin.mjs --rut ... --nombre "..." --remote`. La base real tiene 0 usuarios, así que hoy nadie puede entrar al panel.
+1. **Primer ingreso del administrador** (16.367.941-8) y cambio de su clave inicial. Mientras no entre, la cuenta tiene una clave que se deduce del RUT.
 2. **Aviso por correo de las solicitudes**: verificar cotaclara.cl en Resend y cargar `RESEND_API_KEY` y `LEADS_FROM` como secretos del Worker. Mientras tanto las solicitudes no se pierden, pero solo se ven entrando a `/panel/solicitudes`: nadie recibe un aviso.
 3. **Datos de contacto reales** en `site.ts`: teléfono, WhatsApp, correo y dirección.
 4. **Confirmar la autorización** para publicar los avisos y las fotos de Palma Fuentes.
