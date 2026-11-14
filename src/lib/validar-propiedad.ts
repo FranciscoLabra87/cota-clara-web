@@ -1,5 +1,9 @@
 import type { DatosPropiedad, Estado } from './propiedades';
 import { slugificar } from './propiedades';
+import { parrafos } from './texto';
+
+const MAX_PARRAFOS = 40;
+const MAX_LARGO_PARRAFO = 2000;
 
 // Validación de lo que manda el formulario del panel. Vive aparte de las
 // rutas porque la usan tanto crear como actualizar, y así las dos aplican
@@ -129,6 +133,18 @@ export function validarPropiedad(body: Record<string, unknown>): Resultado {
   const resumen = texto(body.resumen, 300);
   if (!resumen) return { ok: false, error: 'Escribe el resumen que se ve en la tarjeta' };
 
+  // La descripción se rechaza en vez de cortarse: es el texto largo y libre de
+  // la ficha, y recortarlo en silencio haría perder lo que se escribió. Las
+  // listas cortas (etiquetas, características) sí se recortan a su máximo.
+  const brutos = Array.isArray(body.descripcion) ? body.descripcion : typeof body.descripcion === 'string' ? parrafos(body.descripcion) : [];
+  const descripcion = brutos.map((p) => (typeof p === 'string' ? p.trim() : '')).filter(Boolean);
+  if (descripcion.length > MAX_PARRAFOS) {
+    return { ok: false, error: `La descripción tiene más de ${MAX_PARRAFOS} párrafos. Junta algunos.` };
+  }
+  if (descripcion.some((p) => p.length > MAX_LARGO_PARRAFO)) {
+    return { ok: false, error: 'Un párrafo de la descripción pasa de 2.000 caracteres. Pártelo con una línea en blanco.' };
+  }
+
   return {
     ok: true,
     datos: {
@@ -151,7 +167,7 @@ export function validarPropiedad(body: Record<string, unknown>): Resultado {
       orientacion: texto(body.orientacion, 40),
       etiquetas: listaTexto(body.etiquetas, 8, 60),
       resumen,
-      descripcion: listaTexto(body.descripcion, 40, 2000),
+      descripcion,
       caracteristicas: listaTexto(body.caracteristicas, 40, 120),
       destacada: body.destacada === true || body.destacada === 'true' || body.destacada === 'on',
       publicada,

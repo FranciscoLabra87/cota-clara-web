@@ -42,28 +42,35 @@ export async function superaElTope(ip: string | null): Promise<boolean> {
   return fila.general >= MAX_GENERAL || (ip !== null && fila.de_esta_ip >= MAX_POR_IP);
 }
 
+// La ip solo sirve para el tope, que mira los últimos diez minutos. Guardarla
+// más allá de eso es acumular un dato personal que nadie usa, así que se
+// borra pasado un día. Se aprovecha cada solicitud nueva para hacerlo.
+const LIMPIAR_IPS = `UPDATE solicitudes SET ip = NULL WHERE ip IS NOT NULL AND creada_en < datetime('now', '-1 day')`;
+
 export async function guardarSolicitud(lead: Lead, ip: string | null): Promise<number> {
   const db = await obtenerDB();
-  const fila = await db
-    .prepare(
-      `INSERT INTO solicitudes (variante, nombre, email, telefono, tipo, comuna, motivo, fecha, mensaje, propiedad, ip)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`,
-    )
-    .bind(
-      varianteDe(lead.variante),
-      lead.nombre,
-      lead.email,
-      lead.telefono,
-      lead.tipo,
-      lead.comuna,
-      lead.motivo,
-      lead.fecha,
-      lead.mensaje,
-      lead.propiedad,
-      ip,
-    )
-    .first<{ id: number }>();
-  return fila!.id;
+  const [insercion] = await db.batch<{ id: number }>([
+    db
+      .prepare(
+        `INSERT INTO solicitudes (variante, nombre, email, telefono, tipo, comuna, motivo, fecha, mensaje, propiedad, ip)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id`,
+      )
+      .bind(
+        varianteDe(lead.variante),
+        lead.nombre,
+        lead.email,
+        lead.telefono,
+        lead.tipo,
+        lead.comuna,
+        lead.motivo,
+        lead.fecha,
+        lead.mensaje,
+        lead.propiedad,
+        ip,
+      ),
+    db.prepare(LIMPIAR_IPS),
+  ]);
+  return insercion.results[0].id;
 }
 
 /** Anota qué pasó con el aviso por correo de una solicitud ya guardada. */

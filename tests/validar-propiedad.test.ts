@@ -52,9 +52,14 @@ describe('lo que acepta', () => {
     expect(datosDe({ ...base(), slug: '  Casa Ñuñoa / Plaza!!  ' }).slug).toBe('casa-nunoa-plaza');
   });
 
-  it('parte la descripción por líneas y descarta las vacías', () => {
+  it('parte la descripción en párrafos por línea en blanco y descarta los vacíos', () => {
     const datos = datosDe({ ...base(), descripcion: 'Primer párrafo.\n\n  \nSegundo párrafo.' });
     expect(datos.descripcion).toEqual(['Primer párrafo.', 'Segundo párrafo.']);
+  });
+
+  it('respeta los saltos de línea dentro de un párrafo', () => {
+    const datos = datosDe({ ...base(), descripcion: ['Casa en La Reina\nDormitorios: 4\nBaños: 3'] });
+    expect(datos.descripcion).toEqual(['Casa en La Reina\nDormitorios: 4\nBaños: 3']);
   });
 
   it('acepta la lista ya partida en arreglo', () => {
@@ -171,5 +176,18 @@ describe('dimensiones del terreno', () => {
       expect(errorDe({ ...base(), fondo: malo })).toMatch(/frente y el fondo/i);
     }
     expect(errorDe({ ...base(), frente: ['12'] })).toMatch(/frente y el fondo/i);
+  });
+});
+
+describe('descripción larga', () => {
+  it('rechaza un párrafo de más de 2.000 caracteres en vez de cortarlo', () => {
+    expect(errorDe({ ...base(), descripcion: ['a'.repeat(2001)] })).toMatch(/2\.000 caracteres/);
+    expect(datosDe({ ...base(), descripcion: ['a'.repeat(2000)] }).descripcion[0]).toHaveLength(2000);
+  });
+
+  it('rechaza más de 40 párrafos en vez de botar los que sobran', () => {
+    const muchos = Array.from({ length: 41 }, (_, i) => `Párrafo ${i}`);
+    expect(errorDe({ ...base(), descripcion: muchos })).toMatch(/40 párrafos/);
+    expect(datosDe({ ...base(), descripcion: muchos.slice(0, 40) }).descripcion).toHaveLength(40);
   });
 });

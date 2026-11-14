@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useId, useState, type FormEvent } from 'react';
 import { tipos } from '@/data/properties';
 import type { PropiedadAdmin } from '@/lib/propiedades';
+import { lineas, parrafos } from '@/lib/texto';
 
 type Foto = { id: number; url: string };
 
@@ -12,12 +13,6 @@ type Props = {
   fotos?: Foto[];
   comunas: string[];
 };
-
-const lineas = (valor: string) =>
-  valor
-    .split('\n')
-    .map((l) => l.trim())
-    .filter(Boolean);
 
 const hoy = () => new Date().toISOString().slice(0, 10);
 
@@ -62,7 +57,7 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
       gastosComunes: datos.get('gastosComunes'),
       etiquetas: lineas(String(datos.get('etiquetas') ?? '')),
       resumen: datos.get('resumen'),
-      descripcion: lineas(String(datos.get('descripcion') ?? '')),
+      descripcion: parrafos(String(datos.get('descripcion') ?? '')),
       caracteristicas: lineas(String(datos.get('caracteristicas') ?? '')),
       destacada: datos.get('destacada') === 'on',
       publicada: datos.get('publicada'),
@@ -353,8 +348,10 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
             <label className="field__label" htmlFor={`${id}-descripcion`}>
               Descripción
             </label>
-            <textarea className="field__control field__control--textarea" rows={6} defaultValue={(propiedad?.descripcion ?? []).join('\n')} {...campo('descripcion')} />
-            <span className="field__hint">Un párrafo por línea.</span>
+            <textarea className="field__control field__control--textarea" rows={10} defaultValue={(propiedad?.descripcion ?? []).join('\n\n')} {...campo('descripcion')} />
+            <span className="field__hint">
+              Deja una línea en blanco entre párrafos. Los saltos de línea dentro de un párrafo se respetan tal cual en la ficha.
+            </span>
           </div>
           <div className="field">
             <label className="field__label" htmlFor={`${id}-caracteristicas`}>

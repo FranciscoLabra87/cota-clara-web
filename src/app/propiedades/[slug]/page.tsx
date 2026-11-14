@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { ContadorVisita } from '@/components/ContadorVisita';
 import { Gallery, type GalleryItem } from '@/components/Gallery';
@@ -25,9 +26,38 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const p = await propiedadPorSlug(slug);
   if (!p) return { title: 'Propiedad no encontrada' };
+
+  const titulo = `${tituloPropiedad(p)} · ${formatPrecio(p.precio)}`;
+
+  // La portada es la vista previa al compartir la ficha por WhatsApp o redes.
+  // Su URL se arma con el host que recibió la visita y no con site.url: hasta
+  // que el dominio propio apunte al sitio, una URL de cotaclara.cl no carga y
+  // la vista previa saldría sin foto.
+  const host = (await headers()).get('host');
+  const portada = p.imagenes?.[0] && host ? `https://${host}${p.imagenes[0]}` : null;
+
   return {
-    title: `${tituloPropiedad(p)} · ${formatPrecio(p.precio)}`,
+    title: titulo,
     description: p.resumen,
+    // La canónica sí va al dominio propio (metadataBase): es la que deben
+    // guardar los buscadores, aunque la ficha se abra desde otra dirección.
+    alternates: { canonical: `/propiedades/${p.slug}` },
+    // Next no mezcla este bloque con el del layout: lo reemplaza entero, así
+    // que el nombre del sitio y el idioma se repiten acá.
+    openGraph: {
+      type: 'website',
+      locale: 'es_CL',
+      siteName: 'Cota Clara · Patrimonio Inmobiliario',
+      title: titulo,
+      description: p.resumen,
+      ...(portada ? { images: [{ url: portada, alt: tituloPropiedad(p) }] } : {}),
+    },
+    twitter: {
+      card: portada ? 'summary_large_image' : 'summary',
+      title: titulo,
+      description: p.resumen,
+      ...(portada ? { images: [portada] } : {}),
+    },
   };
 }
 
@@ -138,8 +168,9 @@ export default async function PropiedadPage({ params }: Params) {
             <div className="property__block">
               <h2 className="property__title">Descripción</h2>
               <div className="property__text">
-                {p.descripcion.map((parrafo) => (
-                  <p key={parrafo.slice(0, 24)}>{parrafo}</p>
+                {/* La posición como clave: dos párrafos pueden empezar igual. */}
+                {p.descripcion.map((parrafo, i) => (
+                  <p key={i}>{parrafo}</p>
                 ))}
               </div>
               {datos.length ? <dl className="facts">

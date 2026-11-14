@@ -11,6 +11,7 @@ import { servicios } from '@/data/services';
 import { site, whatsappHref } from '@/data/site';
 import { opcionesPrecioDisponibles } from '@/lib/filters';
 import { formatPrecio } from '@/lib/format';
+import { jsonLd } from '@/lib/json-ld';
 import { propiedadesPublicadas } from '@/lib/propiedades';
 
 // La portada muestra las destacadas y cuenta propiedades por comuna, así que
@@ -78,7 +79,8 @@ export default async function HomePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          // Con jsonLd y no JSON.stringify: las comunas vienen de la base.
+          __html: jsonLd({
             '@context': 'https://schema.org',
             '@type': 'RealEstateAgent',
             name: 'Cota Clara · Patrimonio Inmobiliario',

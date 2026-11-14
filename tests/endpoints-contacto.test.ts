@@ -214,3 +214,19 @@ describe('solicitudes en el panel', () => {
     expect((await borrar('abc', cookie)).status).toBe(400);
   });
 });
+
+describe('retención de la conexión', () => {
+  it('cada solicitud nueva borra la ip de las de hace más de un día, y conserva su contenido', async () => {
+    await env.DB.prepare(
+      "INSERT INTO solicitudes (nombre, email, ip, creada_en) VALUES ('Antigua', 'a@example.com', '203.0.113.90', datetime('now', '-2 days')), ('Reciente', 'r@example.com', '203.0.113.91', datetime('now', '-1 hour'))",
+    ).run();
+
+    await enviar(formulario(), '203.0.113.92');
+
+    const ips = Object.fromEntries((await filas()).map((f) => [f.nombre, f.ip]));
+    expect(ips['Antigua']).toBeNull();
+    expect(ips['Reciente']).toBe('203.0.113.91');
+    expect(ips['Camila Rojas']).toBe('203.0.113.92');
+    expect(await filas()).toHaveLength(3);
+  });
+});
