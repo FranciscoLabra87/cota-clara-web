@@ -11,7 +11,7 @@ export default async function FichasPage() {
   const propiedades = await propiedadesDelPanel();
   return <>
     <h1 className="panel__title">Fichas técnicas</h1>
-    <p className="panel__intro">Selecciona una propiedad, completa sus antecedentes y genera una ficha con la identidad de Cota Clara para imprimir o guardar en PDF.</p>
+    <p className="panel__intro">Selecciona una propiedad, elige sus fotos y descarga una ficha PDF con la identidad de Cota Clara, lista para imprimir y llevar a tus visitas.</p>
     <div className="panel__grid">
       {propiedades.map((p) => <article key={p.id} className="panel__card">
         <span className="panel__badge">CC-{p.id} · {p.estado === 'PUBLICADA' ? 'Publicada' : 'Borrador'}</span>

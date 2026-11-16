@@ -19,13 +19,15 @@ const campos = [
 
 export function FichaTecnicaEditor({ propiedad, antecedentes, emitida }: { propiedad: PropiedadAdmin; antecedentes: FichaTecnica; emitida: string }) {
   const formulario = useRef<HTMLFormElement>(null);
-  const documento = useRef<HTMLElement>(null);
   const [guardados, setGuardados] = useState(antecedentes);
   const [interna, setInterna] = useState(false);
   const [sucio, setSucio] = useState(false);
   const [ocupado, setOcupado] = useState(false);
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
+  const [errorPdf, setErrorPdf] = useState('');
+  const [mensajePdf, setMensajePdf] = useState('');
+  const [fotosPdf, setFotosPdf] = useState<number[]>(() => (propiedad.imagenes ?? []).slice(0, 6).map((_, i) => i));
   const ficha = presentarFicha(propiedad, guardados, interna);
 
   async function guardar(evento: React.FormEvent<HTMLFormElement>) {
@@ -51,13 +53,35 @@ export function FichaTecnicaEditor({ propiedad, antecedentes, emitida }: { propi
     } finally { setOcupado(false); }
   }
 
-  async function imprimir() {
+  async function descargar() {
     if (sucio) return;
     setOcupado(true);
+    setErrorPdf('');
+    setMensajePdf('');
     try {
-      await document.fonts.ready;
-      await Promise.all(Array.from(documento.current?.querySelectorAll('img') ?? []).map((img) => img.decode().catch(() => undefined)));
-      window.print();
+      const parametros = new URLSearchParams({ version: interna ? 'interna' : 'cliente', fotos: fotosPdf.length ? fotosPdf.join(',') : 'ninguna' });
+      const respuesta = await fetch(`/api/panel/propiedades/${propiedad.id}/ficha/pdf?${parametros}`);
+      if (!respuesta.ok) {
+        const datos = await respuesta.json().catch(() => ({})) as { error?: string };
+        setErrorPdf(datos.error || 'No pudimos generar el PDF. Intenta de nuevo.');
+        return;
+      }
+      if (!respuesta.headers.get('Content-Type')?.includes('application/pdf')) {
+        setErrorPdf('La respuesta no es un PDF. Vuelve a iniciar sesión e intenta de nuevo.');
+        return;
+      }
+      const archivo = await respuesta.blob();
+      const url = URL.createObjectURL(archivo);
+      const enlace = document.createElement('a');
+      enlace.href = url;
+      enlace.download = respuesta.headers.get('Content-Disposition')?.match(/filename="([^"]+)"/)?.[1] || `Ficha_Cota_Clara_CC-${propiedad.id}.pdf`;
+      document.body.appendChild(enlace);
+      enlace.click();
+      enlace.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setMensajePdf('PDF listo. La descarga se inició; puedes abrirlo e imprimirlo en tamaño A4.');
+    } catch {
+      setErrorPdf('No pudimos conectar para descargar la ficha. Tus antecedentes siguen guardados.');
     } finally { setOcupado(false); }
   }
 
@@ -114,17 +138,29 @@ export function FichaTecnicaEditor({ propiedad, antecedentes, emitida }: { propi
         <div className="ficha-tool__export">
           <h2>Generar ficha técnica</h2>
           <label htmlFor="ficha-version">Versión del documento</label>
-          <select id="ficha-version" className="field__control" value={interna ? 'interna' : 'cliente'} onChange={(e) => setInterna(e.target.value === 'interna')}>
+          <select id="ficha-version" className="field__control" disabled={ocupado} value={interna ? 'interna' : 'cliente'} onChange={(e) => setInterna(e.target.value === 'interna')}>
             <option value="cliente">Para cliente · sin observaciones internas</option>
             <option value="interna">Uso interno · incluye observaciones</option>
           </select>
-          <p>La impresión abre el diálogo del navegador. Elige «Guardar como PDF» para descargar la ficha.</p>
-          <button className="button button--primary" type="button" onClick={imprimir} disabled={ocupado || sucio}>Imprimir / guardar PDF</button>
+          <p>Descarga una ficha A4 con portada, fotos, características y antecedentes, lista para imprimir y llevar a tus visitas.</p>
+          <p className="field__hint">El PDF para clientes muestra los antecedentes disponibles. El resumen inferior también señala los datos que falta confirmar.</p>
+          {propiedad.imagenes?.length ? <fieldset className="ficha-tool__fieldset" disabled={ocupado}>
+            <legend>Fotografías del PDF · {fotosPdf.length}/6</legend>
+            <p className="field__hint">La primera seleccionada se usa en la portada. Puedes incluir hasta 6 fotos.</p>
+            <div className="ficha-tool__photos">{propiedad.imagenes.map((foto, i) => <label className="ficha-tool__photo" key={foto}>
+              <img src={foto} alt={`Fotografía ${i + 1}`} loading="lazy" />
+              <span><input type="checkbox" checked={fotosPdf.includes(i)} disabled={!fotosPdf.includes(i) && fotosPdf.length >= 6} onChange={(e) => setFotosPdf((actual) => e.target.checked ? [...actual, i] : actual.filter((n) => n !== i))} /> Foto {i + 1}</span>
+            </label>)}</div>
+          </fieldset> : null}
+          <button className="button button--primary" type="button" onClick={descargar} disabled={ocupado || sucio}>{ocupado ? 'Preparando…' : 'Descargar PDF para imprimir'}</button>
+          {sucio ? <p className="field__hint">Guarda los cambios antes de descargar.</p> : null}
+          {errorPdf ? <p className="acceso__alerta" role="alert">{errorPdf}</p> : null}
+          <p role="status">{mensajePdf}</p>
           {propiedad.estado !== 'PUBLICADA' ? <p>Propiedad en borrador: el documento queda marcado y no incluye enlace público.</p> : null}
         </div>
       </div>
 
-      <article ref={documento} className="ficha-document" aria-label="Vista previa de la ficha técnica">
+      <article className="ficha-document" aria-label="Resumen de los datos de la ficha">
         <header className="ficha-document__header">
           <Logo />
           <div><p>Ficha técnica · CC-{propiedad.id}</p><p>{emitida}</p></div>
