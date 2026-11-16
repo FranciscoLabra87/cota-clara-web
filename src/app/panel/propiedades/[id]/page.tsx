@@ -43,6 +43,7 @@ export default async function EditarPropiedadPage({ params }: Params) {
         )}
       </p>
       <PropiedadForm propiedad={propiedad} fotos={fotos} comunas={[...comunas]} />
+      <Link className="button button--outline" href={`/panel/propiedades/${id}/ficha`}>Preparar ficha técnica</Link>
     </>
   );
 }

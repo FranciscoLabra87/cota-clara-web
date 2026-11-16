@@ -107,6 +107,9 @@ export function PropiedadesPanel({ propiedades, visitas }: Props) {
                     <Link className="panel__accion" href={`/panel/propiedades/${p.id}`}>
                       Editar
                     </Link>
+                    <Link className="panel__accion" href={`/panel/propiedades/${p.id}/ficha`}>
+                      Ficha técnica
+                    </Link>
                     <button type="button" className="panel__accion" onClick={() => cambiarEstado(p)} disabled={trabajando}>
                       {p.estado === 'PUBLICADA' ? 'Despublicar' : 'Publicar'}
                     </button>

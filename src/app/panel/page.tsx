@@ -18,6 +18,11 @@ export default async function PanelPage() {
 
       <div className="panel__grid">
         <article className="panel__card">
+          <h2 className="panel__card-title">Fichas técnicas</h2>
+          <p className="panel__card-text">Prepara antecedentes técnicos y documentales de cada propiedad. Genera una versión para clientes o de uso interno, lista para imprimir o guardar en PDF.</p>
+          <Link className="button button--primary button--sm" href="/panel/fichas">Generar fichas</Link>
+        </article>
+        <article className="panel__card">
           <h2 className="panel__card-title">Propiedades</h2>
           <p className="panel__card-text">
             Carga, edita y publica propiedades con sus fotos. Lo que publiques aparece en el sitio al tiro, sin esperar un

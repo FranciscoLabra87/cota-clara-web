@@ -154,3 +154,14 @@ CREATE TABLE IF NOT EXISTS propiedad_visitas (
   FOREIGN KEY (propiedad_id) REFERENCES propiedades(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_visitas_dia ON propiedad_visitas(dia);
+
+-- Antecedentes técnicos de cada propiedad, para la ficha técnica que se genera
+-- desde el panel. Van en su propia tabla y no en propiedades a propósito: el
+-- sitio público nunca lee esta tabla, así que nada de acá (el rol, el avalúo,
+-- las observaciones internas) puede salir en una página pública por descuido.
+CREATE TABLE IF NOT EXISTS propiedad_ficha (
+  propiedad_id   INTEGER PRIMARY KEY,
+  datos          TEXT NOT NULL DEFAULT '{}',
+  actualizada_en TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (propiedad_id) REFERENCES propiedades(id) ON DELETE CASCADE
+);
