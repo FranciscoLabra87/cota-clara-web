@@ -57,28 +57,6 @@
   gap: var(--space-5);
 }
 
-.site-header__phone {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-family: var(--ff-display);
-  font-size: 0.875rem;
-  font-weight: 600;
-  white-space: nowrap;
-  text-decoration: none;
-  color: var(--color-petroleo);
-}
-
-.site-header__phone-icon {
-  width: 1.05rem;
-  height: 1.05rem;
-  color: var(--color-terracota);
-}
-
-.site-header--transparent .site-header__phone {
-  color: var(--color-blanco);
-}
-
 .site-header__toggle {
   display: none;
   align-items: center;
@@ -149,7 +127,7 @@
 .nav__list {
   display: flex;
   align-items: center;
-  gap: clamp(1rem, 2vw, 2rem);
+  gap: clamp(1rem, 1.6vw, 1.5rem);
 }
 
 .nav__link {
@@ -271,13 +249,16 @@
   color: var(--color-terracota-claro);
 }
 
-@media (max-width: 1200px) {
-  .site-header__phone {
-    display: none;
+/* El menú tiene siete enlaces: bajo 1400 px se aprietan los espacios y bajo
+   1280 px pasa al menú móvil. Si se suma un enlace, hay que volver a medir
+   estos cortes. */
+@media (max-width: 1400px) {
+  .nav__list {
+    gap: 1rem;
   }
 }
 
-@media (max-width: 1060px) {
+@media (max-width: 1279px) {
   .nav {
     display: none;
   }
@@ -287,7 +268,7 @@
   }
 }
 
-@media (min-width: 1061px) {
+@media (min-width: 1280px) {
   .mobile-menu {
     display: none;
   }

@@ -28,7 +28,7 @@ export function Header() {
     if (open) document.body.style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
     const onResize = () => {
-      if (window.innerWidth > 1060) setOpen(false);
+      if (window.innerWidth >= 1280) setOpen(false);
     };
     window.addEventListener('keydown', onKey);
     window.addEventListener('resize', onResize);
@@ -77,11 +77,9 @@ export function Header() {
           </ul>
         </nav>
 
+        {/* Con siete enlaces en el menú no cabe también el teléfono: queda en el
+            menú móvil, en el pie y en la página de contacto. */}
         <div className="site-header__actions">
-          <a className="site-header__phone" href={`tel:${site.telefonoHref}`}>
-            <Icon name="phone" className="site-header__phone-icon" />
-            {site.telefono}
-          </a>
           <Link className="button button--primary button--sm site-header__cta" href="/contacto">
             Contacto
           </Link>
