@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { nombreTipo } from '@/data/properties';
+import { nombreTipo, segmentos } from '@/data/properties';
 import { formatNumero, formatPrecio } from '@/lib/format';
 import type { PropiedadAdmin } from '@/lib/propiedades';
 import type { Visitas } from '@/lib/visitas';
@@ -79,6 +79,7 @@ export function PropiedadesPanel({ propiedades, visitas }: Props) {
               <tr>
                 <th scope="col">Propiedad</th>
                 <th scope="col">Operación</th>
+                <th scope="col">Segmento</th>
                 <th scope="col">Precio</th>
                 <th scope="col">Fotos</th>
                 <th scope="col">Visitas</th>
@@ -96,6 +97,7 @@ export function PropiedadesPanel({ propiedades, visitas }: Props) {
                     {p.destacada ? <span className="panel__etiqueta">destacada</span> : null}
                   </td>
                   <td>{p.operacion === 'venta' ? 'Venta' : 'Arriendo'}</td>
+                  <td>{segmentos[p.condicion].label}</td>
                   <td>{formatPrecio(p.precio)}</td>
                   <td>{p.imagenes?.length ?? 0}</td>
                   <td>

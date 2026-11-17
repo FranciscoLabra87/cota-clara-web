@@ -61,7 +61,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 
 - `src/app`:
   - `page.tsx`: home.
-  - `propiedades/`: listado con filtros, y la ficha en `[slug]`.
+  - `propiedades/`: listado con filtros de todo el inventario, y la ficha en `[slug]`.
+  - `proyectos-de-inversion/` y `retail/`: el mismo listado, solo con las nuevas o solo con las usadas. Las tres páginas usan `ListadoPropiedades`.
   - `servicios/[slug]`: corretaje, tasaciones, asesoria, gestion-patrimonial.
   - `contacto/` y `api/contacto/route.ts`.
   - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/`, `propiedades/`, `solicitudes/`, `fichas/` y `drive/`.
@@ -119,12 +120,13 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Vive en D1, no en archivos. `src/data/properties.ts` quedó solo con los tipos y los helpers de presentación.
 - `src/lib/propiedades.ts` es la única puerta a la tabla. Los arreglos (etiquetas, descripción, características) se guardan como JSON en TEXT.
 - Dos estados: `BORRADOR` no se ve en el sitio, `PUBLICADA` sí. El sitio público filtra siempre por `estado = 'PUBLICADA'`.
+- **Dos segmentos**, en la columna `condicion`: `nuevo` son los **Proyectos de inversión** (`/proyectos-de-inversion`) y `usado` es **Retail** (`/retail`). Por defecto, usado; se elige en el panel. El menú lleva un enlace a cada uno, y la portada una vitrina por segmento (hasta 3, primero las destacadas) que se oculta si el segmento no tiene publicadas. `/propiedades` sigue con todo junto, fuera del menú: lo usan el buscador de la portada y los enlaces antiguos. Las fichas de los dos segmentos siguen en `/propiedades/<slug>`. Nombres y bajadas de cada segmento en `segmentos` (`src/data/properties.ts`).
 - **La portada, el listado, las fichas y el sitemap son `force-dynamic`.** Es el precio de que publicar desde el panel aparezca al tiro, sin pasar por un deploy. Si el tráfico lo pide, el camino es ISR con caché incremental en R2, no volver a los archivos.
 - `PropertyExplorer` filtra en el navegador sobre la lista completa. Sirve bien hasta unos cientos de propiedades; más que eso, los filtros tienen que pasar a SQL.
 - Las fotos van a R2 con una clave `propiedades/<id>/<timestamp>-<uuid>.<ext>` y se sirven por `/fotos/`. El bucket no es público.
 - La primera foto es la portada. Se reordenan con las flechas del panel: `PUT /api/panel/propiedades/<id>/fotos` recibe el arreglo completo de ids y lo rechaza entero (409) si no calza exactamente con las fotos de esa propiedad, así que una pestaña con la lista vieja no deja la galería a medio ordenar.
 - Borrar una propiedad borra también sus objetos de R2: el `ON DELETE CASCADE` solo limpia la tabla, no el bucket.
-- **El inventario actual son 20 avisos y 348 fotos capturados del sitio de Corredora Palma Fuentes** (`db/import-palma-fuentes.sql`, con su origen en `db/palma-fuentes-source.json`). `npm run db:seed` y `npm run db:local-seed` corren esa importación; es repetible y no pisa lo editado desde el panel. Las fotos importadas usan claves `palma-fuentes/<id>/<orden>-<hash>.<ext>`, que `claveValida()` acepta además de las del panel.
+- **El inventario actual son 20 avisos y 348 fotos capturados del sitio de Corredora Palma Fuentes** (`db/import-palma-fuentes.sql`, con su origen en `db/palma-fuentes-source.json`). `npm run db:seed` y `npm run db:local-seed` corren esa importación; es repetible y no pisa lo editado desde el panel. De esos 20, solo Eco Estación es un proyecto nuevo; los otros 19 son usados. Las fotos importadas usan claves `palma-fuentes/<id>/<orden>-<hash>.<ext>`, que `claveValida()` acepta además de las del panel.
 - Los cambios de esquema sobre una base que ya existe van en `db/migrations/`, y `db/schema.sql` los incluye para bases nuevas. **Una migración se aplica a la D1 real antes de pushear el código que la necesita**: las consultas nombran sus columnas, así que si el deploy llega primero, todas las páginas públicas responden 500.
 - Cada propiedad puede llevar `latitud` y `longitud` para su pin en el mapa de la portada. Publicar exige las dos: lo validan `validar-propiedad.ts` y el endpoint de estado.
 - También puede llevar `frente` y `fondo`: las medidas del terreno en metros, con hasta dos decimales. Son opcionales y pueden venir las dos, una o ninguna. Van aparte de los m² porque no se deducen de ellos, y la ficha las muestra como «16 m de frente × 22,5 m de fondo».

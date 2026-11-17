@@ -32,6 +32,8 @@ export function Footer() {
           <nav className="site-footer__col" aria-label="Propiedades">
             <h2 className="site-footer__title">Propiedades</h2>
             <ul className="site-footer__list">
+              <li><Link className="site-footer__link" href="/proyectos-de-inversion">Proyectos de inversión</Link></li>
+              <li><Link className="site-footer__link" href="/retail">Retail</Link></li>
               <li><Link className="site-footer__link" href="/propiedades">Ver todas</Link></li>
               <li><Link className="site-footer__link" href="/propiedades?operacion=venta">En venta</Link></li>
               <li><Link className="site-footer__link" href="/propiedades?operacion=arriendo">En arriendo</Link></li>

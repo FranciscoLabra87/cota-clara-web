@@ -36,8 +36,11 @@ COLUMNS = (
     "superficie_total", "terreno", "piso", "orientacion", "anio",
     "gastos_comunes", "etiquetas", "resumen", "descripcion",
     "caracteristicas", "destacada", "publicada", "estado",
-    "ilustracion_seed", "ilustracion_tono",
+    "ilustracion_seed", "ilustracion_tono", "condicion",
 )
+
+# Proyectos nuevos del origen (Proyectos de inversión); el resto es usado (Retail).
+NUEVOS = {"201760"}
 
 
 def sql(value: object) -> str:
@@ -118,6 +121,7 @@ def record(prop: dict, captured_at: str, featured: bool) -> tuple[object, ...]:
         "PUBLICADA",
         int(source_id) % 997,
         "dia",
+        "nuevo" if source_id in NUEVOS else "usado",
     )
 
 
@@ -139,7 +143,7 @@ def main() -> None:
     statements = [
         "-- Inventario capturado de https://www.corredorapalmafuentes.cl/",
         f"-- Fecha de captura/publicación en Cota Clara: {source['capturedAt']}",
-        "-- Requiere db/migrations/20261112_titulo.sql en bases existentes y fotos en R2.",
+        "-- Requiere db/migrations/20261112_titulo.sql y 20261117_condicion.sql en bases existentes, y fotos en R2.",
         "-- Es seguro repetirlo: conserva cambios posteriores hechos desde el panel.",
         "DELETE FROM propiedades WHERE slug IN (" + ", ".join(map(sql, EXAMPLE_SLUGS)) + ");",
     ]

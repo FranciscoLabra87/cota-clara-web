@@ -14,7 +14,8 @@ export const site = {
 };
 
 export const navegacion = [
-  { href: '/propiedades', label: 'Propiedades' },
+  { href: '/proyectos-de-inversion', label: 'Proyectos de inversión' },
+  { href: '/retail', label: 'Retail' },
   { href: '/servicios/corretaje', label: 'Vender' },
   { href: '/servicios/tasaciones', label: 'Tasaciones' },
   { href: '/servicios/asesoria', label: 'Asesoría' },

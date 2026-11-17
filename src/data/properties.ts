@@ -1,5 +1,7 @@
 export type Operacion = 'venta' | 'arriendo';
 export type TipoPropiedad = 'departamento' | 'casa' | 'oficina';
+/** nuevo = Proyectos de inversión; usado = Retail. */
+export type Condicion = 'nuevo' | 'usado';
 
 export type Precio = {
   valor: number;
@@ -12,6 +14,7 @@ export type Propiedad = {
   titulo?: string;
   tipo: TipoPropiedad;
   operacion: Operacion;
+  condicion: Condicion;
   comuna: string;
   sector: string;
   /** Coordenadas publicadas para ubicar el pin en el mapa. */
@@ -50,7 +53,23 @@ export const tipos: { value: TipoPropiedad; label: string }[] = [
   { value: 'oficina', label: 'Oficina' },
 ];
 
-export const nombreTipo = (tipo: TipoPropiedad) => tipos.find((t) => t.value === tipo)?.label ?? tipo;
+/** Los dos segmentos del inventario, cada uno con su página pública. */
+export const segmentos: Record<Condicion, { label: string; corto: string; href: string; lead: string }> = {
+  nuevo: {
+    label: 'Proyectos de inversión',
+    corto: 'Nuevo',
+    href: '/proyectos-de-inversion',
+    lead: 'Proyectos nuevos para invertir o para vivir: departamentos y casas a estrenar.',
+  },
+  usado: {
+    label: 'Retail',
+    corto: 'Usado',
+    href: '/retail',
+    lead: 'Propiedades usadas en venta y arriendo.',
+  },
+};
+
+export const nombreTipo =(tipo: TipoPropiedad) => tipos.find((t) => t.value === tipo)?.label ?? tipo;
 
 export const tituloPropiedad = (p: Propiedad) => p.titulo?.trim() || `${nombreTipo(p.tipo)} · ${p.comuna}`;
 

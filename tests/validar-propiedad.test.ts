@@ -191,3 +191,18 @@ describe('descripción larga', () => {
     expect(datosDe({ ...base(), descripcion: muchos.slice(0, 40) }).descripcion).toHaveLength(40);
   });
 });
+
+describe('segmento', () => {
+  it('sin indicarlo queda como usado (Retail)', () => {
+    expect(datosDe(base()).condicion).toBe('usado');
+  });
+
+  it('acepta proyecto de inversión (nuevo) y retail (usado)', () => {
+    expect(datosDe({ ...base(), condicion: 'nuevo' }).condicion).toBe('nuevo');
+    expect(datosDe({ ...base(), condicion: 'usado' }).condicion).toBe('usado');
+  });
+
+  it('rechaza cualquier otro valor', () => {
+    expect(errorDe({ ...base(), condicion: 'remate' })).toMatch(/proyecto de inversión/i);
+  });
+});

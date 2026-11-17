@@ -11,6 +11,7 @@ const MAX_LARGO_PARRAFO = 2000;
 
 const TIPOS = ['departamento', 'casa', 'oficina'] as const;
 const OPERACIONES = ['venta', 'arriendo'] as const;
+const CONDICIONES = ['nuevo', 'usado'] as const;
 const MONEDAS = ['UF', 'CLP'] as const;
 const ESTADOS = ['BORRADOR', 'PUBLICADA'] as const;
 const TONOS = ['dia', 'atardecer'] as const;
@@ -72,6 +73,11 @@ export function validarPropiedad(body: Record<string, unknown>): Resultado {
 
   const operacion = texto(body.operacion, 20);
   if (!OPERACIONES.includes(operacion as (typeof OPERACIONES)[number])) return { ok: false, error: 'Elige si es venta o arriendo' };
+
+  const condicion = texto(body.condicion, 10) || 'usado';
+  if (!CONDICIONES.includes(condicion as (typeof CONDICIONES)[number])) {
+    return { ok: false, error: 'Elige si es un proyecto de inversión (nuevo) o retail (usado)' };
+  }
 
   const comuna = texto(body.comuna, 60);
   if (!comuna) return { ok: false, error: 'Escribe la comuna' };
@@ -152,6 +158,7 @@ export function validarPropiedad(body: Record<string, unknown>): Resultado {
       titulo: texto(body.titulo, 160),
       tipo: tipo as DatosPropiedad['tipo'],
       operacion: operacion as DatosPropiedad['operacion'],
+      condicion: condicion as (typeof CONDICIONES)[number],
       comuna,
       sector: texto(body.sector, 80),
       latitud,

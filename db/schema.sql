@@ -98,6 +98,8 @@ CREATE TABLE IF NOT EXISTS propiedades (
   publicada        TEXT NOT NULL,                         -- fecha YYYY-MM-DD
   -- BORRADOR no aparece en el sitio público: permite dejar una ficha a medias.
   estado           TEXT NOT NULL DEFAULT 'BORRADOR' CHECK(estado IN ('BORRADOR','PUBLICADA')),
+  -- nuevo = Proyectos de inversión, usado = Retail. Cada segmento tiene su página.
+  condicion        TEXT NOT NULL DEFAULT 'usado' CHECK(condicion IN ('nuevo','usado')),
   -- Ilustración SVG de reemplazo mientras la propiedad no tenga fotos.
   ilustracion_seed INTEGER NOT NULL DEFAULT 1,
   ilustracion_tono TEXT NOT NULL DEFAULT 'dia' CHECK(ilustracion_tono IN ('dia','atardecer')),
@@ -106,6 +108,7 @@ CREATE TABLE IF NOT EXISTS propiedades (
 );
 CREATE INDEX IF NOT EXISTS idx_propiedades_estado ON propiedades(estado, publicada DESC);
 CREATE INDEX IF NOT EXISTS idx_propiedades_destacada ON propiedades(estado, destacada);
+CREATE INDEX IF NOT EXISTS idx_propiedades_condicion ON propiedades(estado, condicion, publicada DESC);
 
 -- Fotos en R2. En la base va solo la clave del objeto; los bytes nunca pasan
 -- por acá y se sirven por /fotos/.

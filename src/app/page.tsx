@@ -8,15 +8,15 @@ import { PropertyCard } from '@/components/PropertyCard';
 import { PropertyMap, type MapProperty } from '@/components/PropertyMap';
 import { SearchBar } from '@/components/SearchBar';
 import { SectionHead } from '@/components/SectionHead';
-import { comunasDisponibles, tituloPropiedad } from '@/data/properties';
+import { comunasDisponibles, segmentos, tituloPropiedad } from '@/data/properties';
 import { servicios } from '@/data/services';
 import { site, whatsappHref } from '@/data/site';
 import { opcionesPrecioDisponibles } from '@/lib/filters';
 import { formatPrecio } from '@/lib/format';
 import { jsonLd } from '@/lib/json-ld';
-import { propiedadesPublicadas } from '@/lib/propiedades';
+import { propiedadesPublicadas, vitrina } from '@/lib/propiedades';
 
-// La portada muestra las destacadas y cuenta propiedades por comuna, así que
+// La portada muestra una vitrina por segmento y cuenta propiedades por comuna, así que
 // también lee de D1 en cada visita.
 export const dynamic = 'force-dynamic';
 
@@ -59,7 +59,10 @@ const pos = (v: number) => `${((v - informe.min) / (informe.max - informe.min)) 
 
 export default async function HomePage() {
   const propiedades = await propiedadesPublicadas();
-  const destacadas = propiedades.filter((p) => p.destacada);
+  // Una vitrina por segmento; la que no tiene propiedades publicadas no se muestra.
+  const vitrinas = (['nuevo', 'usado'] as const)
+    .map((condicion) => ({ condicion, lista: vitrina(propiedades, condicion) }))
+    .filter((v) => v.lista.length > 0);
   const comunasConPropiedades = comunasDisponibles(propiedades);
   const propiedadesMapa: MapProperty[] = propiedades.flatMap((p) =>
     p.latitud != null && p.longitud != null && Number.isFinite(p.latitud) && Number.isFinite(p.longitud)
@@ -187,24 +190,30 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section" aria-labelledby="destacadas-titulo">
-        <div className="container">
-          <SectionHead
-            id="destacadas-titulo"
-            eyebrow="Propiedades"
-            title="Propiedades destacadas"
-            lead="Explora las propiedades disponibles y revisa los datos de cada ficha."
-            link={{ href: '/propiedades', label: 'Ver todas las propiedades' }}
-          />
-          <ul className="properties">
-            {destacadas.map((p) => (
-              <li key={p.slug} className="properties__item">
-                <PropertyCard propiedad={p} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      {vitrinas.map(({ condicion, lista }, i) => {
+        const segmento = segmentos[condicion];
+        return (
+          // La segunda va pegada a la primera: son dos vitrinas seguidas, no dos bandas.
+          <section key={condicion} className={i > 0 ? 'section section--flush' : 'section'} aria-labelledby={`vitrina-${condicion}-titulo`}>
+            <div className="container">
+              <SectionHead
+                id={`vitrina-${condicion}-titulo`}
+                eyebrow={condicion === 'nuevo' ? 'Nuevos' : 'Usados'}
+                title={segmento.label}
+                lead={segmento.lead}
+                link={{ href: segmento.href, label: condicion === 'nuevo' ? 'Ver todos los proyectos' : 'Ver todas las propiedades usadas' }}
+              />
+              <ul className="properties">
+                {lista.map((p) => (
+                  <li key={p.slug} className="properties__item">
+                    <PropertyCard propiedad={p} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        );
+      })}
 
       <section className="section section--tint" aria-labelledby="informe-titulo">
         <div className="container report">

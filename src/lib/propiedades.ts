@@ -1,4 +1,4 @@
-import type { Operacion, Propiedad, TipoPropiedad } from '@/data/properties';
+import type { Condicion, Operacion, Propiedad, TipoPropiedad } from '@/data/properties';
 import { obtenerDB } from './db';
 
 // Inventario en D1. El sitio público solo ve las PUBLICADA; el panel ve todo.
@@ -14,6 +14,7 @@ type Fila = {
   titulo: string;
   tipo: TipoPropiedad;
   operacion: Operacion;
+  condicion: Condicion;
   comuna: string;
   sector: string;
   latitud: number | null;
@@ -45,7 +46,7 @@ type Fila = {
   ilustracion_tono: 'dia' | 'atardecer';
 };
 
-const COLUMNAS = `id, slug, titulo, tipo, operacion, comuna, sector, latitud, longitud, precio_valor, precio_moneda, precio_periodo,
+const COLUMNAS = `id, slug, titulo, tipo, operacion, condicion, comuna, sector, latitud, longitud, precio_valor, precio_moneda, precio_periodo,
   dormitorios, banos, estacionamientos, bodegas, superficie_util, superficie_total, terreno, frente, fondo, piso,
   orientacion, anio, gastos_comunes, etiquetas, resumen, descripcion, caracteristicas,
   destacada, publicada, estado, ilustracion_seed, ilustracion_tono`;
@@ -73,6 +74,7 @@ function aPropiedad(f: Fila, fotos: string[]): PropiedadAdmin {
     titulo: f.titulo,
     tipo: f.tipo,
     operacion: f.operacion,
+    condicion: f.condicion,
     comuna: f.comuna,
     sector: f.sector,
     ...(f.latitud == null || f.longitud == null ? {} : { latitud: f.latitud, longitud: f.longitud }),
@@ -133,17 +135,27 @@ async function hidratar(filas: Fila[]): Promise<PropiedadAdmin[]> {
 
 // ─── Lecturas del sitio público ───
 
-export async function propiedadesPublicadas(): Promise<Propiedad[]> {
+/** Sin condición, todo el inventario publicado; con ella, solo ese segmento. */
+export async function propiedadesPublicadas(condicion?: Condicion): Promise<Propiedad[]> {
   const db = await obtenerDB();
-  const { results } = await db
-    .prepare(`SELECT ${COLUMNAS} FROM propiedades WHERE estado = 'PUBLICADA' ORDER BY publicada DESC, id DESC`)
-    .all<Fila>();
+  const consulta = condicion
+    ? db
+        .prepare(`SELECT ${COLUMNAS} FROM propiedades WHERE estado = 'PUBLICADA' AND condicion = ? ORDER BY publicada DESC, id DESC`)
+        .bind(condicion)
+    : db.prepare(`SELECT ${COLUMNAS} FROM propiedades WHERE estado = 'PUBLICADA' ORDER BY publicada DESC, id DESC`);
+  const { results } = await consulta.all<Fila>();
   return hidratar(results);
 }
 
 export async function propiedadesDestacadas(): Promise<Propiedad[]> {
   const todas = await propiedadesPublicadas();
   return todas.filter((p) => p.destacada);
+}
+
+/** Para la portada: hasta `cuantas` del segmento, primero las destacadas y después las más recientes. */
+export function vitrina(lista: Propiedad[], condicion: Condicion, cuantas = 3): Propiedad[] {
+  const delSegmento = lista.filter((p) => p.condicion === condicion);
+  return [...delSegmento.filter((p) => p.destacada), ...delSegmento.filter((p) => !p.destacada)].slice(0, cuantas);
 }
 
 export async function propiedadPorSlug(slug: string): Promise<Propiedad | null> {
@@ -198,6 +210,8 @@ export type DatosPropiedad = {
   titulo?: string;
   tipo: TipoPropiedad;
   operacion: Operacion;
+  /** Por defecto, usado (Retail). */
+  condicion?: Condicion;
   comuna: string;
   sector: string;
   latitud?: number | null;
@@ -265,6 +279,7 @@ const valores = (d: DatosPropiedad) => [
   d.estado,
   d.ilustracionSeed,
   d.ilustracionTono,
+  d.condicion ?? 'usado',
 ];
 
 export async function crearPropiedad(d: DatosPropiedad): Promise<number> {
@@ -275,7 +290,7 @@ export async function crearPropiedad(d: DatosPropiedad): Promise<number> {
          slug, titulo, tipo, operacion, comuna, sector, latitud, longitud, precio_valor, precio_moneda, precio_periodo,
          dormitorios, banos, estacionamientos, bodegas, superficie_util, superficie_total, terreno, frente, fondo, piso,
          orientacion, anio, gastos_comunes, etiquetas, resumen, descripcion, caracteristicas,
-         destacada, publicada, estado, ilustracion_seed, ilustracion_tono
+         destacada, publicada, estado, ilustracion_seed, ilustracion_tono, condicion
        ) VALUES (${valores(d).map(() => '?').join(', ')}) RETURNING id`,
     )
     .bind(...valores(d))
@@ -292,7 +307,7 @@ export async function actualizarPropiedad(id: number, d: DatosPropiedad): Promis
          precio_periodo = ?, dormitorios = ?, banos = ?, estacionamientos = ?, bodegas = ?,
          superficie_util = ?, superficie_total = ?, terreno = ?, frente = ?, fondo = ?, piso = ?, orientacion = ?, anio = ?,
          gastos_comunes = ?, etiquetas = ?, resumen = ?, descripcion = ?, caracteristicas = ?,
-         destacada = ?, publicada = ?, estado = ?, ilustracion_seed = ?, ilustracion_tono = ?,
+         destacada = ?, publicada = ?, estado = ?, ilustracion_seed = ?, ilustracion_tono = ?, condicion = ?,
          actualizado_en = datetime('now')
        WHERE id = ?`,
     )

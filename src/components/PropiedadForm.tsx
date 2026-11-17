@@ -36,6 +36,7 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
       titulo: datos.get('titulo'),
       tipo: datos.get('tipo'),
       operacion: datos.get('operacion'),
+      condicion: datos.get('condicion'),
       comuna: datos.get('comuna'),
       sector: datos.get('sector'),
       latitud: datos.get('latitud'),
@@ -212,6 +213,15 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
               <select className="field__control field__control--select" defaultValue={propiedad?.operacion ?? 'venta'} {...campo('operacion')}>
                 <option value="venta">Venta</option>
                 <option value="arriendo">Arriendo</option>
+              </select>
+            </div>
+            <div className="field">
+              <label className="field__label" htmlFor={`${id}-condicion`}>
+                Segmento
+              </label>
+              <select className="field__control field__control--select" defaultValue={propiedad?.condicion ?? 'usado'} {...campo('condicion')}>
+                <option value="nuevo">Proyecto de inversión (nuevo)</option>
+                <option value="usado">Retail (usado)</option>
               </select>
             </div>
             <div className="field">

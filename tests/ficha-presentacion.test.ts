@@ -4,7 +4,7 @@ import type { Propiedad } from '../src/data/properties';
 
 const propiedad: Propiedad & { id: number; estado: string } = {
   id: 34, estado: 'PUBLICADA', slug: 'departamento-prueba', titulo: 'Departamento de prueba',
-  tipo: 'departamento', operacion: 'arriendo', comuna: 'Providencia', sector: '',
+  tipo: 'departamento', operacion: 'arriendo', condicion: 'usado', comuna: 'Providencia', sector: '',
   precio: { valor: 650000, moneda: 'CLP', periodo: 'mes' }, dormitorios: 2, banos: 1,
   estacionamientos: 0, bodegas: 0, superficieUtil: 68.5, superficieTotal: 72, orientacion: '', anio: 0,
   etiquetas: [], resumen: 'Ejemplo', descripcion: [], caracteristicas: [], destacada: false,

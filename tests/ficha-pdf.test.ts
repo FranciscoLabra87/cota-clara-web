@@ -5,7 +5,7 @@ import type { PropiedadAdmin } from '@/lib/propiedades';
 
 const p: PropiedadAdmin = {
   id: 42, estado: 'PUBLICADA', slug: 'departamento-prueba', titulo: 'Departamento · Ñuñoa',
-  tipo: 'departamento', operacion: 'arriendo', comuna: 'Ñuñoa', sector: '',
+  tipo: 'departamento', operacion: 'arriendo', condicion: 'usado', comuna: 'Ñuñoa', sector: '',
   precio: { valor: 600000, moneda: 'CLP', periodo: 'mes' }, gastosComunes: 110000,
   dormitorios: 3, banos: 2, estacionamientos: 1, bodegas: 1, superficieUtil: 72, superficieTotal: 77,
   orientacion: '', anio: 0, etiquetas: [], resumen: 'Propiedad para prueba de generación.',

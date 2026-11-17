@@ -26,6 +26,7 @@ const {
   slugEnUso,
   slugificar,
   slugsPublicados,
+  vitrina,
 } = await import('@/lib/propiedades');
 
 const datos = (p: Partial<DatosPropiedad> = {}): DatosPropiedad => ({
@@ -244,5 +245,43 @@ describe('dimensiones del terreno', () => {
     const p = await propiedadPorId(casa);
     expect(p).toMatchObject({ frente: 18 });
     expect(p).not.toHaveProperty('fondo');
+  });
+});
+
+describe('segmentos: proyectos de inversión y retail', () => {
+  it('sin indicarlo, la propiedad queda como usada (Retail)', async () => {
+    const depto = await crearPropiedad(datos({ slug: 'depto-sin-condicion' }));
+    expect(await propiedadPorId(depto)).toMatchObject({ condicion: 'usado' });
+  });
+
+  it('guarda la condición y se puede cambiar al editar', async () => {
+    const proyecto = await crearPropiedad(datos({ slug: 'proyecto-nuevo', condicion: 'nuevo' }));
+    expect(await propiedadPorId(proyecto)).toMatchObject({ condicion: 'nuevo' });
+
+    await actualizarPropiedad(proyecto, datos({ slug: 'proyecto-nuevo', condicion: 'usado' }));
+    expect(await propiedadPorId(proyecto)).toMatchObject({ condicion: 'usado' });
+  });
+
+  it('cada página ve solo su segmento, y sin filtro se ve todo', async () => {
+    await crearPropiedad(datos({ slug: 'proyecto-a', condicion: 'nuevo', estado: 'PUBLICADA' }));
+    await crearPropiedad(datos({ slug: 'usada-b', condicion: 'usado', estado: 'PUBLICADA' }));
+    await crearPropiedad(datos({ slug: 'proyecto-borrador', condicion: 'nuevo' }));
+
+    expect((await propiedadesPublicadas('nuevo')).map((p) => p.slug)).toEqual(['proyecto-a']);
+    expect((await propiedadesPublicadas('usado')).map((p) => p.slug)).toEqual(['usada-b']);
+    expect(await propiedadesPublicadas()).toHaveLength(2);
+  });
+
+  it('la vitrina de la portada pone primero las destacadas y corta en tres', async () => {
+    const lista = [
+      { slug: 'n1', condicion: 'nuevo', destacada: false },
+      { slug: 'u1', condicion: 'usado', destacada: true },
+      { slug: 'n2', condicion: 'nuevo', destacada: true },
+      { slug: 'n3', condicion: 'nuevo', destacada: false },
+      { slug: 'n4', condicion: 'nuevo', destacada: false },
+    ] as Parameters<typeof vitrina>[0];
+
+    expect(vitrina(lista, 'nuevo').map((p) => p.slug)).toEqual(['n2', 'n1', 'n3']);
+    expect(vitrina(lista, 'usado').map((p) => p.slug)).toEqual(['u1']);
   });
 });

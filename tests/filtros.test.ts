@@ -5,6 +5,7 @@ import { filtrarPropiedades, filtrosVacios, opcionesPrecioDisponibles, rangosPre
 const propiedad = (p: Partial<Propiedad> & { slug: string }): Propiedad => ({
   tipo: 'departamento',
   operacion: 'venta',
+  condicion: 'usado',
   comuna: 'Providencia',
   sector: '',
   precio: { valor: 7000, moneda: 'UF' },
