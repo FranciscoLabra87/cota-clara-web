@@ -1,5 +1,7 @@
 import Link from 'next/link';
+import { CapacidadPanel } from '@/components/CapacidadPanel';
 import { esAdmin, formatearRut } from '@/lib/auth';
+import { medirCapacidad } from '@/lib/capacidad';
 import { exigirSesion } from '@/lib/guardias';
 import { pendientesDe } from '@/lib/tareas';
 
@@ -9,6 +11,7 @@ export default async function PanelPage() {
   const sesion = await exigirSesion();
   const primerNombre = sesion.nombre.trim().split(/\s+/)[0];
   const pendientes = await pendientesDe(sesion.usuario_id);
+  const capacidad = esAdmin(sesion.rol) ? await medirCapacidad() : null;
 
   return (
     <>
@@ -104,6 +107,7 @@ export default async function PanelPage() {
           </Link>
         </article>
       </div>
+      {capacidad ? <CapacidadPanel datos={capacidad} /> : null}
     </>
   );
 }

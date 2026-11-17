@@ -18,8 +18,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 
 - Next.js 16 (App Router), React 19 y TypeScript. Sin Tailwind ni CSS-in-JS: CSS plano con BEM.
 - Se despliega en **Cloudflare Workers** con `@opennextjs/cloudflare`. Bindings en `wrangler.jsonc`: `DB` (D1), `FOTOS` (R2) e `IMAGES`.
-- En vivo en `https://cota-clara-web.franciscolabra87.workers.dev`. El dominio `cotaclara.cl` todavía no apunta al Worker.
-- **Correo:** `cotaclara.cl` está registrado en NIC Chile y delegado a Cloudflare (`mona` y `darwin.ns.cloudflare.com`), así que todo el DNS se maneja en Cloudflare. Email Routing está activo: `contacto@cotaclara.cl` se reenvía al Gmail de Francisco (regla «contacto a Francisco»). Cloudflare solo recibe y reenvía, no da casillas. El catch-all está apagado: cualquier otra dirección del dominio se descarta. Para enviar como `contacto@` el plan es Resend (gratis hasta 3.000 correos al mes y 100 al día), con su SMTP en el «Enviar como» de Gmail y su API para los avisos del sitio.
+- En vivo en `https://www.cotaclara.cl` y `https://cotaclara.cl`, ambos apuntando al Worker.
+- **Correo:** `cotaclara.cl` está registrado en NIC Chile y delegado a Cloudflare (`mona` y `darwin.ns.cloudflare.com`), así que todo el DNS se maneja en Cloudflare. WireNet tiene activo el hosting `host12.wirenetchile.com`, pero el 17 de noviembre de 2026 cPanel mostraba 0 de 5 casillas creadas. Los MX públicos todavía apuntan a Cloudflare Email Routing, que reenvía `contacto@cotaclara.cl` a Francisco; el buzón del nuevo hosting no recibirá directamente hasta coordinar los MX con ese proveedor. Los avisos y las respuestas desde el panel usan SMTP del hosting cuando se configuren `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` y `LEADS_FROM` como secretos del Worker.
 - Comandos: `npm install` · `npm run dev` (http://localhost:3000) · `npm run build` · `npm start`.
 - **`npm run build` es `opennextjs-cloudflare build`**, no `next build`: compila Next y empaqueta el Worker en `.open-next/`, que es lo que se despliega. Tarda más, pero es lo que sale al aire. Para una revisión rápida de tipos y compilación está `npm run build:next`.
 - Por eso `open-next.config.ts` fija `buildCommand: 'next build'`. Si no, OpenNext correría `npm run build`, que ahora es él mismo, y se llamaría en círculo.
@@ -29,7 +29,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - **El botón Retry del panel reconstruye el mismo commit de esa corrida, no el último.** Si el arreglo está en un commit posterior, Retry lo vuelve a fallar igual. Para probar un arreglo hay que pushear.
 - GitHub Actions (`.github/workflows/ci.yml`) **no despliega**: corre las pruebas y el build como control. Cloudflare no lo espera, así que una prueba caída se ve en GitHub pero no frena el deploy; para que lo frenara habría que correr `npm test` también en el build command de Cloudflare.
 - **El `main` del Worker es `worker.ts`**, no `.open-next/worker.js`: atiende las dos rutas del Drive que mueven muchos bytes (`/drive/subidas/:id/partes/:n` y `/drive/archivos/:id`) pasando el cuerpo directo entre el pedido y R2, y le entrega todo lo demás al Worker de OpenNext. Esas rutas no pasan por Next, así que tampoco por las cabeceras de `next.config.ts`: las suyas las pone `src/lib/drive.ts`. Las mismas dos rutas existen en `src/app/drive/` para `npm run dev`, que no usa `worker.ts`.
-- El Worker pesa ~1,95 MiB comprimido (`npx wrangler deploy --dry-run` lo informa); el límite del plan gratis es 3 MiB. Casi todo el salto desde 1,2 MiB es `pdf-lib`, de las fichas en PDF.
+- El tamaño del Worker se comprueba con `npx wrangler deploy --dry-run`; el límite actual de Cloudflare es 64 MiB sin comprimir para Free y Paid. `pdf-lib`, de las fichas en PDF, aporta buena parte del paquete.
 - Turbopack es el bundler por defecto en `dev` y `build`; no hace falta `--turbopack`.
 - En rutas dinámicas, `params` es una Promise: `const { slug } = await params`.
 - Alias `@/*` → `src/*`. `next build` no corre lint (en Next 16 `next lint` y la opción `eslint` del config ya no existen).
@@ -83,7 +83,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - `src/lib`:
   - `format.ts`: números en es-CL y precios en UF/CLP.
   - `filters.ts`: filtros y orden del listado.
-  - `leads.ts`: arma el correo del lead (asunto, texto y HTML) y lo envía con Resend.
+  - `leads.ts`: arma el correo del lead (asunto, texto y HTML) y lo envía con el SMTP del hosting.
   - `solicitudes.ts`: guarda en D1 lo que llega por los formularios, mide el tope contra el abuso y lo lista para el panel.
   - `visitas.ts`: el contador de visitas de las fichas, sumado por propiedad y por día en hora de Chile.
   - `crypto.ts`: funciones puras del acceso (PBKDF2, tokens, RUT, política de contraseñas). Sin imports de Next ni Cloudflare, para que `scripts/crear-admin.mjs` las use tal cual.
@@ -196,23 +196,23 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - También el contador de visitas: qué cuenta y qué no, el día en hora de Chile y el tope diario.
 - También las tareas: validación, enlace al interesado, Hecha con su fecha, las viejas fuera del tablero, pendientes y vencidas, y permisos de borrado.
 - También el CRM: etapas y su registro, resumen y último contacto, entrada desde el formulario sin duplicar, permisos de borrado y borrado en cascada.
-- También el formulario de contacto: que la solicitud quede guardada aunque el correo falle o no esté configurado, que solo avise del error cuando no quedó en ninguna parte, el tope por conexión y el borrado desde el panel. Ahí Resend va mockeado, igual que Turnstile en el login.
+- También el formulario de contacto: que la solicitud quede guardada aunque el correo falle o no esté configurado, que solo avise del error cuando no quedó en ninguna parte, el tope por conexión, la respuesta y el borrado desde el panel. Ahí SMTP va mockeado, igual que Turnstile en el login.
 - Turnstile va mockeado en las pruebas del login: sale a pedirle el veredicto a Cloudflare. Lo que se prueba es que el login lo respete.
-- Lo que no cubren: los componentes, los Server Components del panel (`guardias.ts`), la llamada real a Resend de `leads.ts` y la propia llamada a Turnstile.
+- Lo que no cubren: los componentes, los Server Components del panel (`guardias.ts`), la entrega real del SMTP del hosting y la propia llamada a Turnstile.
 
 ## Contenido de ejemplo (reemplazar antes de publicar)
 
 - **Propiedades:** las 20 publicadas son avisos de otra corredora, Palma Fuentes, con sus fotos. Antes de salir con el dominio propio hay que confirmar que existe autorización para publicarlos, y revisar que cada aviso siga vigente.
 - **Contacto:** en `site.ts`, teléfono, WhatsApp, email y dirección son placeholders **y ya están en vivo**: el botón de WhatsApp del sitio abre un chat con un número que no es de la firma. `site.url` es `https://www.cotaclara.cl`.
 - **Honorarios:** los de `services.ts` son referenciales; hay que confirmarlos con el cliente.
-- **Leads:** `api/contacto` valida nombre, email, el consentimiento `acepto` y el honeypot `empresa`. **Primero guarda la solicitud en la tabla `solicitudes` y después intenta el aviso por correo** con Resend (`src/lib/leads.ts`): el correo es solo el aviso, el registro es la base. Responde `ok` si quedó guardada o si el correo salió; recién si fallan las dos cosas responde 503 o 502. Las solicitudes se ven y se borran en `/panel/solicitudes`, y borrarlas es lo que cumple la promesa de privacidad del sitio. Tope contra el abuso: 5 por conexión y 100 en total cada diez minutos; pasado eso responde 429 y no guarda. En el log van el id y el estado, nunca los datos de la persona. La ip de cada solicitud se borra pasado un día (el tope solo mira diez minutos), aprovechando cada solicitud nueva. Para que además llegue el correo hacen falta `RESEND_API_KEY` y `LEADS_FROM`: en `.env.local` para desarrollo y como secretos del Worker en producción (`npx wrangler secret put RESEND_API_KEY`). Falta verificar el dominio cotaclara.cl en Resend.
+- **Leads:** `api/contacto` valida nombre, email, el consentimiento `acepto` y el honeypot `empresa`. **Primero guarda la solicitud en la tabla `solicitudes` y después intenta el aviso por correo** con el SMTP del hosting (`src/lib/leads.ts`): el correo es solo el aviso, el registro es la base. Responde `ok` si quedó guardada o si el correo salió; recién si fallan las dos cosas responde 503 o 502. Las solicitudes se ven, se responden con nota interna y se borran en `/panel/solicitudes`. Tope contra el abuso: 5 por conexión y 100 en total cada diez minutos; pasado eso responde 429 y no guarda. En el log van el id y el estado, nunca los datos de la persona. La ip de cada solicitud se borra pasado un día, aprovechando cada solicitud nueva. Para activar correo faltan `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` y `LEADS_FROM`: en `.env.local` para desarrollo y como secretos del Worker en producción.
 
 ## Pendientes sugeridos
 
 1. **Primer ingreso del administrador** (16.367.941-8) y cambio de su clave inicial. Mientras no entre, la cuenta tiene una clave que se deduce del RUT.
-2. **Aviso por correo de las solicitudes y envío como contacto@**: verificar cotaclara.cl en Resend, cargar `RESEND_API_KEY` y `LEADS_FROM` como secretos del Worker, y configurar el «Enviar como» de Gmail con el SMTP de Resend (`smtp.resend.com`, puerto 465, SSL, usuario `resend`). Falta además el correo de Gustavo como segundo destino de `contacto@`. Mientras tanto las solicitudes no se pierden, pero solo se ven entrando a `/panel/solicitudes`: nadie recibe un aviso.
+2. **Correo del hosting**: obtener servidor, puerto, usuario, contraseña y remitente SMTP; configurar secretos en el Worker y probar un envío real. Revisar con el proveedor los MX, SPF y DKIM antes de usar su buzón como receptor. Mientras tanto las solicitudes no se pierden: quedan en `/panel/solicitudes`, pero no sale aviso ni respuesta por correo desde el panel.
 3. **Datos de contacto reales** en `site.ts`: teléfono, WhatsApp, correo y dirección.
 4. **Confirmar la autorización** para publicar los avisos y las fotos de Palma Fuentes.
-5. Dominio cotaclara.cl apuntando al Worker. Mientras tanto `robots.txt` mantiene el sitio fuera de los buscadores.
+5. Confirmar que `robots.txt` permite indexar solo los dominios públicos y mantiene cerrado `workers.dev`.
 6. Honorarios de `services.ts`: confirmarlos con el cliente.
 7. Las pruebas cubren `src/lib` y los endpoints; los componentes y las páginas siguen verificándose a mano.

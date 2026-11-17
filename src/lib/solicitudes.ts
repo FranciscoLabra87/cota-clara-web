@@ -127,16 +127,13 @@ export async function prepararRespuesta(id: number, usuarioId: number, respuesta
     .first<SolicitudParaEnvio>();
 }
 
-/** Reintenta el mismo contenido y la misma clave; nunca permite editar un envío incierto. */
+/** Reintenta solo un rechazo confirmado; un resultado incierto requiere revisión manual. */
 export async function reintentarRespuesta(id: number): Promise<SolicitudParaEnvio | null> {
   const db = await obtenerDB();
   return db
     .prepare(
       `UPDATE solicitudes SET estado = 'enviando', respuesta_intentada_en = datetime('now')
-       WHERE id = ? AND respuesta_clave IS NOT NULL
-         AND (estado = 'error' OR (estado = 'enviando'
-           AND respuesta_intentada_en <= datetime('now', '-2 minutes')
-           AND respuesta_intentada_en >= datetime('now', '-23 hours')))
+       WHERE id = ? AND respuesta_clave IS NOT NULL AND estado = 'error'
        RETURNING id, variante, nombre, email, respuesta_texto AS respuesta, respuesta_clave AS clave`,
     )
     .bind(id)

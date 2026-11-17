@@ -1,6 +1,7 @@
 import { errorJson, ipDe, json, registrar } from '@/lib/auth';
 import { exigirSesionApi, idDeRuta } from '@/lib/panel-api';
 import { enviarRespuesta } from '@/lib/respuesta-email';
+import { configuracionSmtp } from '@/lib/smtp';
 import {
   eliminarSolicitud,
   marcarRespuestaEnviada,
@@ -26,13 +27,13 @@ async function terminarEnvio(request: Request, solicitud: SolicitudParaEnvio, us
   }
   if (envio.estado === 'error' || envio.estado === 'sin-configurar') {
     await marcarRespuestaFallida(solicitud.id, solicitud.clave);
-    console.error('[solicitud] falló la respuesta', solicitud.id, envio.estado === 'error' ? envio.detalle : 'correo sin configurar');
+    console.error('[solicitud] falló la respuesta', solicitud.id, envio.estado);
     return errorJson('No se envió el correo. El texto quedó guardado para reintentar.', 502);
   }
-  // Una excepción de red no demuestra si Resend aceptó el correo. El mismo
-  // contenido y la misma clave permiten reintentar sin duplicarlo.
-  console.error('[solicitud] resultado incierto del envío', solicitud.id, envio.detalle);
-  return errorJson('No pudimos confirmar el envío. Espera dos minutos y reintenta desde el ticket.', 503);
+  // Una excepción de red no demuestra si el servidor aceptó el correo.
+  // Queda sin confirmar para revisión manual antes de cualquier reenvío.
+  console.error('[solicitud] resultado incierto del envío', solicitud.id);
+  return errorJson('No pudimos confirmar el envío. Revisa el correo saliente antes de volver a contactar al cliente.', 503);
 }
 
 export async function POST(request: Request, { params }: Params) {
@@ -40,7 +41,7 @@ export async function POST(request: Request, { params }: Params) {
   if (!acceso.ok) return acceso.respuesta;
   const id = idDeRuta((await params).id);
   if (!id) return errorJson('Solicitud no válida', 400);
-  if (!process.env.RESEND_API_KEY || !process.env.LEADS_FROM) {
+  if (!configuracionSmtp().lista) {
     return errorJson('El envío de correos aún no está configurado. La solicitud permanece pendiente.', 503);
   }
 
@@ -72,13 +73,13 @@ export async function PATCH(request: Request, { params }: Params) {
   if (!acceso.ok) return acceso.respuesta;
   const id = idDeRuta((await params).id);
   if (!id) return errorJson('Solicitud no válida', 400);
-  if (!process.env.RESEND_API_KEY || !process.env.LEADS_FROM) {
+  if (!configuracionSmtp().lista) {
     return errorJson('El envío de correos aún no está configurado. La respuesta quedó guardada para reintentar.', 503);
   }
   const solicitud = await reintentarRespuesta(id);
   if (!solicitud) {
     return (await solicitudExiste(id))
-      ? errorJson('No se puede reintentar todavía. Actualiza la lista o revisa el envío en Resend.', 409)
+      ? errorJson('No se puede reintentar este envío. Si quedó sin confirmar, revisa el correo saliente.', 409)
       : errorJson('No existe esa solicitud', 404);
   }
   return terminarEnvio(request, solicitud, acceso.sesion.usuario_id);

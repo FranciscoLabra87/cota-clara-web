@@ -11,6 +11,12 @@ const mundo = vi.hoisted(() => ({
     | { estado: 'enviado'; id: string }
     | { estado: 'sin-configurar' }
     | { estado: 'error'; detalle: string },
+  respuesta: { estado: 'enviado', id: 'respuesta-prueba' } as
+    | { estado: 'enviado'; id: string }
+    | { estado: 'sin-configurar' }
+    | { estado: 'error'; detalle: string }
+    | { estado: 'incierto'; detalle: string },
+  enviosRespuesta: [] as Array<{ id: number; email: string; respuesta: string; clave: string }>,
 }));
 
 vi.mock('@/lib/db', () => ({
@@ -26,8 +32,15 @@ vi.mock('@/lib/leads', async (original) => ({
   enviarLead: async () => mundo.correo,
 }));
 
+vi.mock('@/lib/respuesta-email', () => ({
+  enviarRespuesta: async (datos: { id: number; email: string; respuesta: string; clave: string }) => {
+    mundo.enviosRespuesta.push(datos);
+    return mundo.respuesta;
+  },
+}));
+
 const { POST: contacto } = await import('../src/app/api/contacto/route');
-const { DELETE: borrarSolicitud } = await import('../src/app/api/panel/solicitudes/[id]/route');
+const { POST: responderSolicitud, PATCH: reintentarSolicitud, DELETE: borrarSolicitud } = await import('../src/app/api/panel/solicitudes/[id]/route');
 const { MAX_POR_IP, solicitudesRecientes } = await import('@/lib/solicitudes');
 
 const ruta = (id: string | number) => ({ params: Promise.resolve({ id: String(id) }) });
@@ -59,6 +72,13 @@ const filas = async () =>
 beforeEach(() => {
   mundo.baseCaida = false;
   mundo.correo = { estado: 'sin-configurar' };
+  mundo.respuesta = { estado: 'enviado', id: 'respuesta-prueba' };
+  mundo.enviosRespuesta = [];
+  delete process.env.SMTP_HOST;
+  delete process.env.SMTP_PORT;
+  delete process.env.SMTP_USER;
+  delete process.env.SMTP_PASS;
+  delete process.env.LEADS_FROM;
 });
 
 describe('una solicitud no se pierde', () => {
@@ -119,6 +139,11 @@ describe('lo que no se guarda', () => {
     expect((await enviar(formulario({ nombre: 'C' }))).status).toBe(422);
     expect((await enviar(formulario({ email: 'no-es-un-correo' }))).status).toBe(422);
     expect((await enviar(formulario({ acepto: '' }))).status).toBe(422);
+    expect(await filas()).toHaveLength(0);
+  });
+
+  it('exige que la consulta de contacto explique el requerimiento', async () => {
+    expect((await enviar(formulario({ variante: 'contacto', mensaje: 'Breve' }))).status).toBe(422);
     expect(await filas()).toHaveLength(0);
   });
 
@@ -212,6 +237,86 @@ describe('solicitudes en el panel', () => {
     const { cookie } = await sesionDePrueba();
     expect((await borrar(9999, cookie)).status).toBe(404);
     expect((await borrar('abc', cookie)).status).toBe(400);
+  });
+});
+
+describe('respuesta desde el panel', () => {
+  const responder = (id: string | number, cookie: string | null, body: Record<string, unknown>) =>
+    responderSolicitud(pedir(`/api/panel/solicitudes/${id}`, cookie, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }), ruta(id));
+  const reintentar = (id: string | number, cookie: string | null) =>
+    reintentarSolicitud(pedir(`/api/panel/solicitudes/${id}`, cookie, { method: 'PATCH' }), ruta(id));
+  const activarCorreo = () => {
+    process.env.SMTP_HOST = 'mail.example.com';
+    process.env.SMTP_PORT = '465';
+    process.env.SMTP_USER = 'contacto@example.com';
+    process.env.SMTP_PASS = 'clave-de-prueba';
+    process.env.LEADS_FROM = 'Cota Clara <contacto@cotaclara.cl>';
+  };
+
+  it('exige sesión y configuración de salida antes de tomar el ticket', async () => {
+    await enviar(formulario({ variante: 'contacto', mensaje: 'Necesito asesoría para vender.' }));
+    const [fila] = await filas();
+    const { cookie } = await sesionDePrueba({ rol: 'EDITOR' });
+    expect((await responder(Number(fila.id), null, { respuesta: 'Gracias por escribirnos.', nota: 'Se revisará venta.' })).status).toBe(401);
+    expect((await responder(Number(fila.id), cookie, { respuesta: 'Gracias por escribirnos.', nota: 'Se revisará venta.' })).status).toBe(503);
+    expect((await filas())[0].estado).toBe('pendiente');
+    expect(mundo.enviosRespuesta).toHaveLength(0);
+  });
+
+  it('valida respuesta y nota, envía al correo de la solicitud y guarda responsable y fecha una sola vez', async () => {
+    activarCorreo();
+    await enviar(formulario({ variante: 'contacto', mensaje: 'Quiero conocer sus servicios.' }));
+    const [fila] = await filas();
+    const id = Number(fila.id);
+    const { cookie, usuarioId } = await sesionDePrueba({ rol: 'EDITOR' });
+    expect((await responder(id, cookie, { respuesta: 'Corta', nota: 'Ok' })).status).toBe(422);
+    const respuesta = 'Gracias por escribirnos. Podemos agendar una reunión esta semana.';
+    expect((await responder(id, cookie, { respuesta, nota: 'Consulta general; propuse reunión.', email: 'intruso@example.com' })).status).toBe(200);
+    const guardada = (await filas())[0];
+    expect(guardada).toMatchObject({
+      estado: 'respondida',
+      respuesta_texto: respuesta,
+      nota_respuesta: 'Consulta general; propuse reunión.',
+      respuesta_email_id: 'respuesta-prueba',
+      respondida_por: usuarioId,
+    });
+    expect(guardada.respondida_en).toBeTruthy();
+    expect(mundo.enviosRespuesta).toHaveLength(1);
+    expect(mundo.enviosRespuesta[0].email).toBe('camila@example.com');
+    expect((await responder(id, cookie, { respuesta, nota: 'Otra nota' })).status).toBe(409);
+    expect(mundo.enviosRespuesta).toHaveLength(1);
+  });
+
+  it('conserva el texto y la clave para reintentar un envío rechazado', async () => {
+    activarCorreo();
+    await enviar(formulario());
+    const id = Number((await filas())[0].id);
+    const { cookie } = await sesionDePrueba();
+    mundo.respuesta = { estado: 'error', detalle: 'SMTP rechazó el envío' };
+    expect((await responder(id, cookie, { respuesta: 'Tu tasación está en revisión.', nota: 'Falta coordinar visita.' })).status).toBe(502);
+    expect((await filas())[0].estado).toBe('error');
+    const primer = mundo.enviosRespuesta[0];
+    mundo.respuesta = { estado: 'enviado', id: 'reintento-prueba' };
+    expect((await reintentar(id, cookie)).status).toBe(200);
+    expect((await filas())[0]).toMatchObject({ estado: 'respondida', respuesta_email_id: 'reintento-prueba' });
+    expect(mundo.enviosRespuesta[1].clave).toBe(primer.clave);
+    expect(mundo.enviosRespuesta[1].respuesta).toBe(primer.respuesta);
+  });
+
+  it('si el resultado es incierto bloquea el reintento inmediato y el borrado', async () => {
+    activarCorreo();
+    await enviar(formulario());
+    const id = Number((await filas())[0].id);
+    const { cookie } = await sesionDePrueba();
+    mundo.respuesta = { estado: 'incierto', detalle: 'se cortó la red' };
+    expect((await responder(id, cookie, { respuesta: 'Revisaremos tu tasación y te contactaremos.', nota: 'Pendiente de confirmación.' })).status).toBe(503);
+    expect((await filas())[0].estado).toBe('enviando');
+    expect((await reintentar(id, cookie)).status).toBe(409);
+    expect((await borrarSolicitud(pedir(`/api/panel/solicitudes/${id}`, cookie, { method: 'DELETE' }), ruta(id))).status).toBe(409);
   });
 });
 
