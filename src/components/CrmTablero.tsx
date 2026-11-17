@@ -9,6 +9,8 @@ import { formatNumero } from '@/lib/format';
 
 export type InteresadoFila = Omit<Interesado, 'creadoEn'> & { llego: string };
 export type ActividadFila = Omit<Actividad, 'fecha'> & { cuando: string };
+/** Tareas abiertas ligadas a un interesado de esta propiedad. */
+export type TareaCrm = { id: number; titulo: string; interesadoId: number; responsableNombre: string | null; venceTexto: string | null };
 
 type Props = {
   propiedad: { id: number; titulo: string; segmento: string; publicada: boolean; slug: string };
@@ -23,6 +25,7 @@ type Props = {
   ultimo: { tipo: TipoActividad; usuarioNombre: string | null; interesadoNombre: string; cuando: string } | null;
   interesados: InteresadoFila[];
   actividades: ActividadFila[];
+  tareas: TareaCrm[];
   usuarioId: number;
   esAdmin: boolean;
 };
@@ -37,7 +40,7 @@ function resumenActividad(a: ActividadFila) {
 
 const quien = (nombre: string | null) => nombre ?? 'Sitio web';
 
-export function CrmTablero({ propiedad, numeros, ultimo, interesados, actividades, usuarioId, esAdmin }: Props) {
+export function CrmTablero({ propiedad, numeros, ultimo, interesados, actividades, tareas, usuarioId, esAdmin }: Props) {
   const router = useRouter();
   const id = useId();
   const dialogo = useRef<HTMLDialogElement>(null);
@@ -103,6 +106,20 @@ export function CrmTablero({ propiedad, numeros, ultimo, interesados, actividade
       method: 'POST',
       headers: JSON_HEADERS,
       body: JSON.stringify(datos),
+    });
+    if (ok) form.reset();
+  }
+
+  // La tarea queda a nombre de quien la crea y ligada a este cliente.
+  async function crearTarea(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!actual) return;
+    const form = e.currentTarget;
+    const datos = Object.fromEntries(new FormData(form));
+    const ok = await pedir('/api/panel/tareas', {
+      method: 'POST',
+      headers: JSON_HEADERS,
+      body: JSON.stringify({ ...datos, interesadoId: actual.id, responsableId: usuarioId }),
     });
     if (ok) form.reset();
   }
@@ -383,6 +400,46 @@ export function CrmTablero({ propiedad, numeros, ultimo, interesados, actividade
               <button type="submit" className="button button--primary button--sm" disabled={trabajando}>
                 Registrar
               </button>
+            </form>
+
+            <form className="crm__form" onSubmit={crearTarea}>
+              <h3 className="crm__form-titulo">Tareas de seguimiento</h3>
+              {tareas.some((t) => t.interesadoId === actual.id) ? (
+                <ul className="crm__tareas">
+                  {tareas
+                    .filter((t) => t.interesadoId === actual.id)
+                    .map((t) => (
+                      <li key={t.id}>
+                        {t.titulo}
+                        <span className="crm__tareas-meta">
+                          {' · '}
+                          {t.responsableNombre ?? 'Sin asignar'}
+                          {t.venceTexto ? ` · vence el ${t.venceTexto}` : ''}
+                        </span>
+                      </li>
+                    ))}
+                </ul>
+              ) : null}
+              <div className="field">
+                <label className="field__label" htmlFor={`${id}-tarea`}>
+                  Qué hay que hacer
+                </label>
+                <input className="field__control" id={`${id}-tarea`} name="titulo" required minLength={2} maxLength={160} placeholder="Llamar el jueves para confirmar" />
+              </div>
+              <div className="field">
+                <label className="field__label" htmlFor={`${id}-tarea-vence`}>
+                  Fecha límite <span className="field__optional">(opcional)</span>
+                </label>
+                <input className="field__control" id={`${id}-tarea-vence`} name="venceEn" type="date" />
+              </div>
+              <div className="crm__botones">
+                <button type="submit" className="button button--outline button--sm" disabled={trabajando}>
+                  Crear tarea
+                </button>
+                <Link className="panel__accion" href="/panel/tareas">
+                  Ver todas las tareas
+                </Link>
+              </div>
             </form>
 
             <h3 className="crm__form-titulo">Historial</h3>

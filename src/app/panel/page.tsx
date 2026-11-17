@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import { esAdmin, formatearRut } from '@/lib/auth';
 import { exigirSesion } from '@/lib/guardias';
+import { pendientesDe } from '@/lib/tareas';
 
 export const dynamic = 'force-dynamic';
 
 export default async function PanelPage() {
   const sesion = await exigirSesion();
   const primerNombre = sesion.nombre.trim().split(/\s+/)[0];
+  const pendientes = await pendientesDe(sesion.usuario_id);
 
   return (
     <>
@@ -40,6 +42,20 @@ export default async function PanelPage() {
           </p>
           <Link className="button button--primary button--sm" href="/panel/propiedades">
             Gestionar propiedades
+          </Link>
+        </article>
+
+        <article className={`panel__card${pendientes.vencidas ? ' panel__card--pendiente' : ''}`}>
+          <h2 className="panel__card-title">Tareas</h2>
+          <p className="panel__card-text">
+            {pendientes.abiertas === 0
+              ? 'No tienes tareas pendientes.'
+              : `Tienes ${pendientes.abiertas} ${pendientes.abiertas === 1 ? 'tarea pendiente' : 'tareas pendientes'}${
+                  pendientes.vencidas ? `, ${pendientes.vencidas} ${pendientes.vencidas === 1 ? 'vencida' : 'vencidas'}` : ''
+                }.`}
+          </p>
+          <Link className="button button--primary button--sm" href="/panel/tareas">
+            Ver tareas
           </Link>
         </article>
 

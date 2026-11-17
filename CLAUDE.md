@@ -65,14 +65,14 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `proyectos-de-inversion/` y `retail/`: el mismo listado, solo con las nuevas o solo con las usadas. Las tres páginas usan `ListadoPropiedades`.
   - `servicios/[slug]`: corretaje, tasaciones, asesoria, gestion-patrimonial.
   - `contacto/` y `api/contacto/route.ts`.
-  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/`, `propiedades/`, `solicitudes/`, `fichas/`, `drive/` y `crm/` (el seguimiento de cada propiedad está en `propiedades/<id>/seguimiento`).
-  - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/`, `api/panel/propiedades/`, `api/panel/solicitudes/`, `api/panel/drive/` y `api/panel/crm/`.
+  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/`, `propiedades/`, `solicitudes/`, `fichas/`, `drive/`, `crm/` y `tareas/` (el seguimiento de cada propiedad está en `propiedades/<id>/seguimiento`).
+  - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/`, `api/panel/propiedades/`, `api/panel/solicitudes/`, `api/panel/drive/`, `api/panel/crm/` y `api/panel/tareas/`.
   - `drive/`: subida de partes y descarga de archivos del Drive. En producción las atiende `worker.ts`; estas versiones son para `npm run dev`.
   - `fotos/[...clave]`: entrega las fotos desde R2. Va fuera de `api/` porque a esas rutas se les aplica una CSP con `sandbox` que rompe el visor del navegador.
   - `sitemap.ts`, `robots.ts`, `not-found.tsx`, `icon.svg`.
 - `src/components`:
   - Layout: Header (transparente hasta hacer scroll, con menú móvil), Footer, WhatsAppButton, SectionHead, PageHero.
-  - Panel: CrmTablero (kanban de interesados de una propiedad, con su historial en un `<dialog>`).
+  - Panel: CrmTablero (kanban de interesados de una propiedad, con su historial en un `<dialog>`) y TareasTablero (kanban de tareas).
   - Propiedades: PropertyCard, PropertyMedia, PropertyExplorer (filtros sincronizados con la URL), SearchBar, MortgageCalculator, Gallery (lightbox con `<dialog>`), PropertyMap (mapa de la portada con Leaflet y teselas de OpenStreetMap; carga la librería recién cuando la sección entra en pantalla).
   - Formularios: LeadForm, con variantes `tasacion`, `contacto` y `visita`.
   - Gráficos: Illustration, Icon, Logo.
@@ -100,6 +100,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `sesion.ts`: la consulta de sesión a partir de la cookie, sin imports de Next. La usan `auth.ts` y el Worker propio.
   - `drive.ts`: el Drive interno sobre R2: tipos permitidos, cuota, subida por partes, lectura, borrado y las respuestas de las dos rutas que atiende `worker.ts`.
   - `crm.ts`: interesados, etapas, actividades y resúmenes del CRM. `crm-etapas.ts` tiene las etapas y los tipos de actividad aparte, para que el tablero, que corre en el navegador, no arrastre el acceso a la base.
+  - `tareas.ts`: tareas del equipo, con responsable, fecha límite y enlace a una propiedad o a un interesado. `tareas-estados.ts` tiene las columnas aparte, por la misma razón que `crm-etapas.ts`.
   - `fecha.ts`: `horaDeChile`, que pasa las fechas UTC de SQLite a hora de Chile en el servidor.
   - `json-ld.ts`: serializa los datos estructurados escapando `<`, `>` y `&`. Todo `<script type="application/ld+json">` va por acá, nunca con `JSON.stringify` directo: un texto de la base podría cerrar el bloque y meter un script.
 
@@ -160,6 +161,14 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Todo el equipo ve y edita. Borra un interesado quien lo agregó o un administrador, y su historial cae con él. Borrar la propiedad borra su CRM.
 - En la bitácora van solo los ids, nunca el nombre ni el teléfono del cliente.
 
+## Tareas
+
+- En `/panel/tareas`: un kanban con tres columnas, Por hacer, En curso y Hecha, y dos vistas, Mis tareas y Todas.
+- Cada tarea tiene título, detalle, responsable (o sin asignar), fecha límite opcional y puede quedar ligada a una propiedad o a un interesado del CRM. Si viene un interesado, la propiedad se toma de él.
+- Desde la tarjeta de un cliente en el CRM se crea una «tarea de seguimiento» a nombre de quien la crea, y ahí mismo se ven las abiertas de ese cliente.
+- Vencida es la que no está hecha y cuya fecha ya pasó en hora de Chile. Se marca en terracota, y el inicio del panel muestra cuántas pendientes y vencidas tiene cada persona.
+- Las hechas hace más de 30 días salen del tablero, pero no se borran. Borrar una tarea lo puede hacer quien la creó o un administrador. Borrar la propiedad o el interesado deja la tarea, sin el enlace.
+
 ## Cabeceras de seguridad
 
 - Se definen en `headers()` dentro de `next.config.ts`, no en un middleware: `proxy.ts` solo tiene soporte experimental y sin mantención en OpenNext.
@@ -185,6 +194,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Y los endpoints: login con bloqueo por intentos y freno por IP, cambio de clave, logout, alta, baja y cambio de rol de usuarios, CRUD de propiedades, subida y borrado de fotos, reordenar, y la entrega desde R2 en `/fotos`.
 - También el Drive: subida por partes de punta a punta contra el R2 de miniflare, cuota y su reserva, limpieza de abandonadas, permisos de subida y borrado, tipos rechazados, rangos y cabeceras de descarga.
 - También el contador de visitas: qué cuenta y qué no, el día en hora de Chile y el tope diario.
+- También las tareas: validación, enlace al interesado, Hecha con su fecha, las viejas fuera del tablero, pendientes y vencidas, y permisos de borrado.
 - También el CRM: etapas y su registro, resumen y último contacto, entrada desde el formulario sin duplicar, permisos de borrado y borrado en cascada.
 - También el formulario de contacto: que la solicitud quede guardada aunque el correo falle o no esté configurado, que solo avise del error cuando no quedó en ninguna parte, el tope por conexión y el borrado desde el panel. Ahí Resend va mockeado, igual que Turnstile en el login.
 - Turnstile va mockeado en las pruebas del login: sale a pedirle el veredicto a Cloudflare. Lo que se prueba es que el login lo respete.

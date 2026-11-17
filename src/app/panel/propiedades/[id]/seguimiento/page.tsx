@@ -8,6 +8,7 @@ import { horaDeChile } from '@/lib/fecha';
 import { exigirSesion } from '@/lib/guardias';
 import { idDeRuta } from '@/lib/panel-api';
 import { propiedadPorId } from '@/lib/propiedades';
+import { listarTareas } from '@/lib/tareas';
 import { visitasPorPropiedad } from '@/lib/visitas';
 
 export const dynamic = 'force-dynamic';
@@ -22,11 +23,12 @@ export default async function SeguimientoPage({ params }: Params) {
   const propiedad = await propiedadPorId(id);
   if (!propiedad) notFound();
 
-  const [interesados, actividades, resumen, visitas] = await Promise.all([
+  const [interesados, actividades, resumen, visitas, tareas] = await Promise.all([
     interesadosDe(id),
     actividadesDe(id),
     resumenes(id),
     visitasPorPropiedad(),
+    listarTareas({ propiedadId: id }),
   ]);
 
   const historial: ActividadFila[] = actividades.map(({ fecha, ...resto }) => ({ ...resto, cuando: horaDeChile(fecha) }));
@@ -57,6 +59,15 @@ export default async function SeguimientoPage({ params }: Params) {
         ultimo={ultimo}
         interesados={interesados.map(({ creadoEn, ...resto }) => ({ ...resto, llego: horaDeChile(creadoEn) }))}
         actividades={historial}
+        tareas={tareas
+          .filter((t) => t.estado !== 'hecha' && t.interesadoId !== null)
+          .map((t) => ({
+            id: t.id,
+            titulo: t.titulo,
+            interesadoId: t.interesadoId!,
+            responsableNombre: t.responsableNombre,
+            venceTexto: t.venceEn ? t.venceEn.split('-').reverse().join('-') : null,
+          }))}
         usuarioId={sesion.usuario_id}
         esAdmin={esAdmin(sesion.rol)}
       />

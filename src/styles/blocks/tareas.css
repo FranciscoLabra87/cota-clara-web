@@ -1,0 +1,173 @@
+/* Bloque: tareas — kanban de tareas del equipo en el panel. */
+.tareas__filtro {
+  display: inline-flex;
+  padding: 0.2rem;
+  border-radius: 999px;
+  background: var(--color-gris-50);
+}
+
+.tareas__filtro-boton {
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font-family: var(--ff-display);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--color-texto-suave);
+  cursor: pointer;
+}
+
+.tareas__filtro-boton--activo {
+  background: var(--color-petroleo);
+  color: var(--color-blanco);
+}
+
+.tareas__nueva {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-gris-50);
+}
+
+.tareas__nueva--dialogo {
+  margin: 0;
+  padding: var(--space-6);
+  background: var(--color-blanco);
+}
+
+.tareas__campo {
+  flex: 1 1 11rem;
+  margin: 0;
+}
+
+.tareas__campo--ancho {
+  flex-basis: 100%;
+}
+
+.tareas__tablero {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-3);
+  scroll-snap-type: x proximity;
+}
+
+.tareas__columna {
+  display: flex;
+  flex: 1 0 17rem;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-gris-50);
+  scroll-snap-align: start;
+}
+
+.tareas__columna-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  font-family: var(--ff-display);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--color-petroleo);
+}
+
+.tareas__columna-cuenta {
+  min-width: 1.5rem;
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  background: var(--color-petroleo-100);
+  text-align: center;
+}
+
+.tareas__lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tareas__tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border: 1px solid var(--color-borde);
+  border-left: 4px solid var(--color-petroleo-100);
+  border-radius: var(--radius-sm);
+  background: var(--color-blanco);
+  box-shadow: var(--shadow-sm);
+}
+
+.tareas__tarjeta--vencida {
+  border-left-color: var(--color-terracota);
+}
+
+.tareas__tarjeta-titulo {
+  margin: 0;
+  font-family: var(--ff-display);
+  font-weight: 600;
+  color: var(--color-petroleo);
+  overflow-wrap: anywhere;
+}
+
+.tareas__tarjeta-detalle {
+  margin: 0;
+  font-size: var(--fs-sm);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.tareas__tarjeta-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-texto-suave);
+}
+
+.tareas__vence--vencida {
+  font-weight: 600;
+  color: var(--color-terracota-700);
+}
+
+.tareas__tarjeta-enlace {
+  font-size: var(--fs-sm);
+  color: var(--color-terracota-700);
+}
+
+.tareas__tarjeta-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.tareas__dialogo {
+  width: min(40rem, calc(100% - 2 * var(--gutter)));
+  max-height: calc(100% - 2 * var(--space-6));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.tareas__dialogo::backdrop {
+  background: rgb(11 47 74 / 0.55);
+}
+
+.tareas__botones {
+  display: flex;
+  gap: var(--space-2);
+}
