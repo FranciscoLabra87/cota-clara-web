@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Icon, type IconName } from '@/components/Icon';
+import { HeroStats } from '@/components/HeroStats';
 import { Illustration } from '@/components/Illustration';
 import { LeadForm } from '@/components/LeadForm';
 import { PropertyCard } from '@/components/PropertyCard';
@@ -118,6 +119,7 @@ export default async function HomePage() {
               </Link>
             </div>
           </div>
+          <HeroStats />
           <SearchBar
             comunas={comunasConPropiedades}
             opcionesPrecio={{
