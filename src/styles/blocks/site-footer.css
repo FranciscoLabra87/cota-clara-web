@@ -116,12 +116,12 @@
   height: 56px;
   padding: 0 1.25rem 0 1rem;
   border-radius: 999px;
-  background: var(--color-petroleo);
+  background: var(--color-whatsapp);
   font-family: var(--ff-display);
   font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
-  color: var(--color-blanco);
+  color: var(--color-petroleo);
   box-shadow: var(--shadow-lg);
   transition:
     transform 0.24s var(--ease),
@@ -129,7 +129,7 @@
 }
 
 .wa-float:hover {
-  background: var(--color-petroleo-700);
+  background: var(--color-whatsapp-hover);
   transform: translateY(-2px);
 }
 

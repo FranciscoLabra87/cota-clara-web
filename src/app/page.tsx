@@ -3,6 +3,7 @@ import { Icon, type IconName } from '@/components/Icon';
 import { HeroStats } from '@/components/HeroStats';
 import { Illustration } from '@/components/Illustration';
 import { LeadForm } from '@/components/LeadForm';
+import { PartnersCarousel } from '@/components/PartnersCarousel';
 import { PropertyCard } from '@/components/PropertyCard';
 import { PropertyMap, type MapProperty } from '@/components/PropertyMap';
 import { SearchBar } from '@/components/SearchBar';
@@ -117,6 +118,9 @@ export default async function HomePage() {
               <Link className="button button--outline-light" href="/servicios/tasaciones">
                 Tasar mi propiedad
               </Link>
+              <a className="hero__contact-link" href="#contacto">
+                Cuéntanos tu caso <Icon name="arrow" />
+              </a>
             </div>
           </div>
           <HeroStats />
@@ -127,6 +131,7 @@ export default async function HomePage() {
               arriendo: opcionesPrecioDisponibles(propiedades, 'arriendo'),
             }}
           />
+          <PartnersCarousel />
         </div>
       </section>
 
@@ -342,32 +347,27 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="section section--flush" aria-labelledby="conversemos-titulo">
+      <section className="section section--flush" id="contacto" aria-labelledby="conversemos-titulo">
         <div className="container">
           <div className="talk">
             <div className="talk__copy">
               <span className="eyebrow eyebrow--light">¿Conversemos?</span>
               <h2 className="talk__title" id="conversemos-titulo">
-                Agenda una reunión y revisemos tu caso
+                Cuéntanos qué necesitas
               </h2>
-              <p className="talk__lead">{site.horario}</p>
-            </div>
-            <div className="talk__channels">
-              <a className="talk__channel" href={`tel:${site.telefonoHref}`}>
-                <Icon name="phone" /> {site.telefono}
-              </a>
-              <a className="talk__channel" href={`mailto:${site.email}`}>
-                <Icon name="mail" /> {site.email}
-              </a>
-              <div className="talk__actions">
-                <Link className="button button--primary" href="/contacto">
-                  Agendar reunión
-                </Link>
-                <a className="button button--outline-light" href={whatsappHref()} target="_blank" rel="noopener noreferrer">
-                  <Icon name="whatsapp" className="button__icon button__icon--static" />
-                  WhatsApp
+              <p className="talk__lead">Vender, arrendar, tasar o administrar: escríbenos y revisaremos tu caso contigo.</p>
+              <div className="talk__channels">
+                <a className="talk__channel" href={`mailto:${site.email}`}>
+                  <Icon name="mail" /> {site.email}
+                </a>
+                <a className="talk__channel" href={whatsappHref()} target="_blank" rel="noopener noreferrer">
+                  <Icon name="whatsapp" /> WhatsApp
                 </a>
               </div>
+              <p className="talk__lead">{site.horario}</p>
+            </div>
+            <div className="talk__form">
+              <LeadForm variante="contacto" titulo="Hablemos de tu proyecto" bajada="Deja tu consulta y te responderemos por correo." boton="Enviar consulta" />
             </div>
           </div>
         </div>

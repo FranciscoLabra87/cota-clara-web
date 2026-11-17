@@ -1,0 +1,176 @@
+/* Bloque: solicitudes — seguimiento y respuesta en el panel interno. */
+.solicitudes__resumen {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 var(--space-6);
+  padding: var(--space-2) var(--space-4);
+  border-radius: 999px;
+  background: var(--color-terracota-100);
+  font-family: var(--ff-display);
+  font-size: var(--fs-sm);
+  color: var(--color-terracota-700);
+}
+
+.solicitudes__estado {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: var(--color-petroleo-100);
+  font-family: var(--ff-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-petroleo);
+}
+
+.solicitudes__estado--pendiente {
+  background: var(--color-terracota-100);
+  color: var(--color-terracota-700);
+}
+
+.solicitudes__estado--error {
+  background: #fdecea;
+  color: var(--color-error);
+}
+
+.solicitudes__meta {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: 0.8125rem;
+  white-space: normal;
+  color: var(--color-texto-suave);
+}
+
+.solicitudes__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.solicitudes__accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--color-borde-control);
+  border-radius: var(--radius-sm);
+  background: var(--color-blanco);
+  font-family: var(--ff-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--color-petroleo);
+  cursor: pointer;
+}
+
+.solicitudes__accion:hover:not(:disabled) {
+  border-color: var(--color-petroleo);
+  background: var(--color-petroleo-100);
+}
+
+.solicitudes__accion--principal {
+  border-color: var(--color-petroleo);
+  background: var(--color-petroleo);
+  color: var(--color-blanco);
+}
+
+.solicitudes__accion--principal:hover:not(:disabled) {
+  background: var(--color-petroleo-700);
+  color: var(--color-blanco);
+}
+
+.solicitudes__accion--peligro {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.solicitudes__accion--peligro:hover:not(:disabled) {
+  border-color: var(--color-error);
+  background: #fdecea;
+}
+
+.solicitudes__accion:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.panel__tabla .solicitudes__detalle-celda {
+  padding: var(--space-6);
+  background: var(--color-gris-50);
+  white-space: normal;
+}
+
+.solicitudes__detalle {
+  max-width: 52rem;
+  white-space: normal;
+}
+
+.solicitudes__form,
+.solicitudes__registro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.solicitudes__titulo {
+  margin: 0 0 var(--space-2);
+  font-family: var(--ff-display);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--color-petroleo);
+}
+
+.solicitudes__ayuda,
+.solicitudes__firma {
+  margin: 0;
+  color: var(--color-texto-suave);
+}
+
+.solicitudes__form-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.solicitudes__registro-campos {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+}
+
+.solicitudes__registro-campos div {
+  min-width: 0;
+}
+
+.solicitudes__registro-campos dt {
+  margin-bottom: var(--space-2);
+  font-family: var(--ff-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-texto-suave);
+}
+
+.solicitudes__registro-campos dd {
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-sm);
+  background: var(--color-blanco);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--color-texto);
+}
+
+.solicitudes__error {
+  display: block;
+  max-width: 32rem;
+  margin: var(--space-2) 0 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: var(--color-error);
+}

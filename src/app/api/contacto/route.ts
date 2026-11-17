@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     propiedad: texto(body.propiedad, 120),
   };
 
-  if (lead.nombre.length < 2 || !EMAIL.test(lead.email) || !texto(body.acepto)) {
+  if (lead.nombre.length < 2 || !EMAIL.test(lead.email) || !texto(body.acepto) || (lead.variante === 'contacto' && lead.mensaje.length < 10)) {
     return json({ ok: false, error: 'Faltan datos obligatorios' }, 422);
   }
 

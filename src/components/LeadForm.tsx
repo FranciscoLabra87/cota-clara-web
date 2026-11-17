@@ -30,6 +30,9 @@ function validar(datos: Record<string, string>, variante: Variante): Errores {
     if (!datos.tipo) e.tipo = 'Elige el tipo de propiedad.';
     if (!datos.comuna) e.comuna = 'Elige la comuna.';
   }
+  if (variante === 'contacto' && (datos.mensaje ?? '').trim().length < 10) {
+    e.mensaje = 'Cuéntanos brevemente qué necesitas (al menos 10 caracteres).';
+  }
   if (!datos.acepto) e.acepto = 'Necesitamos tu autorización para contactarte.';
   return e;
 }
@@ -184,11 +187,12 @@ export function LeadForm({ variante, titulo, bajada, propiedad, boton }: Props) 
       ) : null}
 
       {variante !== 'tasacion' ? (
-        <div className="field">
+        <div className={fieldClass('mensaje')}>
           <label className="field__label" htmlFor={`${id}-mensaje`}>
-            Mensaje <span className="field__optional">(opcional)</span>
+            Mensaje {variante === 'visita' ? <span className="field__optional">(opcional)</span> : null}
           </label>
           <textarea className="field__control field__control--textarea" rows={4} {...campo('mensaje')} />
+          {error('mensaje')}
         </div>
       ) : null}
 

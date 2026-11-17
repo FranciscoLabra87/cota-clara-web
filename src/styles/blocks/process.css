@@ -241,6 +241,11 @@
   gap: var(--space-4);
 }
 
+.talk__form {
+  flex: 1 1 480px;
+  min-width: 0;
+}
+
 .talk__channel {
   display: inline-flex;
   align-items: center;

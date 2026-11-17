@@ -14,9 +14,11 @@ const horaDeChile = (utc: string) => FORMATO.format(new Date(`${utc.replace(' ',
 export default async function SolicitudesPage() {
   await exigirSesion();
 
-  const solicitudes: SolicitudFila[] = (await solicitudesRecientes()).map(({ creadaEn, ...resto }) => ({
+  const solicitudes: SolicitudFila[] = (await solicitudesRecientes()).map(({ creadaEn, respondidaEn, ...resto }) => ({
     ...resto,
+    respondidaEn,
     llego: horaDeChile(creadaEn),
+    respondidaCuando: respondidaEn ? horaDeChile(respondidaEn) : null,
   }));
 
   return <SolicitudesPanel solicitudes={solicitudes} />;

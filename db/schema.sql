@@ -137,6 +137,14 @@ CREATE TABLE IF NOT EXISTS solicitudes (
   mensaje   TEXT NOT NULL DEFAULT '',
   propiedad TEXT NOT NULL DEFAULT '',
   correo    TEXT NOT NULL DEFAULT 'pendiente' CHECK(correo IN ('pendiente','enviado','sin-configurar','error')),
+  estado    TEXT NOT NULL DEFAULT 'pendiente' CHECK(estado IN ('pendiente','enviando','error','respondida')),
+  respuesta_texto TEXT NOT NULL DEFAULT '',
+  nota_respuesta TEXT NOT NULL DEFAULT '',
+  respuesta_clave TEXT,
+  respuesta_email_id TEXT,
+  respuesta_intentada_en TEXT,
+  respondida_en TEXT,
+  respondida_por INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
   ip        TEXT,
   creada_en TEXT NOT NULL DEFAULT (datetime('now'))
 );

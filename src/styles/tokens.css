@@ -19,6 +19,8 @@
   --color-borde: #e2e4e6;
   --color-borde-control: #8a949e;
   --color-error: #b42318;
+  --color-whatsapp: #25d366;
+  --color-whatsapp-hover: #1db954;
 
   --ff-display: var(--font-montserrat), 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
   --ff-body: var(--font-source-sans), 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif;

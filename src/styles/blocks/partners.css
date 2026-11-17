@@ -1,0 +1,151 @@
+/* Carrusel de inmobiliarias en el hero. */
+.partners {
+  flex: 1 1 100%;
+  min-width: 0;
+  padding: var(--space-5) 0 var(--space-2);
+  border-top: 1px solid rgb(255 255 255 / 0.26);
+  color: var(--color-blanco);
+}
+
+.partners__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.partners__eyebrow {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-family: var(--ff-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-terracota-claro);
+}
+
+.partners__title {
+  margin: 0;
+  font-family: var(--ff-display);
+  font-size: clamp(1rem, 0.8rem + 0.55vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-blanco);
+}
+
+.partners__control {
+  flex: 0 0 auto;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid rgb(255 255 255 / 0.5);
+  border-radius: var(--radius-sm);
+  background: rgb(7 31 49 / 0.55);
+  color: var(--color-blanco);
+  font: 600 0.75rem var(--ff-body);
+  cursor: pointer;
+}
+
+.partners__control:hover {
+  background: var(--color-petroleo);
+}
+
+.partners__control:focus-visible {
+  outline: 2px solid var(--color-terracota-claro);
+  outline-offset: 3px;
+}
+
+.partners__viewport {
+  overflow: hidden;
+  max-width: 100%;
+  mask-image: linear-gradient(to right, transparent, #000 2%, #000 98%, transparent);
+}
+
+.partners__track {
+  display: flex;
+  width: max-content;
+  animation: partners-scroll 45s linear infinite;
+}
+
+.partners__viewport:hover .partners__track,
+.partners__viewport:focus-within .partners__track,
+.partners__viewport[data-paused='true'] .partners__track {
+  animation-play-state: paused;
+}
+
+.partners__viewport:focus-visible {
+  outline: 2px solid var(--color-terracota-claro);
+  outline-offset: 3px;
+}
+
+.partners__list {
+  display: flex;
+  flex: 0 0 auto;
+  gap: var(--space-3);
+  padding-right: var(--space-3);
+}
+
+.partners__item {
+  display: flex;
+  flex: 0 0 128px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: 104px;
+  padding: var(--space-2);
+  border: 1px solid rgb(255 255 255 / 0.22);
+  border-radius: var(--radius-md);
+  background: var(--color-blanco);
+  box-shadow: var(--shadow-sm);
+}
+
+.partners__logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.partners__name {
+  font-family: var(--ff-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--color-petroleo);
+  text-align: center;
+}
+
+@keyframes partners-scroll {
+  to { transform: translateX(-50%); }
+}
+
+@media (max-width: 640px) {
+  .partners__header {
+    align-items: flex-start;
+  }
+
+  .partners__control {
+    max-width: 6.8rem;
+    white-space: normal;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partners__control {
+    display: none;
+  }
+
+  .partners__viewport {
+    overflow-x: auto;
+    mask-image: none;
+  }
+
+  .partners__track {
+    animation: none;
+  }
+
+  .partners__list[aria-hidden='true'] {
+    display: none;
+  }
+}
