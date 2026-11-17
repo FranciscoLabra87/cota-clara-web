@@ -109,6 +109,9 @@ export function PropiedadesPanel({ propiedades, visitas }: Props) {
                     <Link className="panel__accion" href={`/panel/propiedades/${p.id}`}>
                       Editar
                     </Link>
+                    <Link className="panel__accion" href={`/panel/propiedades/${p.id}/seguimiento`}>
+                      Seguimiento
+                    </Link>
                     <Link className="panel__accion" href={`/panel/propiedades/${p.id}/ficha`}>
                       Ficha técnica
                     </Link>

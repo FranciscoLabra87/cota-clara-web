@@ -44,6 +44,17 @@ export default async function PanelPage() {
         </article>
 
         <article className="panel__card">
+          <h2 className="panel__card-title">CRM</h2>
+          <p className="panel__card-text">
+            Qué pasa con cada propiedad: sus interesados en un tablero por etapas, las llamadas, las visitas físicas y lo que dijo
+            cada cliente.
+          </p>
+          <Link className="button button--primary button--sm" href="/panel/crm">
+            Abrir el CRM
+          </Link>
+        </article>
+
+        <article className="panel__card">
           <h2 className="panel__card-title">Solicitudes</h2>
           <p className="panel__card-text">
             Lo que llega por los formularios del sitio: consultas, tasaciones y visitas. Quedan guardadas aunque el aviso por correo no

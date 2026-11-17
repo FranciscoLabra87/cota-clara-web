@@ -65,13 +65,14 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `proyectos-de-inversion/` y `retail/`: el mismo listado, solo con las nuevas o solo con las usadas. Las tres páginas usan `ListadoPropiedades`.
   - `servicios/[slug]`: corretaje, tasaciones, asesoria, gestion-patrimonial.
   - `contacto/` y `api/contacto/route.ts`.
-  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/`, `propiedades/`, `solicitudes/`, `fichas/` y `drive/`.
-  - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/`, `api/panel/propiedades/`, `api/panel/solicitudes/` y `api/panel/drive/`.
+  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/`, `propiedades/`, `solicitudes/`, `fichas/`, `drive/` y `crm/` (el seguimiento de cada propiedad está en `propiedades/<id>/seguimiento`).
+  - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/`, `api/panel/propiedades/`, `api/panel/solicitudes/`, `api/panel/drive/` y `api/panel/crm/`.
   - `drive/`: subida de partes y descarga de archivos del Drive. En producción las atiende `worker.ts`; estas versiones son para `npm run dev`.
   - `fotos/[...clave]`: entrega las fotos desde R2. Va fuera de `api/` porque a esas rutas se les aplica una CSP con `sandbox` que rompe el visor del navegador.
   - `sitemap.ts`, `robots.ts`, `not-found.tsx`, `icon.svg`.
 - `src/components`:
   - Layout: Header (transparente hasta hacer scroll, con menú móvil), Footer, WhatsAppButton, SectionHead, PageHero.
+  - Panel: CrmTablero (kanban de interesados de una propiedad, con su historial en un `<dialog>`).
   - Propiedades: PropertyCard, PropertyMedia, PropertyExplorer (filtros sincronizados con la URL), SearchBar, MortgageCalculator, Gallery (lightbox con `<dialog>`), PropertyMap (mapa de la portada con Leaflet y teselas de OpenStreetMap; carga la librería recién cuando la sección entra en pantalla).
   - Formularios: LeadForm, con variantes `tasacion`, `contacto` y `visita`.
   - Gráficos: Illustration, Icon, Logo.
@@ -98,6 +99,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `texto.ts`: cómo se parten los campos de varias líneas del panel (`lineas` para listas, `parrafos` para la descripción). Lo usan igual el formulario y la validación, para que guardar una ficha sin tocarla no la cambie.
   - `sesion.ts`: la consulta de sesión a partir de la cookie, sin imports de Next. La usan `auth.ts` y el Worker propio.
   - `drive.ts`: el Drive interno sobre R2: tipos permitidos, cuota, subida por partes, lectura, borrado y las respuestas de las dos rutas que atiende `worker.ts`.
+  - `crm.ts`: interesados, etapas, actividades y resúmenes del CRM. `crm-etapas.ts` tiene las etapas y los tipos de actividad aparte, para que el tablero, que corre en el navegador, no arrastre el acceso a la base.
+  - `fecha.ts`: `horaDeChile`, que pasa las fechas UTC de SQLite a hora de Chile en el servidor.
   - `json-ld.ts`: serializa los datos estructurados escapando `<`, `>` y `&`. Todo `<script type="application/ld+json">` va por acá, nunca con `JSON.stringify` directo: un texto de la base podría cerrar el bloque y meter un script.
 
 ## Acceso corporativo
@@ -147,6 +150,16 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - La cuota se reserva al empezar la subida, en una sola sentencia SQL, así que dos subidas en paralelo no pueden pasarse entre las dos. Las subidas abandonadas hace más de un día se abortan y liberan su espacio.
 - Tipos aceptados por extensión, que decide el Content-Type con que se sirve: imágenes, videos, PDF, Office, CSV, TXT, ZIP, DWG y KMZ. Nada de HTML, SVG ni ejecutables. Fotos, videos y PDF se muestran; lo demás se descarga con una CSP `sandbox`.
 
+## CRM
+
+- En `/panel/crm` está la tabla con todas las propiedades y sus números: visitas web, interesados activos, llamadas, visitas físicas y el último contacto. Cada una abre su tablero en `/panel/propiedades/<id>/seguimiento`.
+- El tablero es un kanban de interesados con siete etapas: Nuevo, Contactado, Visita agendada, Visitó, Negociación, Cerrado y Descartado. Las tarjetas se mueven con flechas, que también sirven en el celular.
+- Cada interesado tiene un historial (`crm_actividades`) con llamadas, visitas físicas, mensajes y notas. Quién lo registró sale de la sesión. Mover una tarjeta deja también un registro de tipo `etapa`.
+- «Último contacto» es la llamada, visita o mensaje más reciente. Las notas y los cambios de etapa no cuentan.
+- Una solicitud «Agenda una visita» desde una ficha entra sola como tarjeta Nuevo, con su mensaje como primera nota (`interesadoDesdeSolicitud`). El `UNIQUE` de `solicitud_id` evita duplicarla. Si el paso al CRM falla, la solicitud igual queda guardada.
+- Todo el equipo ve y edita. Borra un interesado quien lo agregó o un administrador, y su historial cae con él. Borrar la propiedad borra su CRM.
+- En la bitácora van solo los ids, nunca el nombre ni el teléfono del cliente.
+
 ## Cabeceras de seguridad
 
 - Se definen en `headers()` dentro de `next.config.ts`, no en un middleware: `proxy.ts` solo tiene soporte experimental y sin mantención en OpenNext.
@@ -172,6 +185,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Y los endpoints: login con bloqueo por intentos y freno por IP, cambio de clave, logout, alta, baja y cambio de rol de usuarios, CRUD de propiedades, subida y borrado de fotos, reordenar, y la entrega desde R2 en `/fotos`.
 - También el Drive: subida por partes de punta a punta contra el R2 de miniflare, cuota y su reserva, limpieza de abandonadas, permisos de subida y borrado, tipos rechazados, rangos y cabeceras de descarga.
 - También el contador de visitas: qué cuenta y qué no, el día en hora de Chile y el tope diario.
+- También el CRM: etapas y su registro, resumen y último contacto, entrada desde el formulario sin duplicar, permisos de borrado y borrado en cascada.
 - También el formulario de contacto: que la solicitud quede guardada aunque el correo falle o no esté configurado, que solo avise del error cuando no quedó en ninguna parte, el tope por conexión y el borrado desde el panel. Ahí Resend va mockeado, igual que Turnstile en el login.
 - Turnstile va mockeado en las pruebas del login: sale a pedirle el veredicto a Cloudflare. Lo que se prueba es que el login lo respete.
 - Lo que no cubren: los componentes, los Server Components del panel (`guardias.ts`), la llamada real a Resend de `leads.ts` y la propia llamada a Turnstile.

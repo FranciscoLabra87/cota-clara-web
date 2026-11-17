@@ -1,4 +1,5 @@
 import { ipDe } from '@/lib/auth';
+import { interesadoDesdeSolicitud } from '@/lib/crm';
 import { enviarLead, type Lead } from '@/lib/leads';
 import { guardarSolicitud, marcarCorreo, superaElTope } from '@/lib/solicitudes';
 
@@ -49,6 +50,14 @@ export async function POST(request: Request) {
     id = await guardarSolicitud(lead, ip);
   } catch (e) {
     console.error('[lead] no se pudo guardar:', e instanceof Error ? e.message : 'error desconocido');
+  }
+
+  // Una visita pedida desde una ficha entra también al CRM de esa propiedad.
+  // Si eso falla, la solicitud igual quedó guardada: no se corta la respuesta.
+  if (id !== null) {
+    await interesadoDesdeSolicitud(id, lead).catch((e) =>
+      console.error('[lead] no se pudo pasar al CRM:', e instanceof Error ? e.message : 'error desconocido'),
+    );
   }
 
   const envio = await enviarLead(lead);

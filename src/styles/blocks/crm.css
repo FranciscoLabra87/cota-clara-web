@@ -1,0 +1,259 @@
+/* Bloque: crm — tablero de seguimiento de cada propiedad en el panel. */
+.crm__numeros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
+}
+
+.crm__numero {
+  display: flex;
+  flex: 1 1 9rem;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-md);
+  background: var(--color-blanco);
+}
+
+.crm__numero--ancho {
+  flex-basis: 18rem;
+}
+
+.crm__numero-nombre {
+  font-family: var(--ff-display);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--color-texto-suave);
+}
+
+.crm__numero-valor {
+  margin: 0;
+  font-family: var(--ff-display);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  color: var(--color-petroleo);
+}
+
+.crm__numero-texto {
+  margin: 0;
+  font-weight: 600;
+  color: var(--color-texto);
+}
+
+.crm__numero-nota {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-texto-suave);
+}
+
+.crm__agregar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-gris-50);
+}
+
+.crm__agregar-campo {
+  flex: 1 1 12rem;
+  margin: 0;
+}
+
+/* Las siete columnas no caben en una pantalla chica: el tablero se desliza
+   de lado dentro de su caja, sin mover la página entera. */
+.crm__tablero {
+  display: flex;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-3);
+  scroll-snap-type: x proximity;
+}
+
+.crm__columna {
+  display: flex;
+  flex: 0 0 15rem;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-gris-50);
+  scroll-snap-align: start;
+}
+
+.crm__columna-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
+  font-family: var(--ff-display);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--color-petroleo);
+}
+
+.crm__columna-cuenta {
+  min-width: 1.5rem;
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  background: var(--color-petroleo-100);
+  text-align: center;
+}
+
+.crm__tarjetas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.crm__tarjeta {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-sm);
+  background: var(--color-blanco);
+  box-shadow: var(--shadow-sm);
+}
+
+.crm__tarjeta-abrir {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+.crm__tarjeta-abrir:hover .crm__tarjeta-nombre,
+.crm__tarjeta-abrir:focus-visible .crm__tarjeta-nombre {
+  color: var(--color-terracota-700);
+}
+
+.crm__tarjeta-nombre {
+  font-family: var(--ff-display);
+  font-weight: 600;
+  color: var(--color-petroleo);
+}
+
+.crm__tarjeta-dato {
+  font-size: var(--fs-sm);
+}
+
+.crm__tarjeta-dato--suave {
+  color: var(--color-texto-suave);
+}
+
+.crm__tarjeta-mover {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 var(--space-2) var(--space-2);
+}
+
+.crm__dialogo {
+  width: min(40rem, calc(100% - 2 * var(--gutter)));
+  max-height: calc(100% - 2 * var(--space-6));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.crm__dialogo::backdrop {
+  background: rgb(11 47 74 / 0.55);
+}
+
+.crm__dialogo-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+}
+
+.crm__dialogo-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.crm__contacto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.crm__contacto-dato {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.crm__etapa {
+  margin: 0;
+  max-width: 16rem;
+}
+
+.crm__botones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.crm__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--color-gris-50);
+}
+
+.crm__form-titulo {
+  margin: 0;
+  font-family: var(--ff-display);
+  font-size: var(--fs-base);
+  color: var(--color-petroleo);
+}
+
+.crm__historial {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.crm__evento {
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--color-terracota);
+}
+
+.crm__evento--sistema {
+  border-left-color: var(--color-borde);
+}
+
+.crm__evento-cabecera {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-texto-suave);
+}
+
+.crm__evento-detalle {
+  margin: var(--space-1) 0 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
