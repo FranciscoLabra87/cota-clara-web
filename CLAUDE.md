@@ -27,7 +27,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - **El deploy lo hace Cloudflare Workers Builds**, conectado al repo desde el panel de Cloudflare: despliega en cada push a `main`. Funciona con los comandos que Cloudflare trae por defecto (`npm run build` y `npx wrangler deploy`) justamente porque `npm run build` arma el Worker; no hay que configurar nada en el panel. El deploy busca `.open-next/.build/open-next.config.edge.mjs`: si ese archivo no está, responde «Could not find compiled Open Next config».
 - **El botón Retry del panel reconstruye el mismo commit de esa corrida, no el último.** Si el arreglo está en un commit posterior, Retry lo vuelve a fallar igual. Para probar un arreglo hay que pushear.
 - GitHub Actions (`.github/workflows/ci.yml`) **no despliega**: corre las pruebas y el build como control. Cloudflare no lo espera, así que una prueba caída se ve en GitHub pero no frena el deploy; para que lo frenara habría que correr `npm test` también en el build command de Cloudflare.
-- El Worker pesa ~1,2 MiB comprimido (`npx wrangler deploy --dry-run` lo informa); el límite del plan gratis es 3 MiB.
+- **El `main` del Worker es `worker.ts`**, no `.open-next/worker.js`: atiende las dos rutas del Drive que mueven muchos bytes (`/drive/subidas/:id/partes/:n` y `/drive/archivos/:id`) pasando el cuerpo directo entre el pedido y R2, y le entrega todo lo demás al Worker de OpenNext. Esas rutas no pasan por Next, así que tampoco por las cabeceras de `next.config.ts`: las suyas las pone `src/lib/drive.ts`. Las mismas dos rutas existen en `src/app/drive/` para `npm run dev`, que no usa `worker.ts`.
+- El Worker pesa ~1,95 MiB comprimido (`npx wrangler deploy --dry-run` lo informa); el límite del plan gratis es 3 MiB. Casi todo el salto desde 1,2 MiB es `pdf-lib`, de las fichas en PDF.
 - Turbopack es el bundler por defecto en `dev` y `build`; no hace falta `--turbopack`.
 - En rutas dinámicas, `params` es una Promise: `const { slug } = await params`.
 - Alias `@/*` → `src/*`. `next build` no corre lint (en Next 16 `next lint` y la opción `eslint` del config ya no existen).
@@ -62,8 +63,9 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `propiedades/`: listado con filtros, y la ficha en `[slug]`.
   - `servicios/[slug]`: corretaje, tasaciones, asesoria, gestion-patrimonial.
   - `contacto/` y `api/contacto/route.ts`.
-  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/`, `propiedades/` y `solicitudes/`.
-  - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/`, `api/panel/propiedades/` y `api/panel/solicitudes/`.
+  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/`, `propiedades/`, `solicitudes/`, `fichas/` y `drive/`.
+  - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/`, `api/panel/propiedades/`, `api/panel/solicitudes/` y `api/panel/drive/`.
+  - `drive/`: subida de partes y descarga de archivos del Drive. En producción las atiende `worker.ts`; estas versiones son para `npm run dev`.
   - `fotos/[...clave]`: entrega las fotos desde R2. Va fuera de `api/` porque a esas rutas se les aplica una CSP con `sandbox` que rompe el visor del navegador.
   - `sitemap.ts`, `robots.ts`, `not-found.tsx`, `icon.svg`.
 - `src/components`:
@@ -92,6 +94,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `panel-api.ts`: los chequeos de sesión que repite cada endpoint del panel.
   - `dominio.ts`: decide si el host de la petición es el dominio público. Lo usa `robots.ts` para no dejar indexar la dirección `…workers.dev`.
   - `texto.ts`: cómo se parten los campos de varias líneas del panel (`lineas` para listas, `parrafos` para la descripción). Lo usan igual el formulario y la validación, para que guardar una ficha sin tocarla no la cambie.
+  - `sesion.ts`: la consulta de sesión a partir de la cookie, sin imports de Next. La usan `auth.ts` y el Worker propio.
+  - `drive.ts`: el Drive interno sobre R2: tipos permitidos, cuota, subida por partes, lectura, borrado y las respuestas de las dos rutas que atiende `worker.ts`.
   - `json-ld.ts`: serializa los datos estructurados escapando `<`, `>` y `&`. Todo `<script type="application/ld+json">` va por acá, nunca con `JSON.stringify` directo: un texto de la base podría cerrar el bloque y meter un script.
 
 ## Acceso corporativo
@@ -129,6 +133,17 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Las fotos se sirven con `unoptimized`: el original de R2, sin redimensionar. Las portadas pesan unos 200 KB cada una.
 - **Visitas:** la ficha avisa con un `POST /api/visitas` desde el navegador al abrirse (`ContadorVisita`), una vez por ficha y por pestaña. Se cuenta desde el navegador y no al renderizar en el servidor porque Next precarga las fichas cuando sus enlaces aparecen en pantalla, y eso inflaría la cuenta. No cuentan los borradores, las visitas del equipo con sesión abierta ni los buscadores. Se suman en `propiedad_visitas`, una fila por propiedad y por día en hora de Chile, sin guardar nada de quién visitó. Tope de 20.000 visitas contadas por día entre todas las propiedades, para que un script no gaste la cuota de escrituras de D1 y tumbe el formulario y el panel. El panel muestra el total y los últimos 7 días. Son aproximadas: un script podría inflarlas hasta el tope.
 
+## Drive interno
+
+- En `/panel/drive`. Fotos, videos y documentos del equipo en el mismo bucket R2 de las fotos, bajo `drive/<usuario>/`. Cada usuario sube a su carpeta y todos ven y descargan todas. Borra el dueño o un administrador.
+- Carga masiva: se arrastran archivos o se elige una carpeta entera (conserva la ruta en el nombre), y se suben de a 3 con barra de avance, reintentos y cancelación.
+- Todo se sube por partes de 10 MiB (multipart de R2), también lo chico. Cloudflare corta los pedidos de más de 100 MB; con partes, un archivo de hasta 2 GB sube igual. R2 exige 5 MiB mínimo por parte, salvo la última, y hasta 10.000 partes.
+- Las partes y las descargas las atiende `worker.ts` sin copiar los bytes en JavaScript: en el plan gratis de Workers cada pedido tiene 10 ms de CPU. Probado en workerd con un archivo de 25 MB: subió en 3 partes y bajó idéntico.
+- La descarga entrega rangos (206), para adelantar videos sin bajarlos enteros.
+- **Cuota: 8 GiB por defecto**, para quedar dentro de los 10 GB gratis de R2 al mes, que cubren toda la cuenta. Se cambia con la variable `DRIVE_CUOTA_GB` del Worker, sin tocar código. Pasado el plan gratis, cada GB cuesta US$ 0,015 al mes; subir y bajar no cobra transferencia.
+- La cuota se reserva al empezar la subida, en una sola sentencia SQL, así que dos subidas en paralelo no pueden pasarse entre las dos. Las subidas abandonadas hace más de un día se abortan y liberan su espacio.
+- Tipos aceptados por extensión, que decide el Content-Type con que se sirve: imágenes, videos, PDF, Office, CSV, TXT, ZIP, DWG y KMZ. Nada de HTML, SVG ni ejecutables. Fotos, videos y PDF se muestran; lo demás se descarga con una CSP `sandbox`.
+
 ## Cabeceras de seguridad
 
 - Se definen en `headers()` dentro de `next.config.ts`, no en un middleware: `proxy.ts` solo tiene soporte experimental y sin mantención en OpenNext.
@@ -152,6 +167,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Los route handlers se prueban llamándolos directo con un `Request` armado a mano: son funciones que reciben un `Request` y devuelven un `Response`, no hace falta levantar Next. `tests/sesion.ts` arma la cookie de sesión sin pasar por el login.
 - Cubren `src/lib`: RUT y contraseñas (`crypto`), firma real de las imágenes y claves de R2 (`imagenes`), límites del formulario (`validar-propiedad`), filtros y orden del listado (`filters`), formatos en es-CL (`format`) y el inventario sobre D1 (`propiedades`).
 - Y los endpoints: login con bloqueo por intentos y freno por IP, cambio de clave, logout, alta, baja y cambio de rol de usuarios, CRUD de propiedades, subida y borrado de fotos, reordenar, y la entrega desde R2 en `/fotos`.
+- También el Drive: subida por partes de punta a punta contra el R2 de miniflare, cuota y su reserva, limpieza de abandonadas, permisos de subida y borrado, tipos rechazados, rangos y cabeceras de descarga.
 - También el contador de visitas: qué cuenta y qué no, el día en hora de Chile y el tope diario.
 - También el formulario de contacto: que la solicitud quede guardada aunque el correo falle o no esté configurado, que solo avise del error cuando no quedó en ninguna parte, el tope por conexión y el borrado desde el panel. Ahí Resend va mockeado, igual que Turnstile en el login.
 - Turnstile va mockeado en las pruebas del login: sale a pedirle el veredicto a Cloudflare. Lo que se prueba es que el login lo respete.

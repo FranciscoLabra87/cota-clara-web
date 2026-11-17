@@ -1,7 +1,9 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "cota-clara-web",
-  "main": ".open-next/worker.js",
+  // worker.ts atiende las subidas y descargas del Drive y le pasa todo lo
+  // demás al Worker que genera OpenNext en .open-next/worker.js.
+  "main": "worker.ts",
   "compatibility_date": "2026-09-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
 

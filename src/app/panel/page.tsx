@@ -18,6 +18,16 @@ export default async function PanelPage() {
 
       <div className="panel__grid">
         <article className="panel__card">
+          <h2 className="panel__card-title">Drive</h2>
+          <p className="panel__card-text">
+            Fotos, videos y documentos del equipo. Cada uno sube a su carpeta, de a muchos archivos a la vez, y todos ven todas las
+            carpetas.
+          </p>
+          <Link className="button button--primary button--sm" href="/panel/drive">
+            Abrir el Drive
+          </Link>
+        </article>
+        <article className="panel__card">
           <h2 className="panel__card-title">Fichas técnicas</h2>
           <p className="panel__card-text">Prepara los antecedentes, elige las fotos y descarga una ficha PDF para imprimir y llevar a tus visitas. Disponible en versión para clientes o de uso interno.</p>
           <Link className="button button--primary button--sm" href="/panel/fichas">Generar fichas</Link>

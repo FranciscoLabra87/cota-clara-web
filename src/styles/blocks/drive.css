@@ -1,0 +1,289 @@
+/* Bloque: drive — archivos del equipo dentro del panel */
+
+.drive__uso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-6);
+}
+
+.drive__uso-barra {
+  flex: 1 1 16rem;
+  max-width: 28rem;
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-gris);
+}
+
+.drive__uso-relleno {
+  display: block;
+  height: 100%;
+  background: var(--color-petroleo);
+}
+
+.drive__uso-relleno--lleno {
+  background: var(--color-error);
+}
+
+.drive__uso-texto {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-texto-suave);
+}
+
+.drive__zona {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-8);
+  padding: var(--space-8) var(--space-6);
+  border: 2px dashed var(--color-borde-control);
+  border-radius: var(--radius-md);
+  background: var(--color-blanco);
+  text-align: center;
+}
+
+.drive__zona--activa {
+  border-color: var(--color-terracota);
+  background: var(--color-terracota-100);
+}
+
+.drive__zona-titulo {
+  margin: 0;
+  font-family: var(--ff-display);
+  font-weight: 600;
+  color: var(--color-petroleo);
+}
+
+.drive__zona-texto,
+.drive__zona-nota {
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--color-texto-suave);
+}
+
+.drive__zona-botones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin: var(--space-2) 0;
+}
+
+.drive__cola {
+  margin: 0 0 var(--space-8);
+  padding: var(--space-5);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-md);
+  background: var(--color-blanco);
+}
+
+.drive__cola-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-3);
+}
+
+.drive__cola-titulo {
+  margin: 0;
+  font-family: var(--ff-display);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--color-petroleo);
+}
+
+.drive__cola-lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: 22rem;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.drive__subida {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-borde);
+  font-size: var(--fs-sm);
+}
+
+.drive__subida-nombre {
+  flex: 1 1 14rem;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drive__subida-tamano {
+  color: var(--color-texto-suave);
+}
+
+.drive__subida-barra {
+  flex: 0 0 8rem;
+  height: 0.375rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-gris);
+}
+
+.drive__subida-relleno {
+  display: block;
+  height: 100%;
+  background: var(--color-petroleo);
+}
+
+.drive__subida--listo .drive__subida-relleno {
+  background: var(--color-petroleo-700);
+}
+
+.drive__subida--error .drive__subida-estado {
+  color: var(--color-error);
+}
+
+.drive__subida-estado {
+  flex: 0 1 auto;
+  min-width: 4rem;
+  color: var(--color-texto-suave);
+}
+
+.drive__carpetas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-5);
+}
+
+.drive__carpeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-md);
+  background: var(--color-blanco);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.drive__carpeta--activa {
+  border-color: var(--color-petroleo);
+  box-shadow: inset 0 0 0 1px var(--color-petroleo);
+}
+
+.drive__carpeta-nombre {
+  font-family: var(--ff-display);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--color-petroleo);
+}
+
+.drive__carpeta-dato {
+  font-size: 0.8125rem;
+  color: var(--color-texto-suave);
+}
+
+.drive__filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-5);
+}
+
+.drive__filtro {
+  flex: 0 0 12rem;
+}
+
+.drive__busqueda {
+  flex: 1 1 16rem;
+  max-width: 24rem;
+}
+
+.drive__grilla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.drive__archivo {
+  display: flex;
+  flex: 0 1 13rem;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-md);
+  background: var(--color-blanco);
+}
+
+.drive__vista {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 3;
+  background: var(--color-gris-50);
+}
+
+.drive__miniatura {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.drive__icono {
+  font-family: var(--ff-display);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-petroleo-700);
+}
+
+.drive__icono--video {
+  color: var(--color-terracota-700);
+}
+
+.drive__archivo-cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+}
+
+.drive__archivo-nombre {
+  overflow: hidden;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drive__archivo-ruta,
+.drive__archivo-dato {
+  overflow: hidden;
+  font-size: 0.8125rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-texto-suave);
+}
+
+.drive__archivo-acciones {
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}

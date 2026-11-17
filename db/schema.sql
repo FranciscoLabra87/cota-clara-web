@@ -165,3 +165,23 @@ CREATE TABLE IF NOT EXISTS propiedad_ficha (
   actualizada_en TEXT NOT NULL DEFAULT (datetime('now')),
   FOREIGN KEY (propiedad_id) REFERENCES propiedades(id) ON DELETE CASCADE
 );
+
+-- Drive interno: fotos, videos y documentos del equipo, en R2 bajo el
+-- prefijo drive/. Cada usuario sube a su carpeta y todos ven todas.
+-- La fila se crea al empezar la subida (estado 'subiendo') con el tamaño
+-- declarado: así la cuota cuenta también lo que se está subiendo y dos
+-- subidas en paralelo no pueden pasarse del límite entre las dos.
+CREATE TABLE IF NOT EXISTS drive_archivos (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  usuario_id INTEGER,                           -- dueño: su carpeta
+  clave      TEXT NOT NULL UNIQUE,              -- objeto en R2
+  nombre     TEXT NOT NULL,                     -- nombre original, con la ruta si vino de una carpeta
+  tipo       TEXT NOT NULL,                     -- Content-Type fijado por el servidor según la extensión
+  tamano     INTEGER NOT NULL,
+  estado     TEXT NOT NULL DEFAULT 'subiendo' CHECK(estado IN ('subiendo','listo')),
+  upload_id  TEXT,                              -- id de la subida por partes de R2, mientras dura
+  creado_en  TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE SET NULL
+);
+CREATE INDEX IF NOT EXISTS idx_drive_usuario ON drive_archivos(usuario_id, estado, creado_en);
+CREATE INDEX IF NOT EXISTS idx_drive_estado ON drive_archivos(estado, creado_en);

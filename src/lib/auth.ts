@@ -17,20 +17,14 @@ export {
   verifyPassword,
 } from './crypto';
 
-export const COOKIE_SESION = 'cota_sesion';
+// La consulta de sesión vive en sesion.ts, sin imports de Next, porque la
+// usa también el Worker propio del Drive.
+export { COOKIE_SESION, leerCookie, type Rol, type Sesion } from './sesion';
+import { COOKIE_SESION, leerCookie, sesionEnBase, type Sesion } from './sesion';
+
 export const DURACION_SESION_SEG = 60 * 60 * 24 * 7;
 
 const MAX_SESIONES_POR_USUARIO = 5;
-
-export type Rol = 'ADMIN' | 'EDITOR';
-
-export type Sesion = {
-  usuario_id: number;
-  rut_norm: string;
-  nombre: string;
-  rol: Rol;
-  password_temporal: number;
-};
 
 export { obtenerDB } from './db';
 
@@ -74,27 +68,10 @@ export function cookieSesionBorrada(request?: Request) {
   return `${COOKIE_SESION}=; ${atributosCookie(request, 0)}`;
 }
 
-export function leerCookie(request: Request, nombre: string) {
-  const cookie = request.headers.get('Cookie') || '';
-  const match = cookie.match(new RegExp(`(?:^|; )${nombre}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
-
 // ─── Sesión ───
 
 async function sesionPorToken(token: string | null): Promise<Sesion | null> {
-  if (!token) return null;
-  const db = await obtenerDB();
-  const fila = await db
-    .prepare(
-      `SELECT u.id AS usuario_id, u.rut_norm, u.nombre, u.rol, u.password_temporal
-       FROM sesiones s
-       JOIN usuarios u ON u.id = s.usuario_id
-       WHERE s.token = ? AND s.expira_en > datetime('now') AND u.activo = 1`,
-    )
-    .bind(await hashToken(token))
-    .first<Sesion>();
-  return fila ?? null;
+  return sesionEnBase(await obtenerDB(), token);
 }
 
 // Para route handlers, que tienen el Request a mano.
