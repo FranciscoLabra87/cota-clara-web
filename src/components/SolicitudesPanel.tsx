@@ -26,7 +26,7 @@ const AVISO: Record<Solicitud['correo'], string> = {
 
 const ESTADO: Record<Solicitud['estado'], string> = {
   pendiente: 'Por responder',
-  enviando: 'Envío pendiente',
+  enviando: 'Envío sin confirmar',
   error: 'Envío fallido',
   respondida: 'Respondida',
 };
@@ -46,7 +46,7 @@ async function errorDe(res: Response, fallback: string): Promise<string> {
   return typeof cuerpo?.error === 'string' ? cuerpo.error : fallback;
 }
 
-export function SolicitudesPanel({ solicitudes }: { solicitudes: SolicitudFila[] }) {
+export function SolicitudesPanel({ solicitudes, correoListo }: { solicitudes: SolicitudFila[]; correoListo: boolean }) {
   const router = useRouter();
   const [trabajando, setTrabajando] = useState<number | null>(null);
   const [alerta, setAlerta] = useState<string | null>(null);
@@ -152,10 +152,16 @@ export function SolicitudesPanel({ solicitudes }: { solicitudes: SolicitudFila[]
         <strong>{porResponder}</strong> {porResponder === 1 ? 'solicitud por resolver' : 'solicitudes por resolver'}
       </p>
 
+      {!correoListo ? (
+        <p className="panel__aviso" role="status">
+          Las respuestas por correo aún no están habilitadas. Las solicitudes siguen guardadas; pide a un administrador activar el correo antes de responder.
+        </p>
+      ) : null}
+
       {sinAviso ? (
         <p className="panel__aviso" role="status">
-          {sinAviso === 1 ? 'Hay 1 solicitud que no salió' : 'Hay ' + sinAviso + ' solicitudes que no salieron'} por correo: solo{' '}
-          {sinAviso === 1 ? 'está' : 'están'} en esta lista.
+          {sinAviso === 1 ? 'Hay 1 aviso al equipo que no salió' : 'Hay ' + sinAviso + ' avisos al equipo que no salieron'} por correo.{' '}
+          {sinAviso === 1 ? 'La solicitud está guardada' : 'Las solicitudes están guardadas'} en esta lista.
         </p>
       ) : null}
       {aviso ? <p className="panel__aviso" role="status">{aviso}</p> : null}
@@ -170,7 +176,7 @@ export function SolicitudesPanel({ solicitudes }: { solicitudes: SolicitudFila[]
                 <th scope="col">Tipo</th>
                 <th scope="col">De</th>
                 <th scope="col">Qué pide</th>
-                <th scope="col">Aviso</th>
+                <th scope="col">Aviso interno</th>
                 <th scope="col">Estado</th>
                 <th scope="col"><span className="visually-hidden">Acciones</span></th>
               </tr>
@@ -223,14 +229,14 @@ export function SolicitudesPanel({ solicitudes }: { solicitudes: SolicitudFila[]
                                   className="solicitudes__accion solicitudes__accion--principal"
                                   onClick={() => alternarDetalle(s.id)}
                                   aria-expanded={detalleAbierto}
-                                  aria-controls={detalleAbierto ? 'solicitud-detalle-' + s.id : undefined}
-                                  disabled={trabajando !== null}
+                                  aria-controls={'solicitud-detalle-' + s.id}
+                                  disabled={trabajando !== null || (s.estado === 'pendiente' && !correoListo)}
                                 >
                                   {detalleAbierto ? 'Cerrar' : s.estado === 'pendiente' ? 'Responder' : 'Ver respuesta'}
                                 </button>
                               ) : null}
-                              {(s.estado === 'error' || s.estado === 'enviando') ? (
-                                <button type="button" className="solicitudes__accion" onClick={() => reintentar(s)} disabled={trabajando !== null}>
+                              {s.estado === 'error' ? (
+                                <button type="button" className="solicitudes__accion" onClick={() => reintentar(s)} disabled={trabajando !== null || !correoListo}>
                                   {enCurso ? 'Reintentando…' : 'Reintentar envío'}
                                 </button>
                               ) : null}
@@ -259,11 +265,11 @@ export function SolicitudesPanel({ solicitudes }: { solicitudes: SolicitudFila[]
                                 </div>
                                 <div className="field">
                                   <label className="field__label" htmlFor={'respuesta-' + s.id}>Respuesta por correo</label>
-                                  <textarea className="field__control field__control--textarea" id={'respuesta-' + s.id} name="respuesta" rows={6} maxLength={6000} required disabled={enCurso} />
+                                  <textarea className="field__control field__control--textarea" id={'respuesta-' + s.id} name="respuesta" rows={6} minLength={10} maxLength={4000} required disabled={enCurso} />
                                 </div>
                                 <div className="field">
                                   <label className="field__label" htmlFor={'nota-' + s.id}>Nota interna para el equipo</label>
-                                  <textarea className="field__control field__control--textarea" id={'nota-' + s.id} name="nota" rows={3} maxLength={1000} required disabled={enCurso} />
+                                  <textarea className="field__control field__control--textarea" id={'nota-' + s.id} name="nota" rows={3} minLength={3} maxLength={500} required disabled={enCurso} />
                                 </div>
                                 {errorActual ? <p className="solicitudes__error" role="alert">{errorActual}</p> : null}
                                 <div className="solicitudes__form-acciones">
@@ -275,7 +281,7 @@ export function SolicitudesPanel({ solicitudes }: { solicitudes: SolicitudFila[]
                               <div className="solicitudes__registro">
                                 <h2 className="solicitudes__titulo">{s.estado === 'respondida' ? 'Respuesta enviada' : 'Respuesta preparada'}</h2>
                                 {s.estado === 'error' ? <p className="solicitudes__ayuda">El correo no pudo salir. Puedes reintentar el envío desde la lista.</p> : null}
-                                {s.estado === 'enviando' ? <p className="solicitudes__ayuda">El envío quedó pendiente. Puedes reintentarlo desde la lista.</p> : null}
+                                {s.estado === 'enviando' ? <p className="solicitudes__ayuda">No se pudo confirmar el envío. Revisa el registro del correo antes de intentar otra acción.</p> : null}
                                 <dl className="solicitudes__registro-campos">
                                   <div><dt>Respuesta para {s.email}</dt><dd>{s.respuestaTexto || 'Sin texto guardado.'}</dd></div>
                                   <div><dt>Nota interna</dt><dd>{s.notaRespuesta || 'Sin nota guardada.'}</dd></div>

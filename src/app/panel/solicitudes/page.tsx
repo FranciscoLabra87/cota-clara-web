@@ -1,5 +1,6 @@
 import { SolicitudesPanel, type SolicitudFila } from '@/components/SolicitudesPanel';
 import { exigirSesion } from '@/lib/guardias';
+import { configuracionSmtp } from '@/lib/smtp';
 import { solicitudesRecientes } from '@/lib/solicitudes';
 
 export const dynamic = 'force-dynamic';
@@ -21,5 +22,5 @@ export default async function SolicitudesPage() {
     respondidaCuando: respondidaEn ? horaDeChile(respondidaEn) : null,
   }));
 
-  return <SolicitudesPanel solicitudes={solicitudes} />;
+  return <SolicitudesPanel solicitudes={solicitudes} correoListo={configuracionSmtp().lista} />;
 }

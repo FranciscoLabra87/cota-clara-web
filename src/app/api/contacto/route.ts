@@ -55,8 +55,8 @@ export async function POST(request: Request) {
   if (id !== null) await marcarCorreo(id, envio.estado).catch(() => {});
 
   // En el log van el id y el estado, nunca los datos de la persona.
-  if (envio.estado === 'error') console.error('[lead] no se pudo enviar el correo:', envio.detalle);
-  if (envio.estado === 'sin-configurar') console.warn('[lead] falta RESEND_API_KEY o LEADS_FROM: la solicitud queda solo en el panel');
+  if (envio.estado === 'error') console.error('[lead] no se pudo enviar el aviso por correo', id ?? 'sin guardar');
+  if (envio.estado === 'sin-configurar') console.warn('[lead] falta configurar SMTP: la solicitud queda solo en el panel');
 
   // Guardada o avisada por correo: de cualquiera de las dos formas llegó.
   if (id !== null || envio.estado === 'enviado') {

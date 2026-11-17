@@ -1,5 +1,5 @@
-import { Resend } from 'resend';
 import { site } from '@/data/site';
+import { enviarSmtp } from './smtp';
 
 export type Lead = {
   variante: string;
@@ -93,29 +93,15 @@ const destinos = () =>
     .filter(Boolean);
 
 export async function enviarLead(lead: Lead): Promise<EnvioLead> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.LEADS_FROM;
-
-  // Sin credenciales no sale el aviso por correo. La solicitud igual queda
-  // guardada en la base antes de llegar acá: ver src/app/api/contacto/route.ts.
-  if (!apiKey || !from) return { estado: 'sin-configurar' };
-
-  try {
-    const { data, error } = await new Resend(apiKey).emails.send({
-      from,
-      to: destinos(),
-      replyTo: lead.email,
-      subject: asuntoLead(lead),
-      text: textoLead(lead),
-      html: htmlLead(lead),
-      // Resend solo acepta tags con letras, números, guion y guion bajo: no pasamos
-      // la variante en crudo, que viene del request.
-      tags: [{ name: 'variante', value: TITULOS[lead.variante] ? lead.variante : 'contacto' }],
-    });
-
-    if (error) return { estado: 'error', detalle: `${error.name}: ${error.message}` };
-    return { estado: 'enviado', id: data?.id ?? '' };
-  } catch (e) {
-    return { estado: 'error', detalle: e instanceof Error ? e.message : 'fallo de red' };
-  }
+  // La solicitud se guarda en D1 antes de llegar acá. El correo es un aviso
+  // al equipo a través del SMTP del hosting, nunca el registro principal.
+  const envio = await enviarSmtp({
+    to: destinos(),
+    replyTo: lead.email,
+    subject: asuntoLead(lead),
+    text: textoLead(lead),
+    html: htmlLead(lead),
+  });
+  if (envio.estado === 'incierto') return { estado: 'error', detalle: `Aviso sin confirmar: ${envio.detalle}` };
+  return envio;
 }
