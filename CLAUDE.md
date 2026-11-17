@@ -19,6 +19,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Next.js 16 (App Router), React 19 y TypeScript. Sin Tailwind ni CSS-in-JS: CSS plano con BEM.
 - Se despliega en **Cloudflare Workers** con `@opennextjs/cloudflare`. Bindings en `wrangler.jsonc`: `DB` (D1), `FOTOS` (R2) e `IMAGES`.
 - En vivo en `https://cota-clara-web.franciscolabra87.workers.dev`. El dominio `cotaclara.cl` todavía no apunta al Worker.
+- **Correo:** `cotaclara.cl` está registrado en NIC Chile y delegado a Cloudflare (`mona` y `darwin.ns.cloudflare.com`), así que todo el DNS se maneja en Cloudflare. Email Routing está activo: `contacto@cotaclara.cl` se reenvía al Gmail de Francisco (regla «contacto a Francisco»). Cloudflare solo recibe y reenvía, no da casillas. El catch-all está apagado: cualquier otra dirección del dominio se descarta. Para enviar como `contacto@` el plan es Resend (gratis hasta 3.000 correos al mes y 100 al día), con su SMTP en el «Enviar como» de Gmail y su API para los avisos del sitio.
 - Comandos: `npm install` · `npm run dev` (http://localhost:3000) · `npm run build` · `npm start`.
 - **`npm run build` es `opennextjs-cloudflare build`**, no `next build`: compila Next y empaqueta el Worker en `.open-next/`, que es lo que se despliega. Tarda más, pero es lo que sale al aire. Para una revisión rápida de tipos y compilación está `npm run build:next`.
 - Por eso `open-next.config.ts` fija `buildCommand: 'next build'`. Si no, OpenNext correría `npm run build`, que ahora es él mismo, y se llamaría en círculo.
@@ -183,7 +184,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 ## Pendientes sugeridos
 
 1. **Primer ingreso del administrador** (16.367.941-8) y cambio de su clave inicial. Mientras no entre, la cuenta tiene una clave que se deduce del RUT.
-2. **Aviso por correo de las solicitudes**: verificar cotaclara.cl en Resend y cargar `RESEND_API_KEY` y `LEADS_FROM` como secretos del Worker. Mientras tanto las solicitudes no se pierden, pero solo se ven entrando a `/panel/solicitudes`: nadie recibe un aviso.
+2. **Aviso por correo de las solicitudes y envío como contacto@**: verificar cotaclara.cl en Resend, cargar `RESEND_API_KEY` y `LEADS_FROM` como secretos del Worker, y configurar el «Enviar como» de Gmail con el SMTP de Resend (`smtp.resend.com`, puerto 465, SSL, usuario `resend`). Falta además el correo de Gustavo como segundo destino de `contacto@`. Mientras tanto las solicitudes no se pierden, pero solo se ven entrando a `/panel/solicitudes`: nadie recibe un aviso.
 3. **Datos de contacto reales** en `site.ts`: teléfono, WhatsApp, correo y dirección.
 4. **Confirmar la autorización** para publicar los avisos y las fotos de Palma Fuentes.
 5. Dominio cotaclara.cl apuntando al Worker. Mientras tanto `robots.txt` mantiene el sitio fuera de los buscadores.
