@@ -10,7 +10,8 @@ import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 // La consecuencia es que no hay nonce por request: Next inyecta el payload RSC
 // en scripts inline, así que script-src necesita 'unsafe-inline'. La CSP igual
 // sirve para lo que más importa acá, que es bloquear scripts de terceros,
-// iframes ajenos y envíos de formulario fuera del sitio.
+// iframes ajenos (salvo Turnstile y el mapa de Google) y envíos de formulario
+// fuera del sitio.
 
 // HSTS y upgrade-insecure-requests solo cuando se despliega de verdad. En
 // localhost dejarían el origen pineado a https y romperían cualquier otro
@@ -40,7 +41,8 @@ const CSP_PAGINAS = [
   // Las teselas del mapa se descargan solo cuando el usuario llega a esa sección.
   "img-src 'self' data: blob: https://tile.openstreetmap.org",
   `connect-src 'self' ${TURNSTILE}`,
-  `frame-src ${TURNSTILE}`,
+  // Google: el mapa de la oficina en /contacto.
+  `frame-src ${TURNSTILE} https://www.google.com`,
   "frame-ancestors 'none'",
   "base-uri 'none'",
   "form-action 'self'",

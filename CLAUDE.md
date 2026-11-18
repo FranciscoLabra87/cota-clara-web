@@ -174,10 +174,11 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Se definen en `headers()` dentro de `next.config.ts`, no en un middleware: `proxy.ts` solo tiene soporte experimental y sin mantención en OpenNext.
 - Las páginas llevan CSP, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` y `Cross-Origin-Opener-Policy`. La API lleva una CSP de `default-src 'none'` con `sandbox`, más `no-store` y `Cross-Origin-Resource-Policy`.
 - El patrón `/:ruta((?!api/).*)` existe para que la API no reciba dos CSP; si recibe dos, el navegador aplica la intersección y rompe cosas.
-- `script-src` necesita `'unsafe-inline'`: Next inyecta el payload RSC en scripts inline y sin middleware no hay nonce por request. La CSP igual bloquea scripts de terceros, iframes ajenos y `form-action` fuera del sitio.
+- `script-src` necesita `'unsafe-inline'`: Next inyecta el payload RSC en scripts inline y sin middleware no hay nonce por request. La CSP igual bloquea scripts de terceros, iframes ajenos (salvo Turnstile y Google) y `form-action` fuera del sitio.
 - **HSTS y `upgrade-insecure-requests` solo si `WORKERS_CI=1` o `COTA_HSTS=1`.** El primero lo pone Cloudflare Workers Builds en cada build suyo, así que el sitio sale con HSTS sin depender de que alguien configure una variable; el segundo queda para forzarlo desde otro lado. En localhost dejarían el origen pineado a https y romperían cualquier otro servidor local por http. Las cabeceras se fijan al compilar, así que la variable tiene que estar puesta ya en el `npm run build`.
 - `public/_headers` cubre los archivos estáticos, que sirve Workers Assets sin pasar por el Worker.
 - `img-src` permite `https://tile.openstreetmap.org`, de donde salen las teselas del mapa. Es el único origen externo de imágenes.
+- `frame-src` permite `https://www.google.com` por el mapa de la oficina en `/contacto` (`mapaEmbed` en `site.ts`). El embed usa `https://www.google.com/maps?...&output=embed`, sin clave de API; si se cambia a `maps.google.com` redirige y hay que sumar ese origen.
 - `robots.txt` cierra el sitio entero (`Disallow: /`) cuando el host no es el dominio público, para que los buscadores no indexen la dirección `…workers.dev`. Se abre solo cuando `cotaclara.cl` apunte al Worker.
 - Al tocar la CSP hay que probar en el navegador, no solo con curl: una directiva de más no cambia los códigos HTTP, pero rompe la página en silencio.
 
@@ -203,7 +204,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 ## Contenido de ejemplo (reemplazar antes de publicar)
 
 - **Propiedades:** las 20 publicadas son avisos de otra corredora, Palma Fuentes, con sus fotos. Antes de salir con el dominio propio hay que confirmar que existe autorización para publicarlos, y revisar que cada aviso siga vigente.
-- **Contacto:** en `site.ts`, teléfono, WhatsApp, email y dirección son placeholders **y ya están en vivo**: el botón de WhatsApp del sitio abre un chat con un número que no es de la firma. `site.url` es `https://www.cotaclara.cl`.
+- **Contacto:** desde el 17 de noviembre de 2026 `site.ts` tiene los datos reales: teléfono y WhatsApp +56 9 4001 2319, `contacto@cotaclara.cl` y la oficina en Av. Manquehue Norte 882, Edificio Spot Residence Manquehue, Las Condes. `/contacto` muestra esa oficina en un mapa de Google, el pie enlaza la dirección a Google Maps y el JSON-LD de la portada lleva la dirección. Falta confirmar el horario, que sigue siendo el de ejemplo. `site.url` es `https://www.cotaclara.cl`.
 - **Honorarios:** los de `services.ts` son referenciales; hay que confirmarlos con el cliente.
 - **Leads:** `api/contacto` valida nombre, email, el consentimiento `acepto` y el honeypot `empresa`. **Primero guarda la solicitud en la tabla `solicitudes` y después intenta el aviso por correo** con el SMTP del hosting (`src/lib/leads.ts`): el correo es solo el aviso, el registro es la base. Responde `ok` si quedó guardada o si el correo salió; recién si fallan las dos cosas responde 503 o 502. Las solicitudes se ven, se responden con nota interna y se borran en `/panel/solicitudes`. Tope contra el abuso: 5 por conexión y 100 en total cada diez minutos; pasado eso responde 429 y no guarda. En el log van el id y el estado, nunca los datos de la persona. La ip de cada solicitud se borra pasado un día, aprovechando cada solicitud nueva. Para activar correo faltan `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` y `LEADS_FROM`: en `.env.local` para desarrollo y como secretos del Worker en producción.
 
@@ -211,7 +212,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 
 1. **Primer ingreso del administrador** (16.367.941-8) y cambio de su clave inicial. Mientras no entre, la cuenta tiene una clave que se deduce del RUT.
 2. **Correo del hosting**: obtener servidor, puerto, usuario, contraseña y remitente SMTP; configurar secretos en el Worker y probar un envío real. Revisar con el proveedor los MX, SPF y DKIM antes de usar su buzón como receptor. Mientras tanto las solicitudes no se pierden: quedan en `/panel/solicitudes`, pero no sale aviso ni respuesta por correo desde el panel.
-3. **Datos de contacto reales** en `site.ts`: teléfono, WhatsApp, correo y dirección.
+3. **Google**: crear el Perfil de Empresa de Google con la misma dirección y teléfono de `site.ts`, y dar de alta el dominio en Search Console para enviarle `https://www.cotaclara.cl/sitemap.xml`. Las dos cosas las hace el dueño desde su cuenta de Google. Confirmar también el horario de `site.ts`.
 4. **Confirmar la autorización** para publicar los avisos y las fotos de Palma Fuentes.
 5. Confirmar que `robots.txt` permite indexar solo los dominios públicos y mantiene cerrado `workers.dev`.
 6. Honorarios de `services.ts`: confirmarlos con el cliente.

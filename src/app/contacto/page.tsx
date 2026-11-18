@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Icon } from '@/components/Icon';
 import { LeadForm } from '@/components/LeadForm';
 import { PageHero } from '@/components/PageHero';
-import { site, whatsappHref } from '@/data/site';
+import { mapaEmbed, mapaHref, site, whatsappHref } from '@/data/site';
 
 export const metadata: Metadata = {
   title: 'Contacto',
@@ -52,6 +52,18 @@ export default function ContactoPage() {
                 </div>
               </li>
               <li className="contact__item">
+                <Icon name="pin" className="contact__icon" />
+                <div>
+                  <p className="contact__label">Oficina</p>
+                  <a className="contact__value" href={mapaHref} target="_blank" rel="noopener noreferrer">
+                    {site.calle}
+                  </a>
+                  <p className="contact__text">
+                    {site.edificio}, {site.comuna}
+                  </p>
+                </div>
+              </li>
+              <li className="contact__item">
                 <Icon name="clock" className="contact__icon" />
                 <div>
                   <p className="contact__label">Horario</p>
@@ -71,6 +83,37 @@ export default function ContactoPage() {
                 eliminemos escribiendo a {site.email}.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section" aria-labelledby="oficina-titulo">
+        <div className="container office-map">
+          <div className="office-map__info">
+            <span className="eyebrow">Dónde estamos</span>
+            <h2 className="office-map__title" id="oficina-titulo">
+              Nuestra oficina
+            </h2>
+            <address className="office-map__address">
+              {site.calle}
+              <br />
+              {site.edificio}
+              <br />
+              {site.comuna}, Santiago
+            </address>
+            <p className="office-map__hours">{site.horario}</p>
+            <a className="button button--primary" href={mapaHref} target="_blank" rel="noopener noreferrer">
+              Cómo llegar
+            </a>
+          </div>
+          <div className="office-map__frame">
+            <iframe
+              className="office-map__iframe"
+              src={mapaEmbed}
+              title={`Mapa de la oficina de Cota Clara en ${site.direccion}`}
+              loading="lazy"
+              allowFullScreen
+            />
           </div>
         </div>
       </section>

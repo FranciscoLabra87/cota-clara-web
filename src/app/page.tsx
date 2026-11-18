@@ -10,7 +10,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { SectionHead } from '@/components/SectionHead';
 import { comunasDisponibles, segmentos, tituloPropiedad } from '@/data/properties';
 import { servicios } from '@/data/services';
-import { site, whatsappHref } from '@/data/site';
+import { mapaHref, site, whatsappHref } from '@/data/site';
 import { opcionesPrecioDisponibles } from '@/lib/filters';
 import { formatPrecio } from '@/lib/format';
 import { jsonLd } from '@/lib/json-ld';
@@ -92,6 +92,14 @@ export default async function HomePage() {
             url: site.url,
             email: site.email,
             telephone: site.telefono,
+            address: {
+              '@type': 'PostalAddress',
+              streetAddress: `${site.calle}, ${site.edificio}`,
+              addressLocality: site.comuna,
+              addressRegion: 'Región Metropolitana',
+              addressCountry: 'CL',
+            },
+            hasMap: mapaHref,
             slogan: site.lema,
             areaServed: comunasConPropiedades.map((c) => ({ '@type': 'City', name: c })),
           }),

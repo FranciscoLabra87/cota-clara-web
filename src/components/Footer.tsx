@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Icon } from './Icon';
 import { Logo } from './Logo';
-import { site, whatsappHref } from '@/data/site';
+import { mapaHref, site, whatsappHref } from '@/data/site';
 import { servicios } from '@/data/services';
 
 export function Footer() {
@@ -58,8 +58,10 @@ export function Footer() {
                   <Icon name="whatsapp" /> WhatsApp
                 </a>
               </li>
-              <li className="site-footer__text site-footer__link--icon">
-                <Icon name="pin" /> {site.direccion}
+              <li>
+                <a className="site-footer__link site-footer__link--icon" href={mapaHref} target="_blank" rel="noopener noreferrer">
+                  <Icon name="pin" /> {site.direccion}
+                </a>
               </li>
             </ul>
           </div>
