@@ -50,6 +50,31 @@ export async function superaElTope(ip: string | null): Promise<boolean> {
   return fila.general >= MAX_GENERAL || (ip !== null && fila.de_esta_ip >= MAX_POR_IP);
 }
 
+// La confirmación automática va al correo que se escribió en el formulario,
+// que puede ser el de otra persona. Más de unas pocas al día a la misma casilla
+// ya no es alguien pidiendo información: se dejan de mandar, aunque la
+// solicitud igual se guarda y avisa al equipo.
+export const MAX_CONFIRMACIONES_POR_CORREO = 3;
+
+/** True si a ese correo ya le llegaron demasiadas solicitudes en las últimas 24 horas (contando la recién guardada). */
+export async function superaConfirmaciones(email: string): Promise<boolean> {
+  const db = await obtenerDB();
+  const fila = await db
+    .prepare(`SELECT COUNT(*) AS n FROM solicitudes WHERE lower(email) = lower(?) AND creada_en >= datetime('now', '-1 day')`)
+    .bind(email)
+    .first<{ n: number }>();
+  return (fila?.n ?? 0) > MAX_CONFIRMACIONES_POR_CORREO;
+}
+
+/** Las que esperan respuesta: nuevas, o cuya respuesta por correo falló. */
+export async function solicitudesSinResponder(): Promise<number> {
+  const db = await obtenerDB();
+  const fila = await db
+    .prepare(`SELECT COUNT(*) AS n FROM solicitudes WHERE estado IN ('pendiente', 'error')`)
+    .first<{ n: number }>();
+  return fila?.n ?? 0;
+}
+
 // La ip solo sirve para el tope, que mira los últimos diez minutos. Guardarla
 // más allá de eso es acumular un dato personal que nadie usa, así que se
 // borra pasado un día. Se aprovecha cada solicitud nueva para hacerlo.

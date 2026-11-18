@@ -13,6 +13,7 @@ type MensajeSmtp = {
   html?: string;
   replyTo?: string;
   messageId?: string;
+  headers?: Record<string, string>;
 };
 
 type Configuracion = {
@@ -88,6 +89,7 @@ export async function enviarSmtp(mensaje: MensajeSmtp): Promise<ResultadoSmtp> {
       html: mensaje.html,
       replyTo: mensaje.replyTo,
       messageId: mensaje.messageId,
+      headers: mensaje.headers,
     });
 
     const aceptados = new Set(info.accepted.map((direccion) => direccion.toLowerCase()));

@@ -17,6 +17,11 @@ const mundo = vi.hoisted(() => ({
     | { estado: 'error'; detalle: string }
     | { estado: 'incierto'; detalle: string },
   enviosRespuesta: [] as Array<{ id: number; email: string; respuesta: string; clave: string }>,
+  confirmacion: { estado: 'enviado', id: 'confirmacion-prueba' } as
+    | { estado: 'enviado'; id: string }
+    | { estado: 'sin-configurar' }
+    | { estado: 'error'; detalle: string },
+  confirmaciones: [] as string[],
 }));
 
 vi.mock('@/lib/db', () => ({
@@ -30,6 +35,10 @@ vi.mock('@/lib/db', () => ({
 vi.mock('@/lib/leads', async (original) => ({
   ...(await original<typeof import('@/lib/leads')>()),
   enviarLead: async () => mundo.correo,
+  enviarConfirmacion: async (lead: { email: string }) => {
+    mundo.confirmaciones.push(lead.email);
+    return mundo.confirmacion;
+  },
 }));
 
 vi.mock('@/lib/respuesta-email', () => ({
@@ -41,7 +50,8 @@ vi.mock('@/lib/respuesta-email', () => ({
 
 const { POST: contacto } = await import('../src/app/api/contacto/route');
 const { POST: responderSolicitud, PATCH: reintentarSolicitud, DELETE: borrarSolicitud } = await import('../src/app/api/panel/solicitudes/[id]/route');
-const { MAX_POR_IP, solicitudesRecientes } = await import('@/lib/solicitudes');
+const { MAX_CONFIRMACIONES_POR_CORREO, MAX_POR_IP, solicitudesRecientes, solicitudesSinResponder } = await import('@/lib/solicitudes');
+const { ASUNTO_CONFIRMACION, htmlConfirmacion, saludo, textoConfirmacion } = await import('@/lib/leads');
 
 const ruta = (id: string | number) => ({ params: Promise.resolve({ id: String(id) }) });
 
@@ -74,6 +84,8 @@ beforeEach(() => {
   mundo.correo = { estado: 'sin-configurar' };
   mundo.respuesta = { estado: 'enviado', id: 'respuesta-prueba' };
   mundo.enviosRespuesta = [];
+  mundo.confirmacion = { estado: 'enviado', id: 'confirmacion-prueba' };
+  mundo.confirmaciones = [];
   delete process.env.SMTP_HOST;
   delete process.env.SMTP_PORT;
   delete process.env.SMTP_USER;
@@ -317,6 +329,78 @@ describe('respuesta desde el panel', () => {
     expect((await filas())[0].estado).toBe('enviando');
     expect((await reintentar(id, cookie)).status).toBe(409);
     expect((await borrarSolicitud(pedir(`/api/panel/solicitudes/${id}`, cookie, { method: 'DELETE' }), ruta(id))).status).toBe(409);
+  });
+});
+
+describe('confirmación a quien llenó el formulario', () => {
+  const lead = {
+    variante: 'tasacion',
+    nombre: 'Camila Rojas',
+    email: 'camila@example.com',
+    telefono: '',
+    tipo: '',
+    comuna: 'Providencia',
+    motivo: '',
+    fecha: '',
+    mensaje: 'Compra barato en spam.example',
+    propiedad: '',
+  };
+
+  it('se le manda al correo del formulario cuando la solicitud queda guardada', async () => {
+    expect((await enviar(formulario())).status).toBe(200);
+    expect(mundo.confirmaciones).toEqual(['camila@example.com']);
+  });
+
+  it('si la solicitud no se guardó, no se confirma nada', async () => {
+    mundo.baseCaida = true;
+    mundo.correo = { estado: 'enviado', id: 'abc' };
+    expect((await enviar(formulario())).status).toBe(200);
+    expect(mundo.confirmaciones).toEqual([]);
+  });
+
+  it('si la confirmación falla, la persona igual recibe ok', async () => {
+    mundo.confirmacion = { estado: 'error', detalle: 'el servidor no respondió' };
+    expect((await enviar(formulario())).status).toBe(200);
+    expect(await filas()).toHaveLength(1);
+  });
+
+  it('deja de mandarle a una misma casilla pasado el tope del día, pero guarda la solicitud', async () => {
+    for (let i = 0; i < MAX_CONFIRMACIONES_POR_CORREO + 2; i += 1) {
+      expect((await enviar(formulario({ email: i % 2 ? 'CAMILA@example.com' : 'camila@example.com' }), `203.0.113.${100 + i}`)).status).toBe(200);
+    }
+    expect(mundo.confirmaciones).toHaveLength(MAX_CONFIRMACIONES_POR_CORREO);
+    expect(await filas()).toHaveLength(MAX_CONFIRMACIONES_POR_CORREO + 2);
+  });
+
+  it('no repite lo que se escribió en el formulario, salvo un primer nombre de solo letras', () => {
+    const texto = textoConfirmacion(lead);
+    const html = htmlConfirmacion(lead);
+    for (const cuerpo of [texto, html]) {
+      expect(cuerpo).not.toContain('spam.example');
+      expect(cuerpo).not.toContain('Providencia');
+      expect(cuerpo).not.toContain('Rojas');
+      expect(cuerpo).toContain('Camila');
+      expect(cuerpo).toContain('tasación');
+      expect(cuerpo).toContain('contacto@cotaclara.cl');
+      expect(cuerpo).toContain('no lo respondas');
+    }
+    expect(ASUNTO_CONFIRMACION).toContain('ingresada con éxito');
+  });
+
+  it('un nombre que no es solo letras no entra al saludo', () => {
+    expect(saludo('José-Tomás Pérez')).toBe('Hola, José-Tomás:');
+    expect(saludo('visita http://spam.example')).toBe('Hola, visita:');
+    expect(saludo('http://spam.example')).toBe('Hola:');
+    expect(saludo('<b>Ana</b>')).toBe('Hola:');
+  });
+});
+
+describe('contador del panel', () => {
+  it('cuenta las nuevas y las de respuesta fallida, no las respondidas ni las en envío', async () => {
+    await env.DB.prepare(
+      "INSERT INTO solicitudes (nombre, email, estado) VALUES ('A', 'a@example.com', 'pendiente'), ('B', 'b@example.com', 'pendiente'), ('C', 'c@example.com', 'error'), ('D', 'd@example.com', 'respondida'), ('E', 'e@example.com', 'enviando')",
+    ).run();
+    expect(await solicitudesSinResponder()).toBe(3);
   });
 });
 

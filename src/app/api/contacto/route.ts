@@ -1,11 +1,22 @@
 import { ipDe } from '@/lib/auth';
 import { interesadoDesdeSolicitud } from '@/lib/crm';
-import { enviarLead, type Lead } from '@/lib/leads';
-import { guardarSolicitud, marcarCorreo, superaElTope } from '@/lib/solicitudes';
+import { enviarConfirmacion, enviarLead, type Lead } from '@/lib/leads';
+import { guardarSolicitud, marcarCorreo, superaConfirmaciones, superaElTope } from '@/lib/solicitudes';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const texto = (v: unknown, max = 500) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const json = (cuerpo: unknown, status = 200) => Response.json(cuerpo, { status });
+
+/**
+ * La confirmación a la persona. Solo sale si la solicitud quedó guardada, que
+ * es lo que el correo afirma, y si esa casilla no superó su tope del día. Si
+ * la base no deja medir el tope, no se manda: ante la duda, no escribirle a
+ * un correo que pudo poner cualquiera.
+ */
+async function confirmar(lead: Lead): Promise<string> {
+  if (await superaConfirmaciones(lead.email).catch(() => true)) return 'omitida';
+  return (await enviarConfirmacion(lead)).estado;
+}
 
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
@@ -60,16 +71,20 @@ export async function POST(request: Request) {
     );
   }
 
-  const envio = await enviarLead(lead);
+  // El aviso con todos los datos va al equipo (contacto@), que es el respaldo
+  // por correo; la confirmación, a la persona. Salen en paralelo.
+  const [envio, confirmacion] = await Promise.all([enviarLead(lead), id !== null ? confirmar(lead) : 'sin-guardar']);
   if (id !== null) await marcarCorreo(id, envio.estado).catch(() => {});
 
   // En el log van el id y el estado, nunca los datos de la persona.
   if (envio.estado === 'error') console.error('[lead] no se pudo enviar el aviso por correo', id ?? 'sin guardar');
+  if (confirmacion === 'error') console.error('[lead] no se pudo enviar la confirmación', id);
+  if (confirmacion === 'omitida') console.warn('[lead] confirmación omitida por el tope de ese correo', id);
   if (envio.estado === 'sin-configurar') console.warn('[lead] falta configurar SMTP: la solicitud queda solo en el panel');
 
   // Guardada o avisada por correo: de cualquiera de las dos formas llegó.
   if (id !== null || envio.estado === 'enviado') {
-    console.info('[lead] recibida', id ?? 'sin guardar', envio.estado);
+    console.info('[lead] recibida', id ?? 'sin guardar', envio.estado, confirmacion);
     return json({ ok: true });
   }
 

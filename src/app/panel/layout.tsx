@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { CerrarSesion } from '@/components/CerrarSesion';
 import { esAdmin } from '@/lib/auth';
 import { exigirSesionBasica } from '@/lib/guardias';
+import { solicitudesSinResponder } from '@/lib/solicitudes';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,8 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   // exigirAdmin: la autorización no se delega en un solo punto.
   const sesion = await exigirSesionBasica();
   const mostrarUsuarios = esAdmin(sesion.rol) && !sesion.password_temporal;
+  // El contador es un aviso: si la base no responde, el panel igual se muestra.
+  const sinResponder = sesion.password_temporal ? 0 : await solicitudesSinResponder().catch(() => 0);
 
   return (
     <div className="panel">
@@ -44,6 +47,12 @@ export default async function PanelLayout({ children }: { children: React.ReactN
                 </Link>
                 <Link className="panel__nav-link" href="/panel/solicitudes">
                   Solicitudes
+                  {sinResponder > 0 ? (
+                    <span className="panel__contador" title={`${sinResponder} sin responder`}>
+                      {sinResponder}
+                      <span className="visually-hidden"> sin responder</span>
+                    </span>
+                  ) : null}
                 </Link>
                 <Link className="panel__nav-link" href="/panel/fichas">
                   Fichas técnicas

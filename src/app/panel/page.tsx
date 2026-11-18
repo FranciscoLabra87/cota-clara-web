@@ -3,6 +3,7 @@ import { CapacidadPanel } from '@/components/CapacidadPanel';
 import { esAdmin, formatearRut } from '@/lib/auth';
 import { medirCapacidad } from '@/lib/capacidad';
 import { exigirSesion } from '@/lib/guardias';
+import { solicitudesSinResponder } from '@/lib/solicitudes';
 import { pendientesDe } from '@/lib/tareas';
 
 export const dynamic = 'force-dynamic';
@@ -11,6 +12,7 @@ export default async function PanelPage() {
   const sesion = await exigirSesion();
   const primerNombre = sesion.nombre.trim().split(/\s+/)[0];
   const pendientes = await pendientesDe(sesion.usuario_id);
+  const sinResponder = await solicitudesSinResponder();
   const capacidad = esAdmin(sesion.rol) ? await medirCapacidad() : null;
 
   return (
@@ -20,6 +22,18 @@ export default async function PanelPage() {
         Entraste como <strong>{formatearRut(sesion.rut_norm)}</strong>, con rol{' '}
         {sesion.rol === 'ADMIN' ? 'de administrador' : 'de editor'}.
       </p>
+
+      {sinResponder > 0 ? (
+        <p className="panel__pendientes" role="status">
+          <span className="panel__contador panel__contador--grande">{sinResponder}</span>
+          <span>
+            {sinResponder === 1 ? 'Hay 1 solicitud del sitio sin responder.' : `Hay ${sinResponder} solicitudes del sitio sin responder.`}
+          </span>
+          <Link className="button button--primary button--sm" href="/panel/solicitudes">
+            Ver solicitudes
+          </Link>
+        </p>
+      ) : null}
 
       <div className="panel__grid">
         <article className="panel__card">
