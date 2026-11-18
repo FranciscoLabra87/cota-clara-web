@@ -9,9 +9,9 @@ import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 //
 // La consecuencia es que no hay nonce por request: Next inyecta el payload RSC
 // en scripts inline, así que script-src necesita 'unsafe-inline'. La CSP igual
-// sirve para lo que más importa acá, que es bloquear scripts de terceros,
-// iframes ajenos (salvo Turnstile y el mapa de Google) y envíos de formulario
-// fuera del sitio.
+// sirve para lo que más importa acá, que es bloquear scripts de terceros
+// (salvo Turnstile y Cloudflare Web Analytics), iframes ajenos (salvo
+// Turnstile y el mapa de Google) y envíos de formulario fuera del sitio.
 
 // HSTS y upgrade-insecure-requests solo cuando se despliega de verdad. En
 // localhost dejarían el origen pineado a https y romperían cualquier otro
@@ -30,17 +30,25 @@ const evalDeDesarrollo = esDesarrollo ? " 'unsafe-eval'" : '';
 
 const TURNSTILE = 'https://challenges.cloudflare.com';
 
+// Cloudflare Web Analytics: Cloudflare inyecta su beacon en cada página. El
+// script sale de static.cloudflareinsights.com con una ruta que cambia de
+// versión (/beacon.min.js/v…), así que va el host entero y no la ruta. Las
+// mediciones se envían a /cdn-cgi/rum del mismo sitio ('self'), o a
+// cloudflareinsights.com si algún día se pega el snippet a mano.
+const ANALYTICS_SCRIPT = 'https://static.cloudflareinsights.com';
+const ANALYTICS_ENVIO = 'https://cloudflareinsights.com';
+
 const CSP_PAGINAS = [
   "default-src 'self'",
   // 'unsafe-inline': ver el comentario de arriba. Turnstile carga su widget.
-  `script-src 'self' 'unsafe-inline'${evalDeDesarrollo} ${TURNSTILE}`,
+  `script-src 'self' 'unsafe-inline'${evalDeDesarrollo} ${TURNSTILE} ${ANALYTICS_SCRIPT}`,
   // Los atributos style= que emite React caen acá.
   "style-src 'self' 'unsafe-inline'",
   // Las tipografías son locales (next/font/local), no hay CDN de fuentes.
   "font-src 'self'",
   // Las teselas del mapa se descargan solo cuando el usuario llega a esa sección.
   "img-src 'self' data: blob: https://tile.openstreetmap.org",
-  `connect-src 'self' ${TURNSTILE}`,
+  `connect-src 'self' ${TURNSTILE} ${ANALYTICS_ENVIO}`,
   // Google: el mapa de la oficina en /contacto.
   `frame-src ${TURNSTILE} https://www.google.com`,
   "frame-ancestors 'none'",
