@@ -6,7 +6,7 @@ export type ResultadoSmtp =
   | { estado: 'error'; detalle: string }
   | { estado: 'incierto'; detalle: string };
 
-type MensajeSmtp = {
+export type MensajeSmtp = {
   to: string | string[];
   subject: string;
   text: string;

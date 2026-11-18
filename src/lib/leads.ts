@@ -1,5 +1,5 @@
 import { site } from '@/data/site';
-import { enviarSmtp } from './smtp';
+import { enviarCorreo } from './correo';
 
 export type Lead = {
   variante: string;
@@ -159,7 +159,7 @@ export function htmlConfirmacion(lead: Lead) {
 
 /** Le confirma a la persona que su solicitud quedó ingresada. */
 export async function enviarConfirmacion(lead: Lead): Promise<EnvioLead> {
-  const envio = await enviarSmtp({
+  const envio = await enviarCorreo({
     to: lead.email,
     replyTo: site.email,
     subject: ASUNTO_CONFIRMACION,
@@ -174,8 +174,8 @@ export async function enviarConfirmacion(lead: Lead): Promise<EnvioLead> {
 
 export async function enviarLead(lead: Lead): Promise<EnvioLead> {
   // La solicitud se guarda en D1 antes de llegar acá. El correo es un aviso
-  // al equipo a través del SMTP del hosting, nunca el registro principal.
-  const envio = await enviarSmtp({
+  // al equipo (por Resend o el SMTP del hosting), nunca el registro principal.
+  const envio = await enviarCorreo({
     to: destinos(),
     replyTo: lead.email,
     subject: asuntoLead(lead),

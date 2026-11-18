@@ -1,7 +1,7 @@
 import { errorJson, ipDe, json, registrar } from '@/lib/auth';
 import { exigirSesionApi, idDeRuta } from '@/lib/panel-api';
 import { enviarRespuesta } from '@/lib/respuesta-email';
-import { configuracionSmtp } from '@/lib/smtp';
+import { configuracionCorreo } from '@/lib/correo';
 import {
   eliminarSolicitud,
   marcarRespuestaEnviada,
@@ -41,7 +41,7 @@ export async function POST(request: Request, { params }: Params) {
   if (!acceso.ok) return acceso.respuesta;
   const id = idDeRuta((await params).id);
   if (!id) return errorJson('Solicitud no válida', 400);
-  if (!configuracionSmtp().lista) {
+  if (!configuracionCorreo().lista) {
     return errorJson('El envío de correos aún no está configurado. La solicitud permanece pendiente.', 503);
   }
 
@@ -73,7 +73,7 @@ export async function PATCH(request: Request, { params }: Params) {
   if (!acceso.ok) return acceso.respuesta;
   const id = idDeRuta((await params).id);
   if (!id) return errorJson('Solicitud no válida', 400);
-  if (!configuracionSmtp().lista) {
+  if (!configuracionCorreo().lista) {
     return errorJson('El envío de correos aún no está configurado. La respuesta quedó guardada para reintentar.', 503);
   }
   const solicitud = await reintentarRespuesta(id);

@@ -91,6 +91,7 @@ beforeEach(() => {
   delete process.env.SMTP_USER;
   delete process.env.SMTP_PASS;
   delete process.env.LEADS_FROM;
+  delete process.env.RESEND_API_KEY;
 });
 
 describe('una solicitud no se pierde', () => {

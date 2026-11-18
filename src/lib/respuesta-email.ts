@@ -1,5 +1,5 @@
 import { site } from '@/data/site';
-import { enviarSmtp, type ResultadoSmtp } from './smtp';
+import { enviarCorreo, type ResultadoCorreo } from './correo';
 
 type DatosRespuesta = {
   id: number;
@@ -10,7 +10,7 @@ type DatosRespuesta = {
   clave: string;
 };
 
-export type EnvioRespuesta = ResultadoSmtp;
+export type EnvioRespuesta = ResultadoCorreo;
 
 const ASUNTOS: Record<DatosRespuesta['variante'], string> = {
   contacto: 'Respuesta a tu consulta en Cota Clara',
@@ -28,7 +28,7 @@ export async function enviarRespuesta({
   clave,
 }: DatosRespuesta): Promise<EnvioRespuesta> {
   const text = `Hola ${nombre.trim()},\n\n${respuesta.trim()}\n\nSaludos,\nEquipo Cota Clara · Patrimonio Inmobiliario`;
-  return enviarSmtp({
+  return enviarCorreo({
     to: email,
     replyTo: site.email,
     subject: ASUNTOS[variante],
