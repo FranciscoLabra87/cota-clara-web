@@ -168,6 +168,16 @@ export async function propiedadPorSlug(slug: string): Promise<Propiedad | null> 
   return (await hidratar([fila]))[0];
 }
 
+/** La propiedad publicada que alguien consultó desde su ficha, para armar el aviso del lead. Sin fotos. */
+export async function publicadaParaAviso(slug: string): Promise<PropiedadAdmin | null> {
+  const db = await obtenerDB();
+  const fila = await db
+    .prepare(`SELECT ${COLUMNAS} FROM propiedades WHERE slug = ? AND estado = 'PUBLICADA'`)
+    .bind(slug)
+    .first<Fila>();
+  return fila ? aPropiedad(fila, []) : null;
+}
+
 export async function slugsPublicados(): Promise<{ slug: string; publicada: string }[]> {
   const db = await obtenerDB();
   const { results } = await db

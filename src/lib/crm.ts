@@ -1,6 +1,7 @@
 import type { Sesion } from './auth';
 import type { Etapa, TipoActividad, TipoManual } from './crm-etapas';
 import { obtenerDB } from './db';
+import { MOTIVO_REUNION } from '@/data/properties';
 import type { Lead } from './leads';
 
 // CRM del panel: los interesados de cada propiedad, la etapa en que va cada
@@ -322,7 +323,7 @@ export async function interesadoDesdeSolicitud(solicitudId: number, lead: Lead):
     .first<{ id: number }>();
   if (!fila) return null;
 
-  const partes = ['Pidió una visita desde el sitio.'];
+  const partes = [lead.motivo === MOTIVO_REUNION ? 'Pidió una reunión desde el sitio.' : 'Pidió información desde el sitio.'];
   if (lead.fecha) partes.push(`Fecha preferida: ${lead.fecha}.`);
   if (lead.mensaje) partes.push(lead.mensaje);
   await db

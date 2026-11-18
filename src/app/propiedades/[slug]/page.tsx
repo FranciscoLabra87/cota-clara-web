@@ -11,7 +11,7 @@ import { MortgageCalculator } from '@/components/MortgageCalculator';
 import { PageHero } from '@/components/PageHero';
 import { PropertyCard } from '@/components/PropertyCard';
 import { varianteTipo } from '@/components/PropertyMedia';
-import { tituloPropiedad, type Propiedad } from '@/data/properties';
+import { motivosFicha, tituloPropiedad, type Propiedad } from '@/data/properties';
 import { site, whatsappHref } from '@/data/site';
 import { formatMetros, formatNumero, formatPrecio, periodoPrecio } from '@/lib/format';
 import { propiedadPorSlug, propiedadesPublicadas } from '@/lib/propiedades';
@@ -143,10 +143,21 @@ export default async function PropiedadPage({ params }: Params) {
               <Icon name="pin" /> {ubicacion}
             </span>
           </div>
-          <p className="property-head__price">
-            {formatPrecio(p.precio)}
-            {periodo ? <span className="property-head__period"> {periodo}</span> : null}
-          </p>
+          <div className="property-head__cierre">
+            <p className="property-head__price">
+              {formatPrecio(p.precio)}
+              {periodo ? <span className="property-head__period"> {periodo}</span> : null}
+            </p>
+            {/* El propósito de la ficha: que pidan información o una reunión. Llevan al formulario de la columna. */}
+            <div className="property-head__acciones">
+              <a className="button button--primary" href="#solicitar">
+                Pedir información
+              </a>
+              <a className="button button--outline-light" href="#solicitar-reunion">
+                Agendar una reunión
+              </a>
+            </div>
+          </div>
         </div>
       </PageHero>
 
@@ -217,10 +228,12 @@ export default async function PropiedadPage({ params }: Params) {
           <aside className="property__aside" aria-label="Contacto">
             <LeadForm
               variante="visita"
-              titulo="Agenda una visita"
+              titulo="¿Te interesa esta propiedad?"
               bajada={`${tituloPropiedad(p)} · ${formatPrecio(p.precio)}${periodo ? ` ${periodo}` : ''}`}
               propiedad={p.slug}
-              boton="Solicitar visita"
+              boton="Enviar solicitud"
+              motivos={motivosFicha}
+              ancla="solicitar"
             />
             <div className="agent-card">
               <span className="agent-card__avatar" aria-hidden="true">

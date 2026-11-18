@@ -1,6 +1,10 @@
+import { motivosFicha, tituloPropiedad } from '@/data/properties';
+import { site } from '@/data/site';
 import { ipDe } from '@/lib/auth';
 import { interesadoDesdeSolicitud } from '@/lib/crm';
-import { enviarConfirmacion, enviarLead, type Lead } from '@/lib/leads';
+import { formatPrecio, periodoPrecio } from '@/lib/format';
+import { enviarConfirmacion, enviarLead, type FichaLead, type Lead } from '@/lib/leads';
+import { publicadaParaAviso } from '@/lib/propiedades';
 import { guardarSolicitud, marcarCorreo, superaConfirmaciones, superaElTope } from '@/lib/solicitudes';
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -13,9 +17,27 @@ const json = (cuerpo: unknown, status = 200) => Response.json(cuerpo, { status }
  * la base no deja medir el tope, no se manda: ante la duda, no escribirle a
  * un correo que pudo poner cualquiera.
  */
-async function confirmar(lead: Lead): Promise<string> {
+async function confirmar(lead: Lead, ficha: FichaLead | null): Promise<string> {
   if (await superaConfirmaciones(lead.email).catch(() => true)) return 'omitida';
-  return (await enviarConfirmacion(lead)).estado;
+  return (await enviarConfirmacion(lead, ficha)).estado;
+}
+
+/**
+ * La propiedad por la que se pregunta, leída de la base con el slug que manda
+ * la ficha. Si no existe o no está publicada, el aviso sale igual, solo con el
+ * slug: el lead no se pierde por eso.
+ */
+async function fichaDe(slug: string): Promise<FichaLead | null> {
+  if (!slug) return null;
+  const p = await publicadaParaAviso(slug).catch(() => null);
+  if (!p) return null;
+  const periodo = periodoPrecio(p.precio);
+  return {
+    titulo: tituloPropiedad(p),
+    precio: `${formatPrecio(p.precio)}${periodo ? ` ${periodo}` : ''} · ${p.operacion === 'venta' ? 'Venta' : 'Arriendo'}`,
+    url: `${site.url}/propiedades/${p.slug}`,
+    panel: `${site.url}/panel/propiedades/${p.id}/seguimiento`,
+  };
 }
 
 export async function POST(request: Request) {
@@ -46,6 +68,9 @@ export async function POST(request: Request) {
     return json({ ok: false, error: 'Faltan datos obligatorios' }, 422);
   }
 
+  // Desde la ficha solo hay dos motivos; cualquier otra cosa es pedir información.
+  if (lead.variante === 'visita' && !(motivosFicha as readonly string[]).includes(lead.motivo)) lead.motivo = motivosFicha[0];
+
   const ip = ipDe(request);
 
   // Si la base no responde, el tope no se puede medir: se sigue adelante y el
@@ -73,7 +98,8 @@ export async function POST(request: Request) {
 
   // El aviso con todos los datos va al equipo (contacto@), que es el respaldo
   // por correo; la confirmación, a la persona. Salen en paralelo.
-  const [envio, confirmacion] = await Promise.all([enviarLead(lead), id !== null ? confirmar(lead) : 'sin-guardar']);
+  const ficha = await fichaDe(lead.propiedad);
+  const [envio, confirmacion] = await Promise.all([enviarLead(lead, ficha), id !== null ? confirmar(lead, ficha) : 'sin-guardar']);
   if (id !== null) await marcarCorreo(id, envio.estado).catch(() => {});
 
   // En el log van el id y el estado, nunca los datos de la persona.

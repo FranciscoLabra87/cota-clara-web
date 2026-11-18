@@ -53,6 +53,14 @@ export const tipos: { value: TipoPropiedad; label: string }[] = [
   { value: 'oficina', label: 'Oficina' },
 ];
 
+/**
+ * Qué pide quien escribe desde la ficha de una propiedad. Se guarda tal cual
+ * en `motivo`: el aviso, el panel y el CRM lo muestran sin traducir. Las
+ * solicitudes de la ficha tienen variante `visita` por historia de la base.
+ */
+export const motivosFicha = ['Pedir información', 'Agendar una reunión'] as const;
+export const MOTIVO_REUNION = motivosFicha[1];
+
 /** Los dos segmentos del inventario, cada uno con su página pública. */
 export const segmentos: Record<Condicion, { label: string; corto: string; href: string; lead: string }> = {
   nuevo: {

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useId, useState, type FormEvent } from 'react';
+import { useEffect, useId, useState, type FormEvent } from 'react';
 import { Icon } from './Icon';
 import { comunas } from '@/data/site';
 import { tipos } from '@/data/properties';
@@ -14,6 +14,13 @@ type Props = {
   bajada?: string;
   propiedad?: string;
   boton?: string;
+  /** Opciones de «¿Qué necesitas?»; la segunda pide fecha. Solo en la ficha. */
+  motivos?: readonly string[];
+  /**
+   * Id del formulario, para enlazarlo desde la página. `#<ancla>` lleva al
+   * formulario y `#<ancla>-reunion` además elige la segunda opción de motivos.
+   */
+  ancla?: string;
 };
 
 type Errores = Partial<Record<string, string>>;
@@ -37,10 +44,27 @@ function validar(datos: Record<string, string>, variante: Variante): Errores {
   return e;
 }
 
-export function LeadForm({ variante, titulo, bajada, propiedad, boton }: Props) {
+export function LeadForm({ variante, titulo, bajada, propiedad, boton, motivos, ancla }: Props) {
   const id = useId();
   const [estado, setEstado] = useState<'inicial' | 'enviando' | 'listo' | 'error'>('inicial');
   const [errores, setErrores] = useState<Errores>({});
+  const [motivo, setMotivo] = useState(motivos?.[0] ?? '');
+  const pideFecha = variante === 'visita' && (!motivos || motivo === motivos[1]);
+
+  // Los botones de la cabecera de la ficha enlazan acá. El navegador ya hace
+  // el scroll; esto elige el motivo y deja el cursor en el nombre.
+  useEffect(() => {
+    if (!ancla || !motivos) return;
+    const leer = () => {
+      const hash = window.location.hash;
+      if (hash !== `#${ancla}` && hash !== `#${ancla}-reunion`) return;
+      if (hash === `#${ancla}-reunion`) setMotivo(motivos[1]);
+      document.getElementById(`${id}-nombre`)?.focus({ preventScroll: true });
+    };
+    leer();
+    window.addEventListener('hashchange', leer);
+    return () => window.removeEventListener('hashchange', leer);
+  }, [ancla, motivos, id]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -98,13 +122,26 @@ export function LeadForm({ variante, titulo, bajada, propiedad, boton }: Props) 
   const fieldClass = (name: string) => `field${errores[name] ? ' field--invalid' : ''}`;
 
   return (
-    <form className="lead-form" noValidate onSubmit={onSubmit} aria-labelledby={`${id}-titulo`}>
+    <form className="lead-form" id={ancla} noValidate onSubmit={onSubmit} aria-labelledby={`${id}-titulo`}>
+      {ancla ? <div className="lead-form__ancla" id={`${ancla}-reunion`} /> : null}
       <div className="lead-form__head">
         <p className="lead-form__title" id={`${id}-titulo`}>
           {titulo}
         </p>
         {bajada ? <p className="lead-form__intro">{bajada}</p> : null}
       </div>
+
+      {motivos ? (
+        <fieldset className="lead-form__motivos">
+          <legend className="field__label">¿Qué necesitas?</legend>
+          {motivos.map((m) => (
+            <label key={m} className={`lead-form__motivo${motivo === m ? ' lead-form__motivo--activo' : ''}`}>
+              <input type="radio" name="motivo" value={m} checked={motivo === m} onChange={() => setMotivo(m)} />
+              <span>{m}</span>
+            </label>
+          ))}
+        </fieldset>
+      ) : null}
 
       {variante === 'tasacion' ? (
         <div className="lead-form__row">
@@ -177,7 +214,7 @@ export function LeadForm({ variante, titulo, bajada, propiedad, boton }: Props) 
         {error('email')}
       </div>
 
-      {variante === 'visita' ? (
+      {pideFecha ? (
         <div className="field">
           <label className="field__label" htmlFor={`${id}-fecha`}>
             Fecha preferida <span className="field__optional">(opcional)</span>

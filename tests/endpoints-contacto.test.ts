@@ -22,6 +22,8 @@ const mundo = vi.hoisted(() => ({
     | { estado: 'sin-configurar' }
     | { estado: 'error'; detalle: string },
   confirmaciones: [] as string[],
+  avisos: [] as Array<{ lead: Record<string, string>; ficha: Record<string, string> | null | undefined }>,
+  fichasConfirmadas: [] as Array<Record<string, string> | null | undefined>,
 }));
 
 vi.mock('@/lib/db', () => ({
@@ -34,9 +36,13 @@ vi.mock('@/lib/db', () => ({
 
 vi.mock('@/lib/leads', async (original) => ({
   ...(await original<typeof import('@/lib/leads')>()),
-  enviarLead: async () => mundo.correo,
-  enviarConfirmacion: async (lead: { email: string }) => {
+  enviarLead: async (lead: Record<string, string>, ficha?: Record<string, string> | null) => {
+    mundo.avisos.push({ lead, ficha });
+    return mundo.correo;
+  },
+  enviarConfirmacion: async (lead: { email: string }, ficha?: Record<string, string> | null) => {
     mundo.confirmaciones.push(lead.email);
+    mundo.fichasConfirmadas.push(ficha);
     return mundo.confirmacion;
   },
 }));
@@ -51,7 +57,7 @@ vi.mock('@/lib/respuesta-email', () => ({
 const { POST: contacto } = await import('../src/app/api/contacto/route');
 const { POST: responderSolicitud, PATCH: reintentarSolicitud, DELETE: borrarSolicitud } = await import('../src/app/api/panel/solicitudes/[id]/route');
 const { MAX_CONFIRMACIONES_POR_CORREO, MAX_POR_IP, solicitudesRecientes, solicitudesSinResponder } = await import('@/lib/solicitudes');
-const { ASUNTO_CONFIRMACION, htmlConfirmacion, saludo, textoConfirmacion } = await import('@/lib/leads');
+const { ASUNTO_CONFIRMACION, asuntoLead, htmlConfirmacion, htmlLead, saludo, textoConfirmacion, textoLead } = await import('@/lib/leads');
 
 const ruta = (id: string | number) => ({ params: Promise.resolve({ id: String(id) }) });
 
@@ -86,6 +92,8 @@ beforeEach(() => {
   mundo.enviosRespuesta = [];
   mundo.confirmacion = { estado: 'enviado', id: 'confirmacion-prueba' };
   mundo.confirmaciones = [];
+  mundo.avisos = [];
+  mundo.fichasConfirmadas = [];
   delete process.env.SMTP_HOST;
   delete process.env.SMTP_PORT;
   delete process.env.SMTP_USER;
@@ -393,6 +401,66 @@ describe('confirmación a quien llenó el formulario', () => {
     expect(saludo('visita http://spam.example')).toBe('Hola, visita:');
     expect(saludo('http://spam.example')).toBe('Hola:');
     expect(saludo('<b>Ana</b>')).toBe('Hola:');
+  });
+});
+
+describe('formulario de la ficha de una propiedad', () => {
+  const publicar = async (slug: string, estado = 'PUBLICADA') =>
+    (await env.DB.prepare(
+      `INSERT INTO propiedades (slug, titulo, tipo, operacion, comuna, precio_valor, precio_moneda, publicada, estado)
+       VALUES (?, 'Casa con vista', 'casa', 'venta', 'Quilpué', 5000, 'UF', '2026-11-17', ?) RETURNING id`,
+    )
+      .bind(slug, estado)
+      .first<{ id: number }>())!.id;
+
+  const desdeLaFicha = (extra: Record<string, unknown> = {}) =>
+    formulario({ variante: 'visita', propiedad: 'casa-quilpue', motivo: 'Agendar una reunión', mensaje: '', ...extra });
+
+  it('el aviso y la confirmación llevan la propiedad leída de la base, con sus enlaces', async () => {
+    const id = await publicar('casa-quilpue');
+    expect((await enviar(desdeLaFicha())).status).toBe(200);
+
+    const ficha = mundo.avisos[0].ficha;
+    expect(ficha).toMatchObject({
+      titulo: 'Casa con vista',
+      url: 'https://www.cotaclara.cl/propiedades/casa-quilpue',
+      panel: `https://www.cotaclara.cl/panel/propiedades/${id}/seguimiento`,
+    });
+    expect(ficha?.precio).toContain('UF');
+    expect(mundo.fichasConfirmadas[0]).toEqual(ficha);
+    expect((await filas())[0].motivo).toBe('Agendar una reunión');
+  });
+
+  it('un motivo que no es de la ficha queda como pedir información', async () => {
+    await publicar('casa-quilpue');
+    await enviar(desdeLaFicha({ motivo: 'Comprar ya <b>' }));
+    expect((await filas())[0].motivo).toBe('Pedir información');
+  });
+
+  it('una propiedad en borrador o que no existe no entra al aviso, pero el lead llega igual', async () => {
+    await publicar('casa-quilpue', 'BORRADOR');
+    expect((await enviar(desdeLaFicha())).status).toBe(200);
+    expect((await enviar(desdeLaFicha({ propiedad: 'no-existe' }), '203.0.113.11')).status).toBe(200);
+    expect(mundo.avisos.map((a) => a.ficha)).toEqual([null, null]);
+    expect(await filas()).toHaveLength(2);
+  });
+
+  it('el aviso dice qué se pidió y por cuál propiedad', () => {
+    const ficha = { titulo: 'Casa con vista', precio: '5.000 UF · Venta', url: 'https://www.cotaclara.cl/propiedades/casa-quilpue', panel: 'https://www.cotaclara.cl/panel/propiedades/1/seguimiento' };
+    const lead = { variante: 'visita', nombre: 'Camila Rojas', email: 'camila@example.com', telefono: '', tipo: '', comuna: '', motivo: 'Agendar una reunión', fecha: '', mensaje: 'Hola', propiedad: 'casa-quilpue' };
+
+    expect(asuntoLead(lead, ficha)).toBe('Solicitud de reunión · Camila Rojas · Casa con vista');
+    expect(asuntoLead({ ...lead, motivo: 'Pedir información' }, ficha)).toBe('Consulta por propiedad · Camila Rojas · Casa con vista');
+    for (const cuerpo of [textoLead(lead, ficha), htmlLead(lead, ficha)]) {
+      expect(cuerpo).toContain('Casa con vista · 5.000 UF · Venta');
+      expect(cuerpo).toContain(ficha.url);
+      expect(cuerpo).toContain(ficha.panel);
+    }
+    for (const cuerpo of [textoConfirmacion(lead, ficha), htmlConfirmacion(lead, ficha)]) {
+      expect(cuerpo).toContain('reunión por «Casa con vista»');
+      expect(cuerpo).toContain(ficha.url);
+      expect(cuerpo).not.toContain(ficha.panel);
+    }
   });
 });
 

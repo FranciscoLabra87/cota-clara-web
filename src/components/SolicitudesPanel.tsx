@@ -14,7 +14,7 @@ export type SolicitudFila = Omit<Solicitud, 'creadaEn' | 'respondidaEn'> & {
 const TIPO: Record<Solicitud['variante'], string> = {
   contacto: 'Consulta',
   tasacion: 'Tasación',
-  visita: 'Visita',
+  visita: 'Propiedad',
 };
 
 const AVISO: Record<Solicitud['correo'], string> = {

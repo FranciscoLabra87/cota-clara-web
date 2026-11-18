@@ -15,7 +15,7 @@ export type EnvioRespuesta = ResultadoCorreo;
 const ASUNTOS: Record<DatosRespuesta['variante'], string> = {
   contacto: 'Respuesta a tu consulta en Cota Clara',
   tasacion: 'Respuesta a tu solicitud de tasación en Cota Clara',
-  visita: 'Respuesta a tu solicitud de visita en Cota Clara',
+  visita: 'Respuesta a tu consulta por una propiedad en Cota Clara',
 };
 
 /** Envía una sola respuesta al correo guardado en la solicitud. */

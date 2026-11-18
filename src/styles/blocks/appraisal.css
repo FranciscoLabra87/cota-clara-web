@@ -97,6 +97,67 @@
   flex: 1 1 180px;
 }
 
+/* Destinos de los botones «Pedir información» y «Agendar reunión» de la
+   ficha: que el formulario no quede debajo de la cabecera fija. */
+.lead-form {
+  scroll-margin-top: calc(var(--header-h) + 1.5rem);
+}
+
+.lead-form__ancla {
+  position: absolute;
+  top: 0;
+  scroll-margin-top: calc(var(--header-h) + 1.5rem);
+}
+
+/* «¿Qué necesitas?» de la ficha: dos opciones como botones. */
+.lead-form__motivos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.lead-form__motivos > .field__label {
+  flex-basis: 100%;
+  margin-bottom: var(--space-1);
+}
+
+.lead-form__motivo {
+  position: relative;
+  flex: 1 1 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.7rem var(--space-3);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-sm);
+  font-family: var(--ff-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-petroleo);
+  cursor: pointer;
+}
+
+.lead-form__motivo:focus-within {
+  outline: 2px solid var(--color-terracota);
+  outline-offset: 2px;
+}
+
+.lead-form__motivo--activo {
+  border-color: var(--color-petroleo);
+  background: var(--color-petroleo);
+  color: var(--color-blanco);
+}
+
+.lead-form__motivo input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .lead-form__honeypot {
   position: absolute;
   left: -9999px;
