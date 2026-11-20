@@ -137,6 +137,13 @@
   color: var(--color-texto-suave);
 }
 
+.panel__ficha-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
 .panel__grid {
   display: flex;
   flex-wrap: wrap;

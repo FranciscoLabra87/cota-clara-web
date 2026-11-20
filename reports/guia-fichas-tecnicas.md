@@ -1,7 +1,16 @@
-# Cómo generar una ficha técnica
+# Cómo generar fichas de propiedades
+
+En **Acceso Corporativo → Fichas** hay dos opciones para cada propiedad:
+
+- **Ficha comercial:** presenta la propiedad con fotografías, precio, superficies, distribución, características y contacto de Cota Clara. Se arma automáticamente con los datos del aviso; no hace falta completar antecedentes legales. Revisa la vista previa, elige hasta doce fotos (seis vienen preseleccionadas) y descarga el PDF A4. La primera foto seleccionada aparece en portada. Si faltan datos o fotos, edita el aviso y vuelve a la ficha.
+- **Ficha técnico-legal:** conserva la ficha detallada y su formulario de antecedentes. Sigue los pasos de abajo.
+
+La ficha comercial muestra solo información disponible para esa propiedad. No traslada costos iniciales, puntos de interés, condiciones de arriendo ni otras afirmaciones de la ficha de ejemplo. Los borradores se identifican como tales y no incorporan enlace al aviso público.
+
+## Ficha técnico-legal
 
 1. Entra a **Acceso Corporativo** con tu cuenta habitual de administrador o editor.
-2. Abre **Fichas técnicas** y elige **Preparar ficha**. También puedes hacerlo desde la lista de propiedades o al editar una propiedad.
+2. Abre **Fichas** y elige **Ficha técnico-legal**. También puedes hacerlo desde la lista de propiedades o al editar una propiedad.
 3. Revisa los datos del aviso. El precio, la moneda, las superficies, la descripción y la foto principal se incorporan automáticamente. Para corregirlos, usa **Editar datos del aviso**.
 4. Completa los antecedentes disponibles: rol SII, destino, materialidad, calefacción, avalúo fiscal, contribuciones por cuota, conservación, recepción final e inscripción CBR.
 5. Indica fuente, fecha y responsable. La opción **Revisados documentalmente** exige los tres datos; no se asigna automáticamente. Lo que no se informa aparece como **No informado**.

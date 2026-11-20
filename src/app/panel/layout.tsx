@@ -55,7 +55,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
                   ) : null}
                 </Link>
                 <Link className="panel__nav-link" href="/panel/fichas">
-                  Fichas técnicas
+                  Fichas
                 </Link>
                 <Link className="panel__nav-link" href="/panel/drive">
                   Drive

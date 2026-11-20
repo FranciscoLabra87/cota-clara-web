@@ -47,8 +47,8 @@ export default async function PanelPage() {
           </Link>
         </article>
         <article className="panel__card">
-          <h2 className="panel__card-title">Fichas técnicas</h2>
-          <p className="panel__card-text">Prepara los antecedentes, elige las fotos y descarga una ficha PDF para imprimir y llevar a tus visitas. Disponible en versión para clientes o de uso interno.</p>
+          <h2 className="panel__card-title">Fichas de propiedades</h2>
+          <p className="panel__card-text">Crea una ficha comercial visual con los datos del aviso o una ficha técnico-legal con antecedentes detallados. Elige las fotos y descarga el PDF.</p>
           <Link className="button button--primary button--sm" href="/panel/fichas">Generar fichas</Link>
         </article>
         <article className="panel__card">

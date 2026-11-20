@@ -1,9 +1,10 @@
 import { getCloudflareContext } from '@opennextjs/cloudflare';
 import { obtenerFotos } from './db';
 import { claveValida, detectarMime } from './imagenes';
+import { MAX_FOTOS_COMERCIAL_PDF, MAX_FOTOS_PDF } from './ficha-limites';
 import type { PdfImagen } from './ficha-pdf';
 
-export const MAX_FOTOS_PDF = 6;
+export { MAX_FOTOS_COMERCIAL_PDF, MAX_FOTOS_PDF } from './ficha-limites';
 const MAX_FOTO_BYTES = 4 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 16 * 1024 * 1024;
 const MAX_PIXELES = 16_000_000;
@@ -44,16 +45,22 @@ function comprobarDimensiones(bytes: Uint8Array, formato: 'jpg' | 'png') {
 }
 
 /** Se aceptan únicamente posiciones de las fotos ya asociadas a esta propiedad. */
-export function seleccionarFotosPdf(valor: string | null, disponibles: string[]): string[] {
+export function seleccionarFotosPdf(
+  valor: string | null,
+  disponibles: string[],
+  maxFotos: typeof MAX_FOTOS_PDF | typeof MAX_FOTOS_COMERCIAL_PDF = MAX_FOTOS_PDF,
+): string[] {
   if (valor === 'ninguna') return [];
+  // El máximo comercial es 12, pero sin selección explícita se usan las primeras 6,
+  // igual que en la interfaz, para reducir el riesgo de superar 16 MB.
   if (valor === null) return disponibles.slice(0, MAX_FOTOS_PDF);
   if (!/^\d+(?:,\d+)*$/.test(valor)) {
     throw new ErrorRecursosPdf('Selecciona las fotos de la propiedad o elige generar sin fotos.', 400);
   }
   const indices = valor.split(',').map(Number);
-  if (indices.length > MAX_FOTOS_PDF || new Set(indices).size !== indices.length ||
+  if (indices.length > maxFotos || new Set(indices).size !== indices.length ||
       indices.some((indice) => !Number.isSafeInteger(indice) || indice >= disponibles.length)) {
-    throw new ErrorRecursosPdf('Selecciona hasta 6 fotos distintas de esta propiedad.', 400);
+    throw new ErrorRecursosPdf(`Selecciona hasta ${maxFotos} fotos distintas de esta propiedad.`, 400);
   }
   return indices.map((indice) => disponibles[indice]);
 }

@@ -142,6 +142,16 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - Las fotos se sirven con `unoptimized`: el original de R2, sin redimensionar. Las portadas pesan unos 200 KB cada una.
 - **Visitas:** la ficha avisa con un `POST /api/visitas` desde el navegador al abrirse (`ContadorVisita`), una vez por ficha y por pestaña. Se cuenta desde el navegador y no al renderizar en el servidor porque Next precarga las fichas cuando sus enlaces aparecen en pantalla, y eso inflaría la cuenta. No cuentan los borradores, las visitas del equipo con sesión abierta ni los buscadores. Se suman en `propiedad_visitas`, una fila por propiedad y por día en hora de Chile, sin guardar nada de quién visitó. Tope de 20.000 visitas contadas por día entre todas las propiedades, para que un script no gaste la cuota de escrituras de D1 y tumbe el formulario y el panel. El panel muestra el total y los últimos 7 días. Son aproximadas: un script podría inflarlas hasta el tope.
 
+## Fichas comerciales
+
+- En `/panel/propiedades/<id>/ficha/comercial`, al lado de la ficha técnico-legal (`/ficha`). Es un PDF A4 de venta o arriendo armado solo con los datos públicos del aviso y sus fotos (hasta 12).
+- **`ficha-comercial-contenido.ts` decide qué muestra cada ficha.** Es puro, sin Next, Cloudflare ni base: la vista previa del panel corre en el navegador y usa exactamente lo mismo que el PDF, así nunca se separan.
+- La ficha se adapta a la propiedad: los cuatro pilares de la portada y el orden de los datos salen de `tipo` (una casa muestra terreno, una oficina m² y piso, un departamento dormitorios y superficie); la banda de precios sale de `operacion` (venta: valor, valor por m² y dividendo referencial con pie 20%, 25 años y tasa 4,1%, los mismos supuestos del simulador público; arriendo: canon, gastos comunes y total mensual), y `condicion: nuevo` cambia la bajada, la nota y el cierre.
+- `bloquesDescripcion` separa en párrafos, subtítulos, datos y viñetas la descripción pegada que traen los avisos importados, sin reescribir el texto. `avisosFicha` cruza las superficies que menciona el texto con las registradas y lista lo que falta; se muestra **solo en el panel**, nunca en el PDF.
+- El panel ajusta por descarga el titular, la bajada y los destacados de la portada. Viajan en el `POST` del endpoint y **no se guardan en ninguna parte**: el `GET` sigue devolviendo la ficha tal cual está el aviso.
+- **Mapa de ubicación:** teselas de OpenStreetMap (3×3, zoom 16) dibujadas una al lado de la otra dentro del PDF, con el pin en vectores; sin clave de API ni composición de imágenes. `ficha-mapa-cuadricula.ts` tiene la geometría (la usa también la vista previa) y `ficha-mapa.ts` la descarga: valida la firma PNG real de cada tesela, acota el peso y nunca lanza; si falla más de la mitad, la ficha sale sin esa página. La atribución a OpenStreetMap es obligatoria y va en el PDF y en el panel.
+- Las fichas de las propiedades sin `latitud` y `longitud` salen sin mapa; el panel lo avisa.
+
 ## Drive interno
 
 - En `/panel/drive`. Fotos, videos y documentos del equipo en el mismo bucket R2 de las fotos, bajo `drive/<usuario>/`. Cada usuario sube a su carpeta y todos ven y descargan todas. Borra el dueño o un administrador.

@@ -43,7 +43,10 @@ export default async function EditarPropiedadPage({ params }: Params) {
         )}
       </p>
       <PropiedadForm propiedad={propiedad} fotos={fotos} comunas={[...comunas]} />
-      <Link className="button button--outline" href={`/panel/propiedades/${id}/ficha`}>Preparar ficha técnica</Link>
+      <div className="panel__ficha-actions">
+        <Link className="button button--primary" href={`/panel/propiedades/${id}/ficha/comercial`}>Preparar ficha comercial</Link>
+        <Link className="button button--outline" href={`/panel/propiedades/${id}/ficha`}>Preparar ficha técnico-legal</Link>
+      </div>
     </>
   );
 }

@@ -136,7 +136,7 @@ export function FichaTecnicaEditor({ propiedad, antecedentes, emitida }: { propi
         </form>
 
         <div className="ficha-tool__export">
-          <h2>Generar ficha técnica</h2>
+          <h2>Generar ficha técnico-legal</h2>
           <label htmlFor="ficha-version">Versión del documento</label>
           <select id="ficha-version" className="field__control" disabled={ocupado} value={interna ? 'interna' : 'cliente'} onChange={(e) => setInterna(e.target.value === 'interna')}>
             <option value="cliente">Para cliente · sin observaciones internas</option>

@@ -2,15 +2,30 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 3000
+    },
+    {
       "name": "worker-preview",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["opennextjs-cloudflare", "preview"],
+      "runtimeArgs": [
+        "opennextjs-cloudflare",
+        "preview"
+      ],
       "port": 8787
     },
     {
       "name": "snap-preview",
       "runtimeExecutable": "cmd",
-      "runtimeArgs": ["/c", "cd /d C:\\Users\\franc\\AppData\\Local\\Temp\\claude\\c136556f52f857bf\\dd75939d-6ae7-446d-b637-a5a4d7226eda\\scratchpad\\snap && npx opennextjs-cloudflare preview"],
+      "runtimeArgs": [
+        "/c",
+        "cd /d C:\\Users\\franc\\AppData\\Local\\Temp\\claude\\c136556f52f857bf\\dd75939d-6ae7-446d-b637-a5a4d7226eda\\scratchpad\\snap && npx opennextjs-cloudflare preview"
+      ],
       "port": 8787
     }
   ]

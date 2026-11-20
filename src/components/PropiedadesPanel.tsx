@@ -113,7 +113,10 @@ export function PropiedadesPanel({ propiedades, visitas }: Props) {
                       Seguimiento
                     </Link>
                     <Link className="panel__accion" href={`/panel/propiedades/${p.id}/ficha`}>
-                      Ficha técnica
+                      Ficha técnico-legal
+                    </Link>
+                    <Link className="panel__accion" href={`/panel/propiedades/${p.id}/ficha/comercial`}>
+                      Ficha comercial
                     </Link>
                     <button type="button" className="panel__accion" onClick={() => cambiarEstado(p)} disabled={trabajando}>
                       {p.estado === 'PUBLICADA' ? 'Despublicar' : 'Publicar'}
