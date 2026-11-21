@@ -38,6 +38,14 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'es_CL',
     siteName: 'Cota Clara · Patrimonio Inmobiliario',
+    // Sin esta imagen, Instagram y WhatsApp arman la vista previa con la primera
+    // foto del HTML, que es un logo del carrusel de inmobiliarias.
+    // Se genera con `node scripts/og-imagen.mjs`.
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Cota Clara · Patrimonio Inmobiliario' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/og.png'],
   },
 };
 

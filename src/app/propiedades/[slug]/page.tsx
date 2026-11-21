@@ -37,6 +37,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   // la vista previa saldría sin foto.
   const host = (await headers()).get('host');
   const portada = p.imagenes?.[0] && host ? `https://${host}${p.imagenes[0]}` : null;
+  // Sin fotos, la vista previa es la imagen de marca, no la primera foto que
+  // encuentre el robot de la red social.
+  const vistaPrevia = portada ?? (host ? `https://${host}/og.png` : '/og.png');
 
   return {
     title: titulo,
@@ -52,13 +55,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       siteName: 'Cota Clara · Patrimonio Inmobiliario',
       title: titulo,
       description: p.resumen,
-      ...(portada ? { images: [{ url: portada, alt: tituloPropiedad(p) }] } : {}),
+      images: [{ url: vistaPrevia, alt: tituloPropiedad(p) }],
     },
     twitter: {
-      card: portada ? 'summary_large_image' : 'summary',
+      card: 'summary_large_image',
       title: titulo,
       description: p.resumen,
-      ...(portada ? { images: [portada] } : {}),
+      images: [vistaPrevia],
     },
   };
 }
