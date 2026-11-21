@@ -17,6 +17,7 @@
 @import '../styles/blocks/page-hero.css';
 @import '../styles/blocks/explorer.css';
 @import '../styles/blocks/property.css';
+@import '../styles/blocks/stock.css';
 @import '../styles/blocks/mortgage.css';
 @import '../styles/blocks/fees.css';
 @import '../styles/blocks/contact.css';
@@ -24,6 +25,7 @@
 @import '../styles/blocks/site-footer.css';
 @import '../styles/blocks/acceso.css';
 @import '../styles/blocks/panel.css';
+@import '../styles/blocks/unidades.css';
 @import '../styles/blocks/capacidad.css';
 @import '../styles/blocks/drive.css';
 @import '../styles/blocks/crm.css';

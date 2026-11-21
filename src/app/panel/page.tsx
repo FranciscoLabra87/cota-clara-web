@@ -62,6 +62,17 @@ export default async function PanelPage() {
           </Link>
         </article>
 
+        <article className="panel__card">
+          <h2 className="panel__card-title">Proyectos y stock</h2>
+          <p className="panel__card-text">
+            Las unidades de cada proyecto de inversión: tipologías, precios y disponibilidad. Se cargan pegando la planilla de la
+            inmobiliaria, y lo disponible fija el «desde» del aviso.
+          </p>
+          <Link className="button button--primary button--sm" href="/panel/proyectos">
+            Ver proyectos
+          </Link>
+        </article>
+
         <article className={`panel__card${pendientes.vencidas ? ' panel__card--pendiente' : ''}`}>
           <h2 className="panel__card-title">Tareas</h2>
           <p className="panel__card-text">

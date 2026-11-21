@@ -112,6 +112,11 @@ export function PropiedadesPanel({ propiedades, visitas }: Props) {
                     <Link className="panel__accion" href={`/panel/propiedades/${p.id}/seguimiento`}>
                       Seguimiento
                     </Link>
+                    {p.condicion === 'nuevo' && p.operacion === 'venta' ? (
+                      <Link className="panel__accion" href={`/panel/propiedades/${p.id}/unidades`}>
+                        Unidades
+                      </Link>
+                    ) : null}
                     <Link className="panel__accion" href={`/panel/propiedades/${p.id}/ficha`}>
                       Ficha técnico-legal
                     </Link>

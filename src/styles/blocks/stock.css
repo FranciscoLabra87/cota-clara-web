@@ -1,0 +1,66 @@
+/* Tabla de tipologías y unidades en la ficha pública de un proyecto. */
+
+.stock__envoltorio {
+  overflow-x: auto;
+  margin-bottom: var(--space-5);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-sm);
+  background: var(--color-blanco);
+}
+
+.stock__tabla {
+  width: 100%;
+  min-width: 540px;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.stock__caption {
+  padding: var(--space-3) var(--space-4) 0;
+  font-family: var(--ff-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--color-texto-suave);
+}
+
+.stock__tabla th,
+.stock__tabla td {
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.stock__tabla thead th {
+  font-family: var(--ff-display);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-texto-suave);
+  white-space: nowrap;
+}
+
+.stock__tabla tbody th {
+  font-weight: 600;
+  color: var(--color-petroleo);
+}
+
+.stock__tabla tbody tr:last-child th,
+.stock__tabla tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Una unidad reservada se publica, pero apagada: ya no se puede ofrecer. */
+.stock__fila--reservada {
+  color: var(--color-texto-suave);
+  background: var(--color-gris-50);
+}
+
+.stock__detalle {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--color-texto-suave);
+}

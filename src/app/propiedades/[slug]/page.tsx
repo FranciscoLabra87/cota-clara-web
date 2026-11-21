@@ -11,10 +11,12 @@ import { MortgageCalculator } from '@/components/MortgageCalculator';
 import { PageHero } from '@/components/PageHero';
 import { PropertyCard } from '@/components/PropertyCard';
 import { varianteTipo } from '@/components/PropertyMedia';
+import { TablaTipologias } from '@/components/TablaTipologias';
 import { motivosFicha, tituloPropiedad, type Propiedad } from '@/data/properties';
 import { site, whatsappHref } from '@/data/site';
 import { formatMetros, formatNumero, formatPrecio, periodoPrecio } from '@/lib/format';
 import { propiedadPorSlug, propiedadesPublicadas } from '@/lib/propiedades';
+import { stockPublicoPorSlug } from '@/lib/unidades';
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -95,6 +97,9 @@ export default async function PropiedadPage({ params }: Params) {
 
   const periodo = periodoPrecio(p.precio);
   const ubicacion = [p.sector, p.comuna].filter(Boolean).join(', ');
+  // El stock se consulta solo si el resumen dice que hay unidades: así una
+  // ficha de retail no paga dos consultas por nada.
+  const stock = p.stock?.total ? await stockPublicoPorSlug(p.slug) : null;
   const publicadas = await propiedadesPublicadas();
   const relacionadas = publicadas.filter((o) => o.slug !== p.slug && (o.comuna === p.comuna || o.operacion === p.operacion)).slice(0, 3);
 
@@ -145,6 +150,8 @@ export default async function PropiedadPage({ params }: Params) {
           </div>
           <div className="property-head__cierre">
             <p className="property-head__price">
+              {/* En un proyecto el precio es el de la unidad disponible más barata. */}
+              {p.stock?.disponibles ? <span className="property-head__desde">Desde </span> : null}
               {formatPrecio(p.precio)}
               {periodo ? <span className="property-head__period"> {periodo}</span> : null}
             </p>
@@ -193,6 +200,18 @@ export default async function PropiedadPage({ params }: Params) {
                 ))}
               </dl> : null}
             </div>
+
+            {stock ? (
+              <div className="property__block" id="unidades">
+                <h2 className="property__title">Unidades y tipologías</h2>
+                <p className="property__text">
+                  {stock.resumen.disponibles > 0
+                    ? `${formatNumero(stock.resumen.disponibles)} ${stock.resumen.disponibles === 1 ? 'unidad disponible' : 'unidades disponibles'}. Los precios están en UF y pueden cambiar sin aviso.`
+                    : 'No quedan unidades disponibles en este proyecto. Escríbenos y te avisamos de la próxima etapa.'}
+                </p>
+                <TablaTipologias tipologias={stock.tipologias} unidades={stock.unidades} />
+              </div>
+            ) : null}
 
             <div className="property__block">
               <h2 className="property__title">Características</h2>

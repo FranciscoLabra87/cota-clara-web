@@ -8,7 +8,29 @@ export function PropertyCard({ propiedad, headingLevel = 3 }: { propiedad: Propi
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const periodo = periodoPrecio(propiedad.precio);
   const titulo = tituloPropiedad(propiedad);
-  const tieneSpecs = [propiedad.dormitorios, propiedad.banos, propiedad.estacionamientos, propiedad.superficieUtil].some((n) => n > 0);
+
+  // En un proyecto con unidades cargadas la tarjeta muestra rangos y un
+  // "desde": los números sueltos de la propiedad describen una vivienda sola.
+  const stock = propiedad.stock?.total ? propiedad.stock : null;
+  const rango = (minimo: number, maximo: number, sufijo = '') =>
+    Math.round(minimo) === Math.round(maximo)
+      ? `${formatNumero(maximo)}${sufijo}`
+      : `${formatNumero(minimo)}–${formatNumero(maximo)}${sufijo}`;
+
+  const dormitorios =
+    stock && stock.dormitoriosMax > 0
+      ? rango(stock.dormitoriosMin, stock.dormitoriosMax)
+      : propiedad.dormitorios > 0
+        ? formatNumero(propiedad.dormitorios)
+        : null;
+  const superficie =
+    stock && stock.superficieMax > 0
+      ? rango(stock.superficieMin, stock.superficieMax, ' m²')
+      : propiedad.superficieUtil > 0
+        ? `${formatNumero(propiedad.superficieUtil)} m²`
+        : null;
+
+  const tieneSpecs = !!dormitorios || !!superficie || propiedad.banos > 0 || propiedad.estacionamientos > 0;
   return (
     <article className="property-card">
       <div className="property-card__media">
@@ -30,10 +52,10 @@ export function PropertyCard({ propiedad, headingLevel = 3 }: { propiedad: Propi
         </Heading>
         {tieneSpecs ? (
           <ul className="property-card__specs" aria-label="Características principales">
-            {propiedad.dormitorios > 0 ? (
+            {dormitorios ? (
               <li className="property-card__spec">
                 <Icon name="bed" className="property-card__spec-icon" />
-                {propiedad.dormitorios}
+                {dormitorios}
                 <span className="visually-hidden"> dormitorios</span>
               </li>
             ) : null}
@@ -51,16 +73,24 @@ export function PropertyCard({ propiedad, headingLevel = 3 }: { propiedad: Propi
                 <span className="visually-hidden"> estacionamientos</span>
               </li>
             ) : null}
-            {propiedad.superficieUtil > 0 ? (
+            {superficie ? (
               <li className="property-card__spec">
                 <Icon name="area" className="property-card__spec-icon" />
-                {formatNumero(propiedad.superficieUtil)} m²
+                {superficie}
               </li>
             ) : null}
           </ul>
         ) : null}
+        {stock ? (
+          <p className="property-card__stock">
+            {stock.disponibles > 0
+              ? `${formatNumero(stock.disponibles)} ${stock.disponibles === 1 ? 'unidad disponible' : 'unidades disponibles'}`
+              : 'Sin unidades disponibles'}
+          </p>
+        ) : null}
         <div className="property-card__footer">
           <p className="property-card__price">
+            {stock && stock.disponibles > 0 ? <span className="property-card__desde">Desde </span> : null}
             {formatPrecio(propiedad.precio)}
             {periodo ? <span className="property-card__period"> {periodo}</span> : null}
           </p>

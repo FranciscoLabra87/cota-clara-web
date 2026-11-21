@@ -74,13 +74,22 @@ function precioSeleccionado(precio: string, operacion: string): { moneda: Precio
   return Number.isSafeInteger(numero) ? { moneda, max: numero } : null;
 }
 
+/** Los dormitorios con los que una propiedad entra en el filtro: los suyos, o los de la tipología más grande. */
+export const dormitoriosTope = (p: Propiedad) => (p.stock?.total ? p.stock.dormitoriosMax : p.dormitorios);
+
+/** Los m² con los que se ordena: en un proyecto, los de la unidad disponible más grande. */
+export const superficieTope = (p: Propiedad) =>
+  p.stock?.disponibles && p.stock.superficieMax > 0 ? p.stock.superficieMax : p.superficieUtil;
+
 export function filtrarPropiedades(lista: Propiedad[], f: Filtros): Propiedad[] {
   const precio = precioSeleccionado(f.precio, f.operacion);
   const resultado = lista.filter((p) => {
     if (f.operacion && p.operacion !== f.operacion) return false;
     if (f.tipo && p.tipo !== f.tipo) return false;
     if (f.comuna && p.comuna !== f.comuna) return false;
-    if (f.dormitorios && p.dormitorios < Number(f.dormitorios)) return false;
+    // En un proyecto los dormitorios son el rango de sus tipologías, no el
+    // número de la propiedad: basta que alguna tipología llegue al pedido.
+    if (f.dormitorios && dormitoriosTope(p) < Number(f.dormitorios)) return false;
     if (precio && (p.precio.moneda !== precio.moneda || (precio.max && p.precio.valor > precio.max))) return false;
     return true;
   });
@@ -91,7 +100,7 @@ export function filtrarPropiedades(lista: Propiedad[], f: Filtros): Propiedad[] 
     case 'precio-desc':
       return resultado.sort((a, b) => porMoneda(a, b) || b.precio.valor - a.precio.valor);
     case 'superficie':
-      return resultado.sort((a, b) => b.superficieUtil - a.superficieUtil);
+      return resultado.sort((a, b) => superficieTope(b) - superficieTope(a));
     default:
       return resultado.sort((a, b) => b.publicada.localeCompare(a.publicada));
   }

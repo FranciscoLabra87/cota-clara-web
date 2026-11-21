@@ -45,6 +45,70 @@ export type Propiedad = {
   ilustracion: { seed: number; tono: 'dia' | 'atardecer' };
   /** Fotos servidas desde R2 en /fotos/. Si existen, reemplazan a las ilustraciones. */
   imagenes?: string[];
+  /** Resumen del stock, solo en los proyectos (condicion 'nuevo') que tienen unidades cargadas. */
+  stock?: ResumenStock;
+};
+
+/** En qué está cada unidad de un proyecto. Solo 'disponible' y 'reservada' se muestran en el sitio. */
+export type EstadoUnidad = 'disponible' | 'reservada' | 'vendida' | 'bloqueada';
+
+export const estadosUnidad: { value: EstadoUnidad; label: string }[] = [
+  { value: 'disponible', label: 'Disponible' },
+  { value: 'reservada', label: 'Reservada' },
+  { value: 'vendida', label: 'Vendida' },
+  { value: 'bloqueada', label: 'Bloqueada' },
+];
+
+export const esEstadoUnidad = (valor: unknown): valor is EstadoUnidad =>
+  typeof valor === 'string' && estadosUnidad.some((e) => e.value === valor);
+
+export const nombreEstadoUnidad = (estado: EstadoUnidad) => estadosUnidad.find((e) => e.value === estado)?.label ?? estado;
+
+/** El modelo de planta que se repite en varias unidades. */
+export type Tipologia = {
+  id: number;
+  codigo: string;
+  dormitorios: number;
+  banos: number;
+  superficieUtil: number;
+  superficieTerraza: number;
+  /** Plano servido desde R2, si se cargó. */
+  plano?: string;
+  orden: number;
+};
+
+/** Una tipología con lo que queda de ella en el proyecto. */
+export type TipologiaConStock = Tipologia & { total: number; disponibles: number; desdeUF: number | null };
+
+export type Unidad = {
+  id: number;
+  tipologiaId: number | null;
+  numero: string;
+  piso?: number;
+  orientacion: string;
+  superficieUtil: number;
+  superficieTotal: number;
+  precioUF: number;
+  descuentoPct: number;
+  estacionamientos: number;
+  bodegas: number;
+  estado: EstadoUnidad;
+};
+
+/**
+ * Lo que el listado necesita saber del stock sin traerse las unidades: el
+ * explorador filtra en el navegador, y los dormitorios de un proyecto son el
+ * rango de sus tipologías, no el número de la propiedad.
+ */
+export type ResumenStock = {
+  total: number;
+  disponibles: number;
+  /** Mínimo de las disponibles; null si no queda ninguna. */
+  desdeUF: number | null;
+  dormitoriosMin: number;
+  dormitoriosMax: number;
+  superficieMin: number;
+  superficieMax: number;
 };
 
 export const tipos: { value: TipoPropiedad; label: string }[] = [

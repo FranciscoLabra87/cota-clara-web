@@ -1,5 +1,6 @@
-import type { Condicion, Operacion, Propiedad, TipoPropiedad } from '@/data/properties';
+import type { Condicion, Operacion, Propiedad, ResumenStock, TipoPropiedad } from '@/data/properties';
 import { obtenerDB } from './db';
+import { resumenesStock } from './unidades';
 
 // Inventario en D1. El sitio público solo ve las PUBLICADA; el panel ve todo.
 
@@ -66,10 +67,11 @@ function lista(json: string): string[] {
 // que rompe el visor de imágenes del navegador al abrir la foto directamente.
 export const urlFoto = (clave: string) => `/fotos/${clave}`;
 
-function aPropiedad(f: Fila, fotos: string[]): PropiedadAdmin {
+function aPropiedad(f: Fila, fotos: string[], stock?: ResumenStock): PropiedadAdmin {
   return {
     id: f.id,
     estado: f.estado,
+    ...(stock ? { stock } : {}),
     slug: f.slug,
     titulo: f.titulo,
     tipo: f.tipo,
@@ -129,8 +131,11 @@ async function fotosPorPropiedad(ids: number[]): Promise<Map<number, string[]>> 
 }
 
 async function hidratar(filas: Fila[]): Promise<PropiedadAdmin[]> {
-  const fotos = await fotosPorPropiedad(filas.map((f) => f.id));
-  return filas.map((f) => aPropiedad(f, fotos.get(f.id) ?? []));
+  // El stock se consulta solo para los proyectos: una propiedad usada nunca
+  // tiene unidades, así que preguntar por ella sería una consulta regalada.
+  const proyectos = filas.filter((f) => f.condicion === 'nuevo').map((f) => f.id);
+  const [fotos, stock] = await Promise.all([fotosPorPropiedad(filas.map((f) => f.id)), resumenesStock(proyectos)]);
+  return filas.map((f) => aPropiedad(f, fotos.get(f.id) ?? [], stock.get(f.id)));
 }
 
 // ─── Lecturas del sitio público ───

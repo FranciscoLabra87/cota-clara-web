@@ -22,6 +22,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - **Correo:** `cotaclara.cl` está registrado en NIC Chile y delegado a Cloudflare (`mona` y `darwin.ns.cloudflare.com`), así que todo el DNS se maneja en Cloudflare. Los buzones viven en el hosting de WireNet: el 18 de noviembre de 2026 el MX ya apuntaba a `host12.wirenetchile.com`, con SPF (`ip4:138.117.150.12`), DKIM (`default._domainkey`) y DMARC `p=none`. `contacto@cotaclara.cl` es el buzón de comunicación del equipo. `info@cotaclara.cl` es el remitente de todo lo automático, el «no responder» (`LEADS_FROM` = `Cota Clara <info@cotaclara.cl>`), y no es una casilla real: no existe en el hosting.
 - **El correo saliente va por Resend** (`src/lib/correo.ts`, con `fetch` a su API, sin paquete). El dominio `cotaclara.cl` está verificado en Resend (DKIM en `resend._domainkey` y el subdominio `send`). Basta con los secretos `RESEND_API_KEY` y `LEADS_FROM` del Worker. Si se borra `RESEND_API_KEY`, el mismo código cae al SMTP del hosting (`src/lib/smtp.ts`, con `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER` y `SMTP_PASS`); en el Worker quedaron cargados los tres primeros apuntando a `host12.wirenetchile.com` con `info@`, sin contraseña, y no se usan mientras exista la clave de Resend. Plan gratis de Resend: 3.000 correos al mes y 100 al día.
 - Comandos: `npm install` · `npm run dev` (http://localhost:3000) · `npm run build` · `npm start`.
+- `npm run build` corre además `scripts/capacidad-build.mjs`, que mide el Worker y los assets ya compilados y deja el resultado para el panel de capacidad.
 - **`npm run build` es `opennextjs-cloudflare build`**, no `next build`: compila Next y empaqueta el Worker en `.open-next/`, que es lo que se despliega. Tarda más, pero es lo que sale al aire. Para una revisión rápida de tipos y compilación está `npm run build:next`.
 - Por eso `open-next.config.ts` fija `buildCommand: 'next build'`. Si no, OpenNext correría `npm run build`, que ahora es él mismo, y se llamaría en círculo.
 - Base local: `npm run db:local-schema` la crea, `npm run db:local-consulta -- "SELECT ..."` la consulta. `next dev` la monta sola desde `.wrangler/state`.
@@ -66,8 +67,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `proyectos-de-inversion/` y `retail/`: el mismo listado, solo con las nuevas o solo con las usadas. Las tres páginas usan `ListadoPropiedades`.
   - `servicios/[slug]`: corretaje, tasaciones, asesoria, gestion-patrimonial.
   - `contacto/` y `api/contacto/route.ts`.
-  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/`, `propiedades/`, `solicitudes/`, `fichas/`, `drive/`, `crm/` y `tareas/` (el seguimiento de cada propiedad está en `propiedades/<id>/seguimiento`).
-  - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/`, `api/panel/propiedades/`, `api/panel/solicitudes/`, `api/panel/drive/`, `api/panel/crm/` y `api/panel/tareas/`.
+  - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/`, `propiedades/`, `proyectos/`, `solicitudes/`, `fichas/`, `drive/`, `crm/` y `tareas/` (el seguimiento de cada propiedad está en `propiedades/<id>/seguimiento`, y el stock de un proyecto en `propiedades/<id>/unidades`).
+  - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/`, `api/panel/propiedades/` (con `<id>/unidades`, `<id>/unidades/importar` y `<id>/tipologias`), `api/panel/solicitudes/`, `api/panel/drive/`, `api/panel/crm/` y `api/panel/tareas/`.
   - `drive/`: subida de partes y descarga de archivos del Drive. En producción las atiende `worker.ts`; estas versiones son para `npm run dev`.
   - `fotos/[...clave]`: entrega las fotos desde R2. Va fuera de `api/` porque a esas rutas se les aplica una CSP con `sandbox` que rompe el visor del navegador.
   - `sitemap.ts`, `robots.ts`, `not-found.tsx`, `icon.svg`.
@@ -76,6 +77,8 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - Panel: CrmTablero (kanban de interesados de una propiedad, con su historial en un `<dialog>`) y TareasTablero (kanban de tareas).
   - Propiedades: PropertyCard, PropertyMedia, PropertyExplorer (filtros sincronizados con la URL), SearchBar, MortgageCalculator, Gallery (lightbox con `<dialog>`), PropertyMap (mapa de la portada con Leaflet y teselas de OpenStreetMap; carga la librería recién cuando la sección entra en pantalla).
   - Formularios: LeadForm, con variantes `tasacion`, `contacto` y `visita`.
+  - Portada: HeroStats (cifras de trayectoria) y PartnersCarousel (logos de inmobiliarias, en `public/images/inmobiliarias`).
+  - Proyectos: UnidadesPanel (stock del panel: tipologías, unidades y carga desde planilla) y TablaTipologias (el stock en la ficha pública).
   - Gráficos: Illustration, Icon, Logo.
 - `src/data`:
   - `site.ts`: contacto, navegación, comunas y `whatsappHref`.
@@ -88,6 +91,10 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `correo.ts`: la puerta del correo saliente. Manda por Resend si hay `RESEND_API_KEY`; si no, por `smtp.ts`, el SMTP del hosting.
   - `solicitudes.ts`: guarda en D1 lo que llega por los formularios, mide el tope contra el abuso y lo lista para el panel.
   - `visitas.ts`: el contador de visitas de las fichas, sumado por propiedad y por día en hora de Chile.
+  - `unidades.ts`, `validar-unidad.ts` e `importar-unidades.ts`: el stock por unidades de los proyectos. Ver su sección.
+  - `ficha-tecnica.ts`: los antecedentes técnicos de una propiedad (rol del SII, recepción, estado de conservación), en la tabla `propiedad_ficha`, que solo lee el panel.
+  - `respuesta-email.ts`: el correo con la respuesta a una solicitud desde `/panel/solicitudes`.
+  - `capacidad.ts`: lo que ocupa el sitio (D1, R2, el repo y el último build) para el panel de capacidad del inicio.
   - `crypto.ts`: funciones puras del acceso (PBKDF2, tokens, RUT, política de contraseñas). Sin imports de Next ni Cloudflare, para que `scripts/crear-admin.mjs` las use tal cual.
   - `auth.ts`: sesiones, cookies y bitácora sobre D1. Reexporta lo de `crypto.ts`.
   - `guardias.ts`: `exigirSesion` y `exigirAdmin` para Server Components. Van aparte porque `redirect()` no sirve dentro de un route handler.
@@ -141,6 +148,20 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - El listado manda al navegador una versión recortada de cada propiedad (sin descripción, características ni galería): `PropertyExplorer` solo necesita lo que muestra la tarjeta.
 - Las fotos se sirven con `unoptimized`: el original de R2, sin redimensionar. Las portadas pesan unos 200 KB cada una.
 - **Visitas:** la ficha avisa con un `POST /api/visitas` desde el navegador al abrirse (`ContadorVisita`), una vez por ficha y por pestaña. Se cuenta desde el navegador y no al renderizar en el servidor porque Next precarga las fichas cuando sus enlaces aparecen en pantalla, y eso inflaría la cuenta. No cuentan los borradores, las visitas del equipo con sesión abierta ni los buscadores. Se suman en `propiedad_visitas`, una fila por propiedad y por día en hora de Chile, sin guardar nada de quién visitó. Tope de 20.000 visitas contadas por día entre todas las propiedades, para que un script no gaste la cuota de escrituras de D1 y tumbe el formulario y el panel. El panel muestra el total y los últimos 7 días. Son aproximadas: un script podría inflarlas hasta el tope.
+
+## Stock por unidades
+
+- **Un proyecto no es una tabla nueva: es una propiedad con `condicion = 'nuevo'` y `operacion = 'venta'`.** Las `tipologias` y las `unidades` cuelgan de ella, así que slug, fotos, mapa, CRM, visitas, fichas y SEO siguen funcionando sin tocarse. `asegurarProyecto()` rechaza cargar stock en un retail o en un arriendo.
+- `src/lib/unidades.ts` es la única puerta a las dos tablas. `validar-unidad.ts` tiene los límites, compartidos por crear, editar e importar. `importar-unidades.ts` es el lector de la planilla: puro, sin Next ni base, para que el panel y el servidor lean lo mismo.
+- **El precio «desde» no lleva columna propia:** se escribe en `propiedades.precio_valor` con el mínimo de las unidades disponibles (`recalcularDesde()`), que es lo que ya leen el listado, las tarjetas, los filtros, el sitemap y los dos PDF. Si no queda stock se conserva el último precio y la ficha avisa. Con unidades, la moneda pasa a UF.
+- Cuatro estados por unidad: `disponible`, `reservada`, `vendida` y `bloqueada`. El sitio publica solo las dos primeras; el panel ve todo. Se cambian de a varias (`PATCH /api/panel/propiedades/<id>/unidades`), que es como llega el aviso de la inmobiliaria, y el lote se rechaza entero si un id no es de ese proyecto.
+- El listado sigue filtrando en el navegador: la lista recortada lleva un `ResumenStock` por proyecto (total, disponibles, desde, rango de dormitorios y de superficie) armado en dos consultas para todo el listado, no una por ficha. Los dormitorios de un proyecto son el rango de sus tipologías, no la columna de la propiedad.
+- **La entrada en el panel es `/panel/proyectos`**, en la barra y con su tarjeta en el inicio: lista los proyectos en venta con sus unidades, las disponibles y el «desde». De ahí se abre el stock de cada uno; también se llega desde la propiedad y desde el listado.
+- **Carga desde la planilla** en `/panel/propiedades/<id>/unidades`: se pega lo de Excel, con la primera fila nombrando las columnas. Se reconocen encabezados con tildes y abreviaturas, el tabulador, el punto y coma y los números a la chilena (`4.500,5`). Hacen falta al menos `numero` y `precio uf`. Una fila mala no bota la carga: se informa su línea.
+- La unidad se reconoce por su `numero` (`UNIQUE (propiedad_id, numero)`), así que volver a cargar la misma planilla actualiza en vez de duplicar. Sin confirmar, el endpoint solo compara y devuelve qué cambiaría; recién con `confirmar` escribe. Con `reemplazar`, las unidades que la planilla no menciona se borran; sin él se dejan, que es lo normal cuando la inmobiliaria manda solo las torres que cambiaron.
+- Las tipologías que la planilla nombra y no existen se crean solas, con los dormitorios y baños leídos del propio código (`2D/2B`). Borrar una tipología deja sus unidades sin tipología (`ON DELETE SET NULL`), no las borra.
+- La ficha pública del proyecto muestra la tabla de tipologías y las unidades publicadas (`TablaTipologias`), y el precio del encabezado sale como «Desde UF …».
+- La migración es `db/migrations/20261120_unidades.sql`, y el mismo bloque está en `db/schema.sql` para bases nuevas. **Aplicarla a la D1 real antes de pushear**: las consultas nombran sus columnas.
 
 ## Fichas comerciales
 
@@ -209,6 +230,7 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 - También el Drive: subida por partes de punta a punta contra el R2 de miniflare, cuota y su reserva, limpieza de abandonadas, permisos de subida y borrado, tipos rechazados, rangos y cabeceras de descarga.
 - También el contador de visitas: qué cuenta y qué no, el día en hora de Chile y el tope diario.
 - También las tareas: validación, enlace al interesado, Hecha con su fecha, las viejas fuera del tablero, pendientes y vencidas, y permisos de borrado.
+- También el stock por unidades: el lector de planillas (números a la chilena, encabezados sucios, filas repetidas o sin precio), el precio «desde» y su recálculo, los rangos del resumen, el cambio de estado en lote, la importación repetida sin duplicar, la vista previa que no escribe, lo que el sitio no publica y el borrado en cascada. Más sus endpoints: permisos, unidad de otro proyecto, estados inválidos y la importación de punta a punta.
 - También el CRM: etapas y su registro, resumen y último contacto, entrada desde el formulario sin duplicar, permisos de borrado y borrado en cascada.
 - También el formulario de contacto: que la solicitud quede guardada aunque el correo falle o no esté configurado, que solo avise del error cuando no quedó en ninguna parte, el tope por conexión, la confirmación a la persona (cuándo sale, su tope por correo y que no repita lo escrito), el contador de sin responder, la respuesta y el borrado desde el panel. Ahí el correo va mockeado, igual que Turnstile en el login. `correo.test.ts` prueba lo que se le pide a Resend (con `fetch` reemplazado) y cuándo cae a SMTP.
 - Turnstile va mockeado en las pruebas del login: sale a pedirle el veredicto a Cloudflare. Lo que se prueba es que el login lo respete.
@@ -224,10 +246,11 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 
 ## Pendientes sugeridos
 
-1. **Primer ingreso del administrador** (16.367.941-8) y cambio de su clave inicial. Mientras no entre, la cuenta tiene una clave que se deduce del RUT.
-2. **Correo**: probar un envío real por Resend (aviso a `contacto@` y confirmación a quien llena el formulario) y revisar que no caiga en spam. Si falla, mirar `npx wrangler tail` y que la clave siga activa en Resend.
-3. **Google**: crear el Perfil de Empresa de Google con la misma dirección y teléfono de `site.ts`, y dar de alta el dominio en Search Console para enviarle `https://www.cotaclara.cl/sitemap.xml`. Las dos cosas las hace el dueño desde su cuenta de Google. Confirmar también el horario de `site.ts`.
-4. **Confirmar la autorización** para publicar los avisos y las fotos de Palma Fuentes.
-5. Confirmar que `robots.txt` permite indexar solo los dominios públicos y mantiene cerrado `workers.dev`.
-6. Honorarios de `services.ts`: confirmarlos con el cliente.
-7. Las pruebas cubren `src/lib` y los endpoints; los componentes y las páginas siguen verificándose a mano.
+1. **Aplicar `db/migrations/20261120_unidades.sql` a la D1 real antes de pushear el stock por unidades.** Si el deploy llega primero, las páginas que leen `unidades` responden 500.
+2. **Primer ingreso del administrador** (16.367.941-8) y cambio de su clave inicial. Mientras no entre, la cuenta tiene una clave que se deduce del RUT.
+3. **Correo**: probar un envío real por Resend (aviso a `contacto@` y confirmación a quien llena el formulario) y revisar que no caiga en spam. Si falla, mirar `npx wrangler tail` y que la clave siga activa en Resend.
+4. **Google**: crear el Perfil de Empresa de Google con la misma dirección y teléfono de `site.ts`, y dar de alta el dominio en Search Console para enviarle `https://www.cotaclara.cl/sitemap.xml`. Las dos cosas las hace el dueño desde su cuenta de Google. Confirmar también el horario de `site.ts`.
+5. **Confirmar la autorización** para publicar los avisos y las fotos de Palma Fuentes.
+6. Confirmar que `robots.txt` permite indexar solo los dominios públicos y mantiene cerrado `workers.dev`.
+7. Honorarios de `services.ts`: confirmarlos con el cliente.
+8. Las pruebas cubren `src/lib` y los endpoints; los componentes y las páginas siguen verificándose a mano.

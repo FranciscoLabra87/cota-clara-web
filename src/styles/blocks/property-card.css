@@ -172,6 +172,20 @@
   color: var(--color-texto-suave);
 }
 
+/* Stock de un proyecto: cuántas unidades quedan y el "desde" del precio. */
+.property-card__stock {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-terracota-600);
+}
+
+.property-card__desde {
+  font-family: var(--ff-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-texto-suave);
+}
+
 .property-card__go {
   display: inline-flex;
   align-items: center;

@@ -140,3 +140,11 @@
   font-weight: 500;
   color: rgb(255 255 255 / 0.75);
 }
+
+/* "Desde" del precio de un proyecto: la unidad disponible más barata. */
+.property-head__desde {
+  font-family: var(--ff-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgb(255 255 255 / 0.75);
+}

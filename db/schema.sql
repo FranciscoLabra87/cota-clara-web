@@ -254,3 +254,57 @@ CREATE TABLE IF NOT EXISTS tareas (
 CREATE INDEX IF NOT EXISTS idx_tareas_estado ON tareas(estado, vence_en);
 CREATE INDEX IF NOT EXISTS idx_tareas_responsable ON tareas(responsable_id, estado);
 CREATE INDEX IF NOT EXISTS idx_tareas_interesado ON tareas(interesado_id);
+
+-- ─────────────────────────────────────────────────────────────────────
+-- Stock por unidades de los proyectos nuevos
+-- ─────────────────────────────────────────────────────────────────────
+--
+-- Un proyecto no es una tabla nueva: es una propiedad con condicion = 'nuevo'.
+-- Las tipologías y las unidades cuelgan de ella, así que slug, fotos, mapa,
+-- CRM, visitas, fichas y SEO siguen funcionando sin tocarse. El precio "desde"
+-- tampoco lleva columna propia: se escribe en propiedades.precio_valor con el
+-- mínimo de las unidades disponibles, que es lo que ya leen el listado, las
+-- tarjetas, los filtros, el sitemap y los dos PDF.
+
+-- El modelo de planta que se repite en varias unidades (2D/2B, 3D/2B). Los m2
+-- de la tipología son los del modelo; los de cada unidad pueden diferir.
+CREATE TABLE IF NOT EXISTS tipologias (
+  id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+  propiedad_id       INTEGER NOT NULL,
+  codigo             TEXT NOT NULL,                  -- '2D/2B'
+  dormitorios        INTEGER NOT NULL DEFAULT 0,
+  banos              INTEGER NOT NULL DEFAULT 0,
+  superficie_util    REAL NOT NULL DEFAULT 0,
+  superficie_terraza REAL NOT NULL DEFAULT 0,
+  plano_clave        TEXT,                           -- objeto en R2, como las fotos
+  orden              INTEGER NOT NULL DEFAULT 0,
+  UNIQUE (propiedad_id, codigo),
+  FOREIGN KEY (propiedad_id) REFERENCES propiedades(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_tipologias_propiedad ON tipologias(propiedad_id, orden);
+
+-- Una fila por unidad vendible. El numero es el que usa la inmobiliaria en su
+-- planilla y es la clave con la que se vuelve a importar la misma unidad, así
+-- que una carga repetida actualiza en vez de duplicar.
+CREATE TABLE IF NOT EXISTS unidades (
+  id               INTEGER PRIMARY KEY AUTOINCREMENT,
+  propiedad_id     INTEGER NOT NULL,
+  tipologia_id     INTEGER,
+  numero           TEXT NOT NULL,                    -- '302'
+  piso             INTEGER,
+  orientacion      TEXT NOT NULL DEFAULT '',
+  superficie_util  REAL NOT NULL DEFAULT 0,
+  superficie_total REAL NOT NULL DEFAULT 0,
+  precio_uf        INTEGER NOT NULL,
+  descuento_pct    REAL NOT NULL DEFAULT 0,
+  estacionamientos INTEGER NOT NULL DEFAULT 0,
+  bodegas          INTEGER NOT NULL DEFAULT 0,
+  estado           TEXT NOT NULL DEFAULT 'disponible'
+                   CHECK(estado IN ('disponible','reservada','vendida','bloqueada')),
+  actualizado_en   TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE (propiedad_id, numero),
+  FOREIGN KEY (propiedad_id) REFERENCES propiedades(id) ON DELETE CASCADE,
+  FOREIGN KEY (tipologia_id) REFERENCES tipologias(id) ON DELETE SET NULL
+);
+CREATE INDEX IF NOT EXISTS idx_unidades_propiedad ON unidades(propiedad_id, estado, precio_uf);
+CREATE INDEX IF NOT EXISTS idx_unidades_tipologia ON unidades(tipologia_id, estado);

@@ -39,6 +39,9 @@ export default async function PanelLayout({ children }: { children: React.ReactN
                 <Link className="panel__nav-link" href="/panel/propiedades">
                   Propiedades
                 </Link>
+                <Link className="panel__nav-link" href="/panel/proyectos">
+                  Proyectos
+                </Link>
                 <Link className="panel__nav-link" href="/panel/crm">
                   CRM
                 </Link>

@@ -107,3 +107,42 @@ describe('filtros', () => {
     expect(opcionesPrecioDisponibles(mixto, 'arriendo').some((r) => r.value === 'UF:35')).toBe(true);
   });
 });
+
+// Un proyecto nuevo trae el resumen de su stock: sus dormitorios y sus m² son
+// el rango de las tipologías, no los números sueltos de la propiedad.
+describe('filtros con stock de un proyecto', () => {
+  const proyecto = propiedad({
+    slug: 'eco-estacion',
+    condicion: 'nuevo',
+    dormitorios: 0,
+    superficieUtil: 0,
+    precio: { valor: 4520, moneda: 'UF' },
+    publicada: '2026-04-01',
+    stock: {
+      total: 40,
+      disponibles: 12,
+      desdeUF: 4520,
+      dormitoriosMin: 1,
+      dormitoriosMax: 3,
+      superficieMin: 42,
+      superficieMax: 150,
+    },
+  });
+  const conProyecto = [...inventario, proyecto];
+  const filtrar = (f: Partial<typeof filtrosVacios>) =>
+    filtrarPropiedades(conProyecto, { ...filtrosVacios, ...f }).map((p) => p.slug);
+
+  it('entra en el filtro si alguna tipología llega a los dormitorios pedidos', () => {
+    expect(filtrar({ dormitorios: '3' })).toContain('eco-estacion');
+    expect(filtrar({ dormitorios: '4' })).not.toContain('eco-estacion');
+  });
+
+  it('ordena por la unidad disponible más grande', () => {
+    expect(filtrar({ orden: 'superficie' })[0]).toBe('eco-estacion');
+  });
+
+  it('un proyecto sin unidades sigue filtrando por sus propios dormitorios', () => {
+    const sinStock = propiedad({ slug: 'proyecto-vacio', condicion: 'nuevo', dormitorios: 3 });
+    expect(filtrarPropiedades([sinStock], { ...filtrosVacios, dormitorios: '3' })).toHaveLength(1);
+  });
+});
