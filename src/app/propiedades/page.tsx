@@ -9,6 +9,8 @@ export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
   title: 'Propiedades en venta y arriendo',
   description: 'Departamentos, casas y oficinas en venta y arriendo en las regiones Metropolitana, de Valparaíso y de Coquimbo.',
+  // Los filtros de la URL (?operacion=venta) son la misma página para los buscadores.
+  alternates: { canonical: '/propiedades' },
 };
 
 // Todo el inventario junto. Ya no está en el menú, que separa los dos

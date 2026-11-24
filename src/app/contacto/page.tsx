@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { Icon } from '@/components/Icon';
 import { LeadForm } from '@/components/LeadForm';
 import { PageHero } from '@/components/PageHero';
@@ -7,6 +8,7 @@ import { mapaEmbed, mapaHref, site, whatsappHref } from '@/data/site';
 export const metadata: Metadata = {
   title: 'Contacto',
   description: 'Agenda una reunión con Cota Clara para vender, arrendar, tasar o administrar tu propiedad.',
+  alternates: { canonical: '/contacto' },
 };
 
 export default function ContactoPage() {
@@ -80,7 +82,7 @@ export default function ContactoPage() {
               <p className="contact__label">Privacidad</p>
               <p className="contact__text">
                 Usamos tus datos solo para responder tu solicitud. No los compartimos con terceros sin tu autorización y puedes pedir que los
-                eliminemos escribiendo a {site.email}.
+                eliminemos escribiendo a {site.email}. <Link href="/privacidad">Lee la política completa</Link>.
               </p>
             </div>
           </div>

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Icon, type IconName } from '@/components/Icon';
 import { HeroStats } from '@/components/HeroStats';
@@ -19,6 +20,9 @@ import { propiedadesPublicadas, vitrina } from '@/lib/propiedades';
 // La portada muestra una vitrina por segmento y cuenta propiedades por comuna, así que
 // también lee de D1 en cada visita.
 export const dynamic = 'force-dynamic';
+
+// Título y descripción salen del layout; acá solo la canónica.
+export const metadata: Metadata = { alternates: { canonical: '/' } };
 
 const pilares: { icono: IconName; titulo: string; texto: string }[] = [
   { icono: 'target', titulo: 'Precisión técnica', texto: 'Valoramos con comparables reales y metodología, no con intuición.' },

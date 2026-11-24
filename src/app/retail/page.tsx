@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Retail: propiedades usadas',
-  description: 'Departamentos, casas y oficinas usados en venta y arriendo.',
+  description: 'Departamentos, casas y oficinas usados en venta y arriendo en las regiones Metropolitana, de Valparaíso y de Coquimbo.',
   alternates: { canonical: segmentos.usado.href },
 };
 

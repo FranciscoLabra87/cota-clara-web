@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const s = buscarServicio(slug);
   if (!s) return { title: 'Servicio no encontrado' };
-  return { title: s.nombre, description: s.bajada };
+  return { title: s.nombre, description: s.bajada, alternates: { canonical: `/servicios/${s.slug}` } };
 }
 
 export default async function ServicioPage({ params }: Params) {

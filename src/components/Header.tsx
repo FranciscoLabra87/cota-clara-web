@@ -47,7 +47,7 @@ export function Header() {
   return (
     <header className={`site-header ${modifiers}`.trim()}>
       <div className="site-header__inner container">
-        <Link href="/" className="site-header__brand" aria-label="Cota Clara, ir al inicio" onClick={() => setOpen(false)}>
+        <Link href="/" className="site-header__brand" aria-label="Cota Clara Patrimonio Inmobiliario, ir al inicio" onClick={() => setOpen(false)}>
           <Logo variant={transparent || open ? 'negativo' : 'color'} />
         </Link>
 
