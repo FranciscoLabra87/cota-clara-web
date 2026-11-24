@@ -12,7 +12,7 @@ import { PageHero } from '@/components/PageHero';
 import { PropertyCard } from '@/components/PropertyCard';
 import { varianteTipo } from '@/components/PropertyMedia';
 import { TablaTipologias } from '@/components/TablaTipologias';
-import { motivosFicha, tituloPropiedad, type Propiedad } from '@/data/properties';
+import { motivosFicha, nombreTipo, tituloPropiedad, type Propiedad } from '@/data/properties';
 import { site, whatsappHref } from '@/data/site';
 import { formatMetros, formatNumero, formatPrecio, periodoPrecio } from '@/lib/format';
 import { propiedadPorSlug, propiedadesPublicadas } from '@/lib/propiedades';
@@ -24,12 +24,44 @@ type Params = { params: Promise<{ slug: string }> };
 // para que publicar desde el panel no dependa de un deploy.
 export const dynamic = 'force-dynamic';
 
+/**
+ * La descripción para buscadores y vistas previas. Varios avisos importados
+ * traen un resumen de pocas palabras («Departamento Los Pinos Quilpué») y
+ * Google lo reemplaza por cualquier trozo de la página; con los datos del
+ * aviso queda una frase que sí describe la propiedad. En un proyecto con
+ * stock, dormitorios y superficie son rangos de sus tipologías, así que van
+ * solo el tipo, la operación y la comuna.
+ */
+function descripcionFicha(p: Propiedad): string {
+  const resumen = p.resumen.trim();
+  if (resumen.length >= 100) return resumen;
+  const conStock = Boolean(p.stock?.total);
+  const partes = [
+    `${nombreTipo(p.tipo)} en ${p.operacion} en ${p.comuna}`,
+    !conStock && p.dormitorios > 0 ? `${p.dormitorios} ${p.dormitorios === 1 ? 'dormitorio' : 'dormitorios'}` : null,
+    !conStock && p.banos > 0 ? `${p.banos} ${p.banos === 1 ? 'baño' : 'baños'}` : null,
+    !conStock && p.superficieUtil > 0 ? `${formatNumero(p.superficieUtil)} m² útiles` : null,
+  ].filter((parte): parte is string => Boolean(parte));
+
+  // «¡Excelente oportunidad!» no necesita un punto más.
+  const unir = (datos: string) => (resumen ? `${resumen}${/[.!?…]$/.test(resumen) ? '' : '.'} ${datos}.` : `${datos}.`);
+  // Google corta cerca de los 160 caracteres: los datos del final se sueltan
+  // antes que pasarse.
+  let datos = partes[0];
+  for (const parte of partes.slice(1)) {
+    if (unir(`${datos}, ${parte}`).length > 160) break;
+    datos = `${datos}, ${parte}`;
+  }
+  return unir(datos);
+}
+
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const p = await propiedadPorSlug(slug);
   if (!p) return { title: 'Propiedad no encontrada' };
 
   const titulo = `${tituloPropiedad(p)} · ${formatPrecio(p.precio)}`;
+  const descripcion = descripcionFicha(p);
 
   // La portada es la vista previa al compartir la ficha por WhatsApp o redes.
   // Su URL se arma con el host que recibió la visita y no con site.url: hasta
@@ -43,7 +75,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
   return {
     title: titulo,
-    description: p.resumen,
+    description: descripcion,
     // La canónica sí va al dominio propio (metadataBase): es la que deben
     // guardar los buscadores, aunque la ficha se abra desde otra dirección.
     alternates: { canonical: `/propiedades/${p.slug}` },
@@ -54,13 +86,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       locale: 'es_CL',
       siteName: 'Cota Clara · Patrimonio Inmobiliario',
       title: titulo,
-      description: p.resumen,
+      description: descripcion,
       images: [{ url: vistaPrevia, alt: tituloPropiedad(p) }],
     },
     twitter: {
       card: 'summary_large_image',
       title: titulo,
-      description: p.resumen,
+      description: descripcion,
       images: [vistaPrevia],
     },
   };

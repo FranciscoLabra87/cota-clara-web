@@ -67,11 +67,12 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
   - `proyectos-de-inversion/` y `retail/`: el mismo listado, solo con las nuevas o solo con las usadas. Las tres páginas usan `ListadoPropiedades`.
   - `servicios/[slug]`: corretaje, tasaciones, asesoria, gestion-patrimonial.
   - `contacto/` y `api/contacto/route.ts`.
+  - `privacidad/` y `terminos/`: política de privacidad y términos y condiciones, enlazados en el pie y en la casilla de consentimiento de los formularios. Describen lo que el sitio hace de verdad (datos de los formularios, Cloudflare, Resend, mapas de terceros, sin cookies de seguimiento): si cambia un formulario, un proveedor o la retención, hay que actualizar el texto y su fecha.
   - `acceso/`: ingreso corporativo. `panel/`: área interna, con `clave/`, `usuarios/`, `propiedades/`, `proyectos/`, `solicitudes/`, `fichas/`, `drive/`, `crm/` y `tareas/` (el seguimiento de cada propiedad está en `propiedades/<id>/seguimiento`, y el stock de un proyecto en `propiedades/<id>/unidades`).
   - `api/auth/` (login, logout, cambiar-clave), `api/panel/usuarios/`, `api/panel/propiedades/` (con `<id>/unidades`, `<id>/unidades/importar` y `<id>/tipologias`), `api/panel/solicitudes/`, `api/panel/drive/`, `api/panel/crm/` y `api/panel/tareas/`.
   - `drive/`: subida de partes y descarga de archivos del Drive. En producción las atiende `worker.ts`; estas versiones son para `npm run dev`.
   - `fotos/[...clave]`: entrega las fotos desde R2. Va fuera de `api/` porque a esas rutas se les aplica una CSP con `sandbox` que rompe el visor del navegador.
-  - `sitemap.ts`, `robots.ts`, `not-found.tsx`, `icon.svg`.
+  - `sitemap.ts`, `robots.ts`, `not-found.tsx`, `icon.svg`, `favicon.ico` y `apple-icon.png` (el ícono del iPhone, a sangre: iOS redondea las esquinas solo).
 - `src/components`:
   - Layout: Header (transparente hasta hacer scroll, con menú móvil), Footer, WhatsAppButton, SectionHead, PageHero.
   - Panel: CrmTablero (kanban de interesados de una propiedad, con su historial en un `<dialog>`) y TareasTablero (kanban de tareas).
@@ -254,3 +255,5 @@ Sitio de **Cota Clara** (bajada: Patrimonio Inmobiliario), firma de corretaje, t
 6. Confirmar que `robots.txt` permite indexar solo los dominios públicos y mantiene cerrado `workers.dev`.
 7. Honorarios de `services.ts`: confirmarlos con el cliente.
 8. Las pruebas cubren `src/lib` y los endpoints; los componentes y las páginas siguen verificándose a mano.
+9. **Revisar con un abogado `/privacidad` y `/terminos`** antes del 1 de diciembre de 2026, cuando entra en vigencia la Ley 21.719. Falta la razón social y el RUT del responsable, y definir un plazo concreto de conservación de las solicitudes.
+10. **Activar «Always Use HTTPS»** en Cloudflare (SSL/TLS → Edge Certificates). HSTS solo actúa desde la segunda visita por https; la primera por http no se redirige sola. No se hace en `worker.ts` porque `npm run preview` le entrega al Worker la URL como `http://www.cotaclara.cl` y el sitio local entraría en un bucle.

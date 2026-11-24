@@ -73,8 +73,13 @@ export function Footer() {
           </p>
           <ul className="site-footer__legal">
             <li>
-              <Link className="site-footer__link" href="/contacto">
+              <Link className="site-footer__link" href="/privacidad">
                 Política de privacidad
+              </Link>
+            </li>
+            <li>
+              <Link className="site-footer__link" href="/terminos">
+                Términos y condiciones
               </Link>
             </li>
             <li>

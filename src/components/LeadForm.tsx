@@ -242,7 +242,7 @@ export function LeadForm({ variante, titulo, bajada, propiedad, boton, motivos, 
         <label className="field__check" htmlFor={`${id}-acepto`}>
           <input type="checkbox" value="si" {...campo('acepto')} />
           <span>
-            Autorizo a Cota Clara a contactarme por esta solicitud según su <Link href="/contacto">política de privacidad</Link>.
+            Autorizo a Cota Clara a contactarme por esta solicitud según su <Link href="/privacidad">política de privacidad</Link>.
           </span>
         </label>
         {error('acepto')}

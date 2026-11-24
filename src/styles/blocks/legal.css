@@ -1,0 +1,45 @@
+/* Bloque: legal (política de privacidad y términos y condiciones) */
+.legal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  max-width: 46rem;
+}
+
+.legal__updated {
+  font-size: var(--fs-sm);
+  color: var(--color-texto-suave);
+}
+
+.legal__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.legal__title {
+  font-size: var(--fs-xl);
+}
+
+.legal__subtitle {
+  font-size: var(--fs-lg);
+}
+
+/* El reset de base.css quita las viñetas a las listas con clase (ul[class]),
+   y su selector pesa más que una clase sola: por eso la viñeta va en el ítem. */
+.legal__item {
+  display: list-item;
+  margin-left: var(--space-6);
+  list-style: disc;
+}
+
+.legal__item + .legal__item {
+  margin-top: var(--space-2);
+}
+
+.legal__note {
+  padding: var(--space-5) var(--space-6);
+  border-left: 4px solid var(--color-terracota);
+  border-radius: var(--radius-sm);
+  background: var(--color-gris-50);
+}
