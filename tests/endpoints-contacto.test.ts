@@ -73,11 +73,11 @@ const formulario = (extra: Record<string, unknown> = {}) => ({
   ...extra,
 });
 
-const enviar = (body: unknown, ip: string | null = '203.0.113.10') =>
+const enviar = (body: unknown, ip: string | null = '203.0.113.10', headers: Record<string, string> = {}) =>
   contacto(
     pedir('/api/contacto', null, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(ip ? { 'CF-Connecting-IP': ip } : {}) },
+      headers: { 'Content-Type': 'application/json', ...(ip ? { 'CF-Connecting-IP': ip } : {}), ...headers },
       body: typeof body === 'string' ? body : JSON.stringify(body),
     }),
   );
@@ -171,6 +171,59 @@ describe('lo que no se guarda', () => {
   it('responde 400 si el cuerpo no es JSON', async () => {
     expect((await enviar('esto no es json')).status).toBe(400);
   });
+
+  it('rechaza JSON que no es un objeto sin guardar ni mandar correos', async () => {
+    for (const body of [null, [], [formulario()], 42, true, '"texto"']) {
+      expect((await enviar(body)).status).toBe(400);
+    }
+    expect(await filas()).toHaveLength(0);
+    expect(mundo.avisos).toHaveLength(0);
+    expect(mundo.confirmaciones).toHaveLength(0);
+  });
+
+  it('exige el consentimiento explícito del checkbox, no un valor truthy', async () => {
+    for (const acepto of ['no', 'false', '0', true, 1, ['si']]) {
+      const res = await enviar(formulario({ acepto }));
+      expect(res.status).toBe(422);
+      expect(await res.json()).toMatchObject({ errores: { acepto: expect.any(String) } });
+    }
+    expect(await filas()).toHaveLength(0);
+    expect(mundo.avisos).toHaveLength(0);
+  });
+
+  it('valida en el servidor los selectores de tasación y el teléfono opcional', async () => {
+    for (const dato of [{ tipo: '' }, { tipo: 'inventado' }, { comuna: '' }, { comuna: 'inventada' }, { telefono: 'abc12345678' }, { motivo: 'inventado' }]) {
+      expect((await enviar(formulario(dato))).status).toBe(422);
+    }
+    expect(await filas()).toHaveLength(0);
+    expect((await enviar(formulario({ telefono: '', comuna: 'Otra' }))).status).toBe(200);
+  });
+
+  it('no acepta tipos JSON distintos de los campos de texto', async () => {
+    for (const dato of [{ nombre: [] }, { email: { value: 'camila@example.com' } }, { telefono: 912345678 }, { tipo: ['departamento'] }]) {
+      expect((await enviar(formulario(dato))).status).toBe(422);
+    }
+    expect(await filas()).toHaveLength(0);
+  });
+
+  it('un origen ajeno no puede provocar registros ni avisos', async () => {
+    for (const Origin of ['https://otro.example', 'null', 'http://localhost.otro.example']) {
+      expect((await enviar(formulario(), null, { Origin })).status).toBe(403);
+    }
+    expect(await filas()).toHaveLength(0);
+    expect(mundo.avisos).toHaveLength(0);
+    expect((await enviar(formulario(), null, { Origin: 'http://localhost' })).status).toBe(200);
+  });
+
+  it('rechaza cuerpos excesivos aunque no anuncien su tamaño o mientan', async () => {
+    const excesivo = formulario({ mensaje: 'a'.repeat(40_000) });
+    expect((await enviar(excesivo)).status).toBe(413);
+    expect((await enviar(excesivo, null, { 'Content-Length': '10' })).status).toBe(413);
+    expect((await enviar(formulario(), null, { 'Content-Length': '40000' })).status).toBe(413);
+    expect((await enviar(formulario({ mensaje: 'ñ'.repeat(20_000) }))).status).toBe(413);
+    expect(await filas()).toHaveLength(0);
+    expect(mundo.avisos).toHaveLength(0);
+  });
 });
 
 describe('lo que guarda', () => {
@@ -179,11 +232,15 @@ describe('lo que guarda', () => {
     expect((await filas())[0].variante).toBe('contacto');
   });
 
-  it('corta los textos al largo que acepta el formulario', async () => {
-    await enviar(formulario({ mensaje: 'a'.repeat(5000), nombre: 'b'.repeat(300) }));
-    const [fila] = await filas();
-    expect(String(fila.mensaje)).toHaveLength(2000);
-    expect(String(fila.nombre)).toHaveLength(120);
+  it('conserva el texto completo hasta el límite y rechaza lo que lo excede sin recortarlo', async () => {
+    expect((await enviar(formulario({ mensaje: 'a'.repeat(2000), nombre: 'b'.repeat(120) }))).status).toBe(200);
+    const res = await enviar(formulario({ mensaje: 'a'.repeat(2001), nombre: 'b'.repeat(121) }));
+    expect(res.status).toBe(422);
+    expect(await res.json()).toMatchObject({ errores: { mensaje: expect.any(String), nombre: expect.any(String) } });
+    const guardadas = await filas();
+    expect(guardadas).toHaveLength(1);
+    expect(String(guardadas[0].mensaje)).toHaveLength(2000);
+    expect(String(guardadas[0].nombre)).toHaveLength(120);
   });
 
   it('guarda la conexión para el tope, pero no la entrega al panel', async () => {
@@ -431,10 +488,21 @@ describe('formulario de la ficha de una propiedad', () => {
     expect((await filas())[0].motivo).toBe('Agendar una reunión');
   });
 
-  it('un motivo que no es de la ficha queda como pedir información', async () => {
+  it('rechaza motivos que no son de la ficha y mantiene pedir información sin fecha', async () => {
     await publicar('casa-quilpue');
-    await enviar(desdeLaFicha({ motivo: 'Comprar ya <b>' }));
+    expect((await enviar(desdeLaFicha({ motivo: 'Comprar ya <b>' }))).status).toBe(422);
+    expect(await filas()).toHaveLength(0);
+    expect((await enviar(desdeLaFicha({ motivo: 'Pedir información', fecha: '' }))).status).toBe(200);
     expect((await filas())[0].motivo).toBe('Pedir información');
+  });
+
+  it('la fecha sigue siendo opcional, pero si viene debe existir en el calendario', async () => {
+    expect((await enviar(desdeLaFicha({ fecha: '2026-02-29' }))).status).toBe(422);
+    expect((await enviar(desdeLaFicha({ fecha: '2026-04-31' }))).status).toBe(422);
+    expect((await enviar(desdeLaFicha({ fecha: 'mañana' }))).status).toBe(422);
+    expect(await filas()).toHaveLength(0);
+    expect((await enviar(desdeLaFicha({ fecha: '2028-02-29' }))).status).toBe(200);
+    expect((await filas())[0].fecha).toBe('2028-02-29');
   });
 
   it('una propiedad en borrador o que no existe no entra al aviso, pero el lead llega igual', async () => {

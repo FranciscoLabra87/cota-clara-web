@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useId, useMemo, useState } from 'react';
+import { useId, useMemo } from 'react';
 import { PropertyCard } from './PropertyCard';
 import { comunasDisponibles, tipos, type Operacion, type Propiedad } from '@/data/properties';
 import { filtrarPropiedades, filtrosVacios, opcionesPrecioDisponibles, type Filtros } from '@/lib/filters';
@@ -12,14 +12,16 @@ export function PropertyExplorer({ propiedades }: { propiedades: Propiedad[] }) 
   const pathname = usePathname();
   const id = useId();
 
-  const [filtros, setFiltros] = useState<Filtros>(() => ({
+  // La URL es la fuente de los filtros, también al entrar desde «Arriendos»
+  // estando ya en este listado o al volver con el navegador.
+  const filtros = useMemo<Filtros>(() => ({
     operacion: params.get('operacion') ?? '',
     tipo: params.get('tipo') ?? '',
     comuna: params.get('comuna') ?? '',
     dormitorios: params.get('dormitorios') ?? '',
     precio: params.get('precio') ?? '',
     orden: params.get('orden') ?? 'recientes',
-  }));
+  }), [params]);
 
   const resultados = useMemo(() => filtrarPropiedades([...propiedades], filtros), [propiedades, filtros]);
   const comunas = useMemo(() => comunasDisponibles(propiedades), [propiedades]);
@@ -27,7 +29,6 @@ export function PropertyExplorer({ propiedades }: { propiedades: Propiedad[] }) 
   const activos = Object.entries(filtros).some(([k, v]) => v && !(k === 'orden' && v === 'recientes'));
 
   function aplicar(next: Filtros) {
-    setFiltros(next);
     const qs = new URLSearchParams(
       Object.entries(next).filter(([k, v]) => v && !(k === 'orden' && v === 'recientes')) as [string, string][],
     ).toString();

@@ -14,6 +14,8 @@ export const site = {
   edificio: 'Edificio Spot Residence Manquehue',
   comuna: 'Las Condes',
   horario: 'Lunes a viernes de 9:00 a 18:30 · Sábados con cita',
+  facebook: 'https://www.facebook.com/profile.php?id=61596499598983',
+  instagram: 'https://www.instagram.com/cotaclarapropiedades/',
 };
 
 // Lo que se le pide a Google Maps: calle, número y comuna bastan para el pin.
@@ -26,6 +28,7 @@ export const mapaHref = `https://www.google.com/maps/search/?api=1&query=${encod
 export const mapaEmbed = `https://www.google.com/maps?q=${encodeURIComponent(direccionMapa)}&z=16&output=embed`;
 
 export const navegacion = [
+  { href: '/propiedades?operacion=arriendo', label: 'Arriendos' },
   { href: '/proyectos-de-inversion', label: 'Proyectos de inversión' },
   { href: '/retail', label: 'Retail' },
   { href: '/servicios/corretaje', label: 'Vender' },

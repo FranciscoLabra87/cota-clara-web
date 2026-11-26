@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { CookieConsent } from '@/components/CookieConsent';
 import { site } from '@/data/site';
 import './globals.css';
 
@@ -66,6 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
         <Footer />
         <WhatsAppButton />
+        <CookieConsent measurementId={process.env.NEXT_PUBLIC_GA4_MANUAL_EVENTS === '1' ? process.env.NEXT_PUBLIC_GA4_ID : undefined} />
       </body>
     </html>
   );

@@ -14,11 +14,21 @@ import { mapaHref, site, whatsappHref } from '@/data/site';
 import { opcionesPrecioDisponibles } from '@/lib/filters';
 import { formatPrecio } from '@/lib/format';
 import { jsonLd } from '@/lib/json-ld';
+import { metadatosPagina } from '@/lib/metadata';
 import { propiedadesPublicadas, vitrina } from '@/lib/propiedades';
 
 // La portada muestra una vitrina por segmento y cuenta propiedades por comuna, así que
 // también lee de D1 en cada visita.
 export const dynamic = 'force-dynamic';
+
+export const metadata = {
+  ...metadatosPagina(
+    'Cota Clara · Patrimonio Inmobiliario',
+    'Corretaje, tasaciones, asesoría y gestión de patrimonio inmobiliario en Santiago. Decisiones sobre tu propiedad con precisión técnica y transparencia.',
+    '/',
+  ),
+  title: { absolute: 'Cota Clara · Patrimonio Inmobiliario' },
+};
 
 const pilares: { icono: IconName; titulo: string; texto: string }[] = [
   { icono: 'target', titulo: 'Precisión técnica', texto: 'Valoramos con comparables reales y metodología, no con intuición.' },
@@ -125,6 +135,9 @@ export default async function HomePage() {
               <Link className="button button--primary" href="/propiedades">
                 Ver propiedades
                 <Icon name="arrow" className="button__icon" />
+              </Link>
+              <Link className="button button--outline-light" href="/propiedades?operacion=arriendo">
+                Ver arriendos
               </Link>
               <Link className="button button--outline-light" href="/servicios/tasaciones">
                 Tasar mi propiedad

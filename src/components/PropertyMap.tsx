@@ -218,7 +218,7 @@ export function PropertyMap({ propiedades }: { propiedades: MapProperty[] }) {
           <ul className="property-map__list">
             {filtradas.map((propiedad) => (
               <li key={propiedad.slug} className={`property-map__item${seleccionada === propiedad.slug ? ' property-map__item--selected' : ''}`}>
-                <button className="property-map__focus" type="button" onClick={() => enfocar(propiedad)} aria-label={`Ubicar ${propiedad.titulo} en el mapa`}>
+                <button className="property-map__focus" type="button" onClick={() => enfocar(propiedad)} aria-label={`${propiedad.sector || propiedad.comuna} ${propiedad.titulo} ${propiedad.precio}${propiedad.operacion === 'arriendo' ? ' / mes' : ''}. Ubicar en el mapa`}>
                   <span className="property-map__item-dot" aria-hidden="true" />
                   <span className="property-map__item-body">
                     <span className="property-map__item-location">{propiedad.sector || propiedad.comuna}</span>
@@ -226,7 +226,7 @@ export function PropertyMap({ propiedades }: { propiedades: MapProperty[] }) {
                     <span className="property-map__item-price">{propiedad.precio}{propiedad.operacion === 'arriendo' ? ' / mes' : ''}</span>
                   </span>
                 </button>
-                <Link className="property-map__item-link" href={`/propiedades/${propiedad.slug}`} aria-label={`Abrir ficha de ${propiedad.titulo}`}>Ver ficha →</Link>
+                <Link className="property-map__item-link" href={`/propiedades/${propiedad.slug}`} aria-label={`Ver ficha → ${propiedad.titulo}`}>Ver ficha →</Link>
               </li>
             ))}
           </ul>

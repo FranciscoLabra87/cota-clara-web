@@ -40,6 +40,12 @@
   background: var(--color-terracota);
 }
 
+.site-footer__social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+}
+
 .site-footer__col {
   flex: 0 1 190px;
   display: flex;

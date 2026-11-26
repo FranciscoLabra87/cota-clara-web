@@ -14,7 +14,7 @@ import { varianteTipo } from '@/components/PropertyMedia';
 import { TablaTipologias } from '@/components/TablaTipologias';
 import { motivosFicha, tituloPropiedad, type Propiedad } from '@/data/properties';
 import { site, whatsappHref } from '@/data/site';
-import { formatMetros, formatNumero, formatPrecio, periodoPrecio } from '@/lib/format';
+import { formatMetros, formatNumero, formatPrecio, periodoPrecio, totalMensualArriendo } from '@/lib/format';
 import { propiedadPorSlug, propiedadesPublicadas } from '@/lib/propiedades';
 import { stockPublicoPorSlug } from '@/lib/unidades';
 
@@ -55,6 +55,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       siteName: 'Cota Clara · Patrimonio Inmobiliario',
       title: titulo,
       description: p.resumen,
+      url: `/propiedades/${p.slug}`,
       images: [{ url: vistaPrevia, alt: tituloPropiedad(p) }],
     },
     twitter: {
@@ -67,7 +68,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 function galeria(p: Propiedad): GalleryItem[] {
-  if (p.imagenes?.length) return p.imagenes.map((src, i) => ({ kind: 'foto' as const, src, label: `Foto ${i + 1}` }));
+  if (p.imagenes?.length) return p.imagenes.map((src, i) => ({ kind: 'foto' as const, src, label: `Foto ${i + 1}`, alt: `Fotografía ${i + 1} de ${tituloPropiedad(p)} en ${p.comuna}` }));
   const fotos: GalleryItem[] = [
     { kind: 'ilustracion', label: 'Fachada', variant: varianteTipo(p.tipo), seed: p.ilustracion.seed, tono: p.ilustracion.tono },
     {
@@ -99,6 +100,7 @@ export default async function PropiedadPage({ params }: Params) {
   if (!p) notFound();
 
   const periodo = periodoPrecio(p.precio);
+  const totalMensual = totalMensualArriendo(p);
   const ubicacion = [p.sector, p.comuna].filter(Boolean).join(', ');
   // El stock se consulta solo si el resumen dice que hay unidades: así una
   // ficha de retail no paga dos consultas por nada.
@@ -129,7 +131,7 @@ export default async function PropiedadPage({ params }: Params) {
         : p.fondo
           ? { label: 'Fondo del terreno', valor: formatMetros(p.fondo) }
           : null,
-    p.gastosComunes ? { label: 'Gastos comunes', valor: `$${formatNumero(p.gastosComunes)} aprox.` } : null,
+    p.gastosComunes != null ? { label: 'Gastos comunes', valor: `$${formatNumero(p.gastosComunes)} aprox.` } : null,
   ].filter((x): x is NonNullable<typeof x> => x !== null);
 
   return (
@@ -158,6 +160,13 @@ export default async function PropiedadPage({ params }: Params) {
               {formatPrecio(p.precio)}
               {periodo ? <span className="property-head__period"> {periodo}</span> : null}
             </p>
+            {p.operacion === 'arriendo' ? (
+              <div className="property-head__costs">
+                <p>{p.gastosComunes != null ? `Gastos comunes: $${formatNumero(p.gastosComunes)} aprox.` : 'Gastos comunes por confirmar'}</p>
+                {totalMensual != null ? <p className="property-head__total">Total mensual referencial: ${formatNumero(totalMensual)}</p> : null}
+                <p>Consumos y otros cargos aparte.</p>
+              </div>
+            ) : null}
             {/* El propósito de la ficha: que pidan información o una reunión. Llevan al formulario de la columna. */}
             <div className="property-head__acciones">
               <a className="button button--primary" href="#solicitar">

@@ -1,4 +1,4 @@
-import { motivosFicha, tituloPropiedad } from '@/data/properties';
+import { tituloPropiedad } from '@/data/properties';
 import { site } from '@/data/site';
 import { ipDe } from '@/lib/auth';
 import { interesadoDesdeSolicitud } from '@/lib/crm';
@@ -6,10 +6,41 @@ import { formatPrecio, periodoPrecio } from '@/lib/format';
 import { enviarConfirmacion, enviarLead, type FichaLead, type Lead } from '@/lib/leads';
 import { publicadaParaAviso } from '@/lib/propiedades';
 import { guardarSolicitud, marcarCorreo, superaConfirmaciones, superaElTope } from '@/lib/solicitudes';
+import { validarLead } from '@/lib/validar-lead';
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const texto = (v: unknown, max = 500) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 const json = (cuerpo: unknown, status = 200) => Response.json(cuerpo, { status });
+const MAX_CUERPO = 32 * 1024;
+
+/** El límite se aplica a los bytes leídos, también sin Content-Length. */
+async function leerCuerpo(request: Request): Promise<
+  | { ok: true; body: unknown }
+  | { ok: false; status: 400 | 413 }
+> {
+  if (Number(request.headers.get('content-length')) > MAX_CUERPO) return { ok: false, status: 413 };
+  const lector = request.body?.getReader();
+  if (!lector) return { ok: false, status: 400 };
+  const decoder = new TextDecoder('utf-8', { fatal: true });
+  let bytes = 0;
+  let texto = '';
+  try {
+    while (true) {
+      const { value, done } = await lector.read();
+      if (done) break;
+      bytes += value.byteLength;
+      if (bytes > MAX_CUERPO) {
+        await lector.cancel().catch(() => {});
+        return { ok: false, status: 413 };
+      }
+      texto += decoder.decode(value, { stream: true });
+    }
+    texto += decoder.decode();
+    return { ok: true, body: JSON.parse(texto) };
+  } catch {
+    return { ok: false, status: 400 };
+  } finally {
+    lector.releaseLock();
+  }
+}
 
 /**
  * La confirmación a la persona. Solo sale si la solicitud quedó guardada, que
@@ -41,35 +72,24 @@ async function fichaDe(slug: string): Promise<FichaLead | null> {
 }
 
 export async function POST(request: Request) {
-  let body: Record<string, unknown>;
-  try {
-    body = (await request.json()) as Record<string, unknown>;
-  } catch {
-    return json({ ok: false, error: 'Solicitud inválida' }, 400);
+  const origen = request.headers.get('origin');
+  if (origen !== null && origen !== new URL(request.url).origin) {
+    return json({ ok: false, error: 'Envía la solicitud desde el formulario del sitio.' }, 403);
   }
+
+  const cuerpo = await leerCuerpo(request);
+  if (!cuerpo.ok) {
+    return json({ ok: false, error: cuerpo.status === 413 ? 'La solicitud es demasiado grande.' : 'Solicitud inválida' }, cuerpo.status);
+  }
+  if (!cuerpo.body || typeof cuerpo.body !== 'object' || Array.isArray(cuerpo.body)) return json({ ok: false, error: 'Solicitud inválida' }, 400);
+  const body = cuerpo.body as Record<string, unknown>;
 
   // Campo trampa para bots: si viene completo, se descarta sin avisar.
-  if (texto(body.empresa)) return json({ ok: true });
+  if (typeof body.empresa === 'string' && body.empresa.trim()) return json({ ok: true });
 
-  const lead: Lead = {
-    variante: texto(body.variante, 20),
-    nombre: texto(body.nombre, 120),
-    email: texto(body.email, 160),
-    telefono: texto(body.telefono, 40),
-    tipo: texto(body.tipo, 40),
-    comuna: texto(body.comuna, 60),
-    motivo: texto(body.motivo, 60),
-    fecha: texto(body.fecha, 20),
-    mensaje: texto(body.mensaje, 2000),
-    propiedad: texto(body.propiedad, 120),
-  };
-
-  if (lead.nombre.length < 2 || !EMAIL.test(lead.email) || !texto(body.acepto) || (lead.variante === 'contacto' && lead.mensaje.length < 10)) {
-    return json({ ok: false, error: 'Faltan datos obligatorios' }, 422);
-  }
-
-  // Desde la ficha solo hay dos motivos; cualquier otra cosa es pedir información.
-  if (lead.variante === 'visita' && !(motivosFicha as readonly string[]).includes(lead.motivo)) lead.motivo = motivosFicha[0];
+  const validacion = validarLead(body);
+  if (!validacion.ok) return json({ ok: false, error: 'Revisa los datos del formulario.', errores: validacion.errores }, 422);
+  const lead = validacion.lead;
 
   const ip = ipDe(request);
 

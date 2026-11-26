@@ -6,7 +6,7 @@ import { Icon } from './Icon';
 import { Illustration, type IllustrationVariant, type Tono } from './Illustration';
 
 export type GalleryItem =
-  | { kind: 'foto'; src: string; label: string }
+  | { kind: 'foto'; src: string; label: string; alt?: string }
   | {
       kind: 'ilustracion';
       label: string;
@@ -20,7 +20,7 @@ export type GalleryItem =
     };
 
 function Media({ item, className, sizes }: { item: GalleryItem; className: string; sizes: string }) {
-  if (item.kind === 'foto') return <Image src={item.src} alt={item.label} fill sizes={sizes} className={className} unoptimized />;
+  if (item.kind === 'foto') return <Image src={item.src} alt={item.alt ?? item.label} fill sizes={sizes} className={className} />;
   const { kind, label, ...props } = item;
   void kind;
   return <Illustration {...props} label={label} className={className} />;

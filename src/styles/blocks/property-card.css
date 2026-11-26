@@ -172,6 +172,20 @@
   color: var(--color-texto-suave);
 }
 
+.property-card__costs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  font-size: 0.8125rem;
+  color: var(--color-texto-suave);
+}
+
+.property-card__total {
+  font-weight: 600;
+  color: var(--color-petroleo);
+}
+
 /* Stock de un proyecto: cuántas unidades quedan y el "desde" del precio. */
 .property-card__stock {
   font-size: 0.875rem;
