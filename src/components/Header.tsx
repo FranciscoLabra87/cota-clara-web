@@ -28,7 +28,7 @@ export function Header() {
     if (open) document.body.style.overflow = 'hidden';
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
     const onResize = () => {
-      if (window.innerWidth >= 1280) setOpen(false);
+      if (window.innerWidth >= 1440) setOpen(false);
     };
     window.addEventListener('keydown', onKey);
     window.addEventListener('resize', onResize);
@@ -47,7 +47,7 @@ export function Header() {
   return (
     <header className={`site-header ${modifiers}`.trim()}>
       <div className="site-header__inner container">
-        <Link href="/" className="site-header__brand" aria-label="Cota Clara, ir al inicio" onClick={() => setOpen(false)}>
+        <Link href="/" className="site-header__brand" aria-label="Cota Clara Patrimonio Inmobiliario, ir al inicio" onClick={() => setOpen(false)}>
           <Logo variant={transparent || open ? 'negativo' : 'color'} />
         </Link>
 
@@ -77,7 +77,7 @@ export function Header() {
           </ul>
         </nav>
 
-        {/* Con siete enlaces en el menú no cabe también el teléfono: queda en el
+        {/* Con ocho enlaces en el menú no cabe también el teléfono: queda en el
             menú móvil, en el pie y en la página de contacto. */}
         <div className="site-header__actions">
           <Link className="button button--primary button--sm site-header__cta" href="/contacto">

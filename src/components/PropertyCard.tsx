@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { Icon } from './Icon';
 import { PropertyMedia } from './PropertyMedia';
-import { formatNumero, formatPrecio, periodoPrecio } from '@/lib/format';
+import { formatNumero, formatPrecio, periodoPrecio, totalMensualArriendo } from '@/lib/format';
 import { tituloPropiedad, type Propiedad } from '@/data/properties';
 
 export function PropertyCard({ propiedad, headingLevel = 3 }: { propiedad: Propiedad; headingLevel?: 2 | 3 }) {
   const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const periodo = periodoPrecio(propiedad.precio);
   const titulo = tituloPropiedad(propiedad);
+  const totalMensual = totalMensualArriendo(propiedad);
 
   // En un proyecto con unidades cargadas la tarjeta muestra rangos y un
   // "desde": los números sueltos de la propiedad describen una vivienda sola.
@@ -89,11 +90,20 @@ export function PropertyCard({ propiedad, headingLevel = 3 }: { propiedad: Propi
           </p>
         ) : null}
         <div className="property-card__footer">
-          <p className="property-card__price">
-            {stock && stock.disponibles > 0 ? <span className="property-card__desde">Desde </span> : null}
-            {formatPrecio(propiedad.precio)}
-            {periodo ? <span className="property-card__period"> {periodo}</span> : null}
-          </p>
+          <div>
+            <p className="property-card__price">
+              {stock && stock.disponibles > 0 ? <span className="property-card__desde">Desde </span> : null}
+              {formatPrecio(propiedad.precio)}
+              {periodo ? <span className="property-card__period"> {periodo}</span> : null}
+            </p>
+            {propiedad.operacion === 'arriendo' ? (
+              <div className="property-card__costs">
+                <p>{propiedad.gastosComunes != null ? `Gastos comunes: $${formatNumero(propiedad.gastosComunes)} aprox.` : 'Gastos comunes por confirmar'}</p>
+                {totalMensual != null ? <p className="property-card__total">Total mensual referencial: ${formatNumero(totalMensual)}</p> : null}
+                <p>Consumos y otros cargos aparte.</p>
+              </div>
+            ) : null}
+          </div>
           <span className="property-card__go" aria-hidden="true">
             <Icon name="arrow" className="property-card__go-icon" />
           </span>

@@ -6,6 +6,7 @@ import { LeadForm } from '@/components/LeadForm';
 import { PageHero } from '@/components/PageHero';
 import { SectionHead } from '@/components/SectionHead';
 import { buscarServicio, servicios } from '@/data/services';
+import { metadatosPagina } from '@/lib/metadata';
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const s = buscarServicio(slug);
   if (!s) return { title: 'Servicio no encontrado' };
-  return { title: s.nombre, description: s.bajada };
+  return metadatosPagina(s.nombre, s.bajada, `/servicios/${s.slug}`);
 }
 
 export default async function ServicioPage({ params }: Params) {

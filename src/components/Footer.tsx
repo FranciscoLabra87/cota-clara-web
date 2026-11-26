@@ -14,6 +14,12 @@ export function Footer() {
             <Logo variant="negativo" />
             <p className="site-footer__concept">{site.concepto}</p>
             <p className="site-footer__motto">{site.lema}</p>
+            <nav aria-label="Redes sociales">
+              <ul className="site-footer__social">
+                <li><a className="site-footer__link" href={site.facebook} target="_blank" rel="noopener noreferrer">Facebook</a></li>
+                <li><a className="site-footer__link" href={site.instagram} target="_blank" rel="noopener noreferrer">Instagram</a></li>
+              </ul>
+            </nav>
           </div>
 
           <nav className="site-footer__col" aria-label="Servicios">
@@ -73,10 +79,12 @@ export function Footer() {
           </p>
           <ul className="site-footer__legal">
             <li>
-              <Link className="site-footer__link" href="/contacto">
+              <Link className="site-footer__link" href="/privacidad">
                 Política de privacidad
               </Link>
             </li>
+            <li><Link className="site-footer__link" href="/terminos">Términos de uso</Link></li>
+            <li><Link className="site-footer__link" href="/cookies">Cookies y preferencias</Link></li>
             <li>
               <Link className="site-footer__link" href="/servicios/corretaje#honorarios">
                 Qué cobramos y por qué

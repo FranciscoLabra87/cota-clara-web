@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatMetros, formatNumero, formatPrecio, periodoPrecio } from '@/lib/format';
+import { formatMetros, formatNumero, formatPrecio, periodoPrecio, totalMensualArriendo } from '@/lib/format';
 
 // Estas pruebas corren en workerd, así que también confirman que el runtime
 // del deploy trae el ICU de es-CL: punto para los miles y coma decimal.
@@ -19,6 +19,7 @@ describe('números en es-CL', () => {
 describe('precios', () => {
   it('escribe UF y pesos como corresponde', () => {
     expect(formatPrecio({ valor: 7890, moneda: 'UF' })).toBe('UF 7.890');
+    expect(formatPrecio({ valor: 8.17, moneda: 'UF' })).toBe('UF 8,17');
     expect(formatPrecio({ valor: 1200000, moneda: 'CLP' })).toBe('$1.200.000');
   });
 
@@ -37,5 +38,25 @@ describe('metros', () => {
 
   it('pone punto de miles en los terrenos grandes', () => {
     expect(formatMetros(1250.5)).toBe('1.250,5 m');
+  });
+});
+
+describe('costo mensual del arriendo', () => {
+  const arriendo = { operacion: 'arriendo' as const, precio: { valor: 550000, moneda: 'CLP' as const, periodo: 'mes' as const } };
+
+  it('suma canon y gastos comunes, incluyendo gastos informados en cero', () => {
+    expect(totalMensualArriendo({ ...arriendo, gastosComunes: 70000 })).toBe(620000);
+    expect(totalMensualArriendo({ ...arriendo, gastosComunes: 0 })).toBe(550000);
+  });
+
+  it('no presenta un total cuando faltan gastos ni mezcla UF con gastos en pesos', () => {
+    expect(totalMensualArriendo(arriendo)).toBeNull();
+    expect(totalMensualArriendo({ ...arriendo, precio: { valor: 8.17, moneda: 'UF' }, gastosComunes: 60000 })).toBeNull();
+  });
+
+  it('descarta ventas y montos inválidos', () => {
+    expect(totalMensualArriendo({ ...arriendo, operacion: 'venta', gastosComunes: 70000 })).toBeNull();
+    expect(totalMensualArriendo({ ...arriendo, gastosComunes: -1 })).toBeNull();
+    expect(totalMensualArriendo({ ...arriendo, gastosComunes: Number.NaN })).toBeNull();
   });
 });

@@ -37,18 +37,20 @@ const TURNSTILE = 'https://challenges.cloudflare.com';
 // cloudflareinsights.com si algún día se pega el snippet a mano.
 const ANALYTICS_SCRIPT = 'https://static.cloudflareinsights.com';
 const ANALYTICS_ENVIO = 'https://cloudflareinsights.com';
+const GOOGLE_TAG = 'https://www.googletagmanager.com';
+const GOOGLE_ANALYTICS = 'https://www.google-analytics.com https://region1.google-analytics.com';
 
 const CSP_PAGINAS = [
   "default-src 'self'",
   // 'unsafe-inline': ver el comentario de arriba. Turnstile carga su widget.
-  `script-src 'self' 'unsafe-inline'${evalDeDesarrollo} ${TURNSTILE} ${ANALYTICS_SCRIPT}`,
+  `script-src 'self' 'unsafe-inline'${evalDeDesarrollo} ${TURNSTILE} ${ANALYTICS_SCRIPT} ${GOOGLE_TAG}`,
   // Los atributos style= que emite React caen acá.
   "style-src 'self' 'unsafe-inline'",
   // Las tipografías son locales (next/font/local), no hay CDN de fuentes.
   "font-src 'self'",
   // Las teselas del mapa se descargan solo cuando el usuario llega a esa sección.
   "img-src 'self' data: blob: https://tile.openstreetmap.org",
-  `connect-src 'self' ${TURNSTILE} ${ANALYTICS_ENVIO}`,
+  `connect-src 'self' ${TURNSTILE} ${ANALYTICS_ENVIO} ${GOOGLE_ANALYTICS}`,
   // Google: el mapa de la oficina en /contacto.
   `frame-src ${TURNSTILE} https://www.google.com`,
   "frame-ancestors 'none'",
@@ -74,7 +76,14 @@ const comunes = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  images: { formats: ['image/avif', 'image/webp'] },
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    qualities: [75],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
+    imageSizes: [160, 256, 384],
+    localPatterns: [{ pathname: '/fotos/**', search: '' }, { pathname: '/images/**', search: '' }],
+    maximumRedirects: 0,
+  },
 
   async headers() {
     return [

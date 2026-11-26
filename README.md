@@ -59,3 +59,19 @@ Para una base nueva, ejecuta `npm run db:local-schema` o `npm run db:schema`. En
 Las direcciones del origen están truncadas; se publica la comuna sin inventar un sector. El aviso 202039 mezcla Valparaíso en el título y descripción con Concón en el texto de dirección. El proyecto 201760 ofrece varias tipologías y no tiene un programa único; los campos ausentes quedan sin mostrar. Verifica la vigencia y disponibilidad de cada aviso antes de operar con clientes.
 
 Antes de usar el sitio para captar solicitudes, revisa el contacto y los honorarios en `src/data/site.ts` y `src/data/services.ts`, configura los secretos `RESEND_API_KEY` y `LEADS_FROM` para el envío de formularios y activa el dominio final. El valor actual de `site.url` apunta a `www.cotaclara.cl`.
+
+## Privacidad y publicación
+
+`/privacidad`, `/terminos` y `/cookies` describen el tratamiento actual y enlazan las preferencias. Revisar los datos del responsable si la marca opera con otra razón social. El banner recuerda aceptar o rechazar la analítica durante 180 días; rechazar no impide consultar ni enviar formularios. La cookie del panel es necesaria para iniciar sesión.
+
+Cloudflare Web Analytics conserva la medición sin cookies que ya está activa. Google Analytics 4 es opcional y viene desactivado. Para activarlo:
+
+1. Crear o elegir un flujo web en la propiedad de GA4 y **desactivar Medición mejorada** en ese flujo. Evita eventos automáticos, vistas duplicadas y la captura de rutas internas o parámetros que el sitio no envía.
+2. Configurar `NEXT_PUBLIC_GA4_ID=G-…` y `NEXT_PUBLIC_GA4_MANUAL_EVENTS=1` en el entorno **de construcción**, y volver a construir. Son opciones públicas, no claves secretas. Sin ambas, no se carga el script de Google.
+3. Aceptar la analítica en un navegador de prueba y comprobar `page_view`, `contact_click` y `generate_lead`. El último sólo sale después de una solicitud aceptada. El sitio excluye el acceso, el panel, el Drive y la API; no envía nombres, correos, mensajes, consultas de la URL ni fragmentos. Rechazar o retirar la elección desactiva GA4 y borra las cookies `_ga*` del dominio que puede eliminar el navegador.
+
+El Worker redirige con 308 el dominio público a `https://www.cotaclara.cl`, conservando ruta, consulta y método. `assets.run_worker_first` hace que también se aplique a los archivos estáticos; estos van directamente a ASSETS tras el control. Localhost y las direcciones de previsualización conservan su protocolo. No hace falta un proxy de Next.
+
+Las fotografías de R2 usan tamaños adaptados y AVIF/WebP con el binding `IMAGES`. El Worker atiende esas optimizaciones desde R2 porque las rutas `/fotos/…` no son assets estáticos. Si el optimizador no está disponible se entrega el original con caché breve, sin ocultar la fotografía. Las imágenes originales y los documentos privados no se modifican.
+
+Los secretos de Resend, SMTP y Turnstile permanecen en el servidor. `.env.example` sólo contiene nombres y ejemplos; los archivos `.env*` y `.dev.vars*` locales se excluyen de Git. El identificador de GA4 no reemplaza las credenciales de correo ni verifica la entrega real de mensajes.

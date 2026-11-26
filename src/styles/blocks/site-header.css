@@ -41,7 +41,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-8);
+  gap: clamp(1rem, 2vw, 1.5rem);
   height: 100%;
 }
 
@@ -127,7 +127,7 @@
 .nav__list {
   display: flex;
   align-items: center;
-  gap: clamp(1rem, 1.6vw, 1.5rem);
+  gap: clamp(0.75rem, 1vw, 1rem);
 }
 
 .nav__link {
@@ -249,16 +249,9 @@
   color: var(--color-terracota-claro);
 }
 
-/* El menú tiene siete enlaces: bajo 1400 px se aprietan los espacios y bajo
-   1280 px pasa al menú móvil. Si se suma un enlace, hay que volver a medir
-   estos cortes. */
-@media (max-width: 1400px) {
-  .nav__list {
-    gap: 1rem;
-  }
-}
-
-@media (max-width: 1279px) {
+/* Con Arriendos son ocho enlaces. La navegación completa usa el ancho
+   disponible desde 1440 px; por debajo se muestra el menú móvil. */
+@media (max-width: 1439px) {
   .nav {
     display: none;
   }
@@ -268,7 +261,7 @@
   }
 }
 
-@media (min-width: 1280px) {
+@media (min-width: 1440px) {
   .mobile-menu {
     display: none;
   }

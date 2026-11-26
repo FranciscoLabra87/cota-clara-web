@@ -141,6 +141,19 @@
   color: rgb(255 255 255 / 0.75);
 }
 
+.property-head__costs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 0.9375rem;
+  color: rgb(255 255 255 / 0.84);
+}
+
+.property-head__total {
+  font-weight: 600;
+  color: var(--color-blanco);
+}
+
 /* "Desde" del precio de un proyecto: la unidad disponible más barata. */
 .property-head__desde {
   font-family: var(--ff-body);
