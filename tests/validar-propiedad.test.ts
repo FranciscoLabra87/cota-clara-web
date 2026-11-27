@@ -85,6 +85,11 @@ describe('lo que acepta', () => {
     const datos = datosDe({ ...base(), estado: 'PUBLICADA', latitud: '-33.42906250', longitud: '-70.60802330' });
     expect([datos.latitud, datos.longitud]).toEqual([-33.4290625, -70.6080233]);
   });
+
+  it('conserva precios UF con hasta dos decimales, escritos con punto o coma', () => {
+    expect(datosDe({ ...base(), precioValor: '8.17' }).precioValor).toBe(8.17);
+    expect(datosDe({ ...base(), precioValor: '8,17' }).precioValor).toBe(8.17);
+  });
 });
 
 describe('lo que corta', () => {
@@ -113,6 +118,12 @@ describe('lo que rechaza', () => {
     for (const precio of ['0', '-100', 'mucho', '', '9999999999']) {
       expect(errorDe({ ...base(), precioValor: precio })).toMatch(/precio/i);
     }
+  });
+
+  it('limita UF a centésimas y mantiene los precios CLP enteros', () => {
+    expect(errorDe({ ...base(), precioValor: '8.175' })).toMatch(/precio/i);
+    expect(errorDe({ ...base(), precioMoneda: 'CLP', precioValor: '750000.50' })).toMatch(/precio/i);
+    expect(datosDe({ ...base(), precioMoneda: 'CLP', precioValor: '750000' }).precioValor).toBe(750000);
   });
 
   it('exige la fecha como AAAA-MM-DD', () => {

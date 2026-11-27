@@ -10,7 +10,7 @@ import esquema from '../db/schema.sql?raw';
 // punto y coma adentro, y partir por ahí dejaba sentencias cortadas al medio.
 // Ninguna cadena del esquema contiene '--', así que recortar por línea basta.
 const sentencias = esquema
-  .split('\n')
+  .split(/\r?\n/)
   .map((linea) => linea.replace(/--.*$/, ''))
   .join('\n')
   .split(';')

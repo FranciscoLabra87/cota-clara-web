@@ -27,6 +27,7 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
   const [listaFotos, setListaFotos] = useState<Foto[]>(fotos);
   const [subiendo, setSubiendo] = useState(false);
   const [ordenando, setOrdenando] = useState(false);
+  const [precioMoneda, setPrecioMoneda] = useState<'UF' | 'CLP'>(propiedad?.precio.moneda ?? 'UF');
 
   async function guardar(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -277,13 +278,26 @@ export function PropiedadForm({ propiedad, fotos = [], comunas }: Props) {
               <label className="field__label" htmlFor={`${id}-precioValor`}>
                 Valor
               </label>
-              <input className="field__control" type="number" min="1" defaultValue={propiedad?.precio.valor ?? ''} required {...campo('precioValor')} />
+              <input
+                className="field__control"
+                type="number"
+                min="1"
+                step={precioMoneda === 'UF' ? '0.01' : '1'}
+                defaultValue={propiedad?.precio.valor ?? ''}
+                required
+                {...campo('precioValor')}
+              />
             </div>
             <div className="field">
               <label className="field__label" htmlFor={`${id}-precioMoneda`}>
                 Moneda
               </label>
-              <select className="field__control field__control--select" defaultValue={propiedad?.precio.moneda ?? 'UF'} {...campo('precioMoneda')}>
+              <select
+                className="field__control field__control--select"
+                value={precioMoneda}
+                onChange={(e) => setPrecioMoneda(e.target.value as 'UF' | 'CLP')}
+                {...campo('precioMoneda')}
+              >
                 <option value="UF">UF</option>
                 <option value="CLP">Pesos</option>
               </select>

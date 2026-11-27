@@ -176,6 +176,23 @@ export default async function PropiedadPage({ params }: Params) {
           <div className="property__main">
             <Gallery items={galeria(p)} />
 
+            {p.video ? (
+              <section className="property-video" aria-labelledby="video-propiedad-titulo">
+                <h2 className="property__title" id="video-propiedad-titulo">Recorrido en video</h2>
+                <video
+                  className="property-video__player"
+                  controls
+                  playsInline
+                  preload="metadata"
+                  poster={p.imagenes?.[0]}
+                  aria-label={`Recorrido en video de ${tituloPropiedad(p)}`}
+                >
+                  <source src={p.video} type="video/mp4" />
+                  Tu navegador no permite reproducir este video.
+                </video>
+              </section>
+            ) : null}
+
             {ficha.length ? <ul className="specs">
               {ficha.map((f) => (
                 <li key={f.label} className="specs__item">

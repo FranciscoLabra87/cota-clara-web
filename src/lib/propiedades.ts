@@ -16,6 +16,7 @@ type Fila = {
   tipo: TipoPropiedad;
   operacion: Operacion;
   condicion: Condicion;
+  video_clave: string | null;
   comuna: string;
   sector: string;
   latitud: number | null;
@@ -47,7 +48,7 @@ type Fila = {
   ilustracion_tono: 'dia' | 'atardecer';
 };
 
-const COLUMNAS = `id, slug, titulo, tipo, operacion, condicion, comuna, sector, latitud, longitud, precio_valor, precio_moneda, precio_periodo,
+const COLUMNAS = `id, slug, titulo, tipo, operacion, condicion, video_clave, comuna, sector, latitud, longitud, precio_valor, precio_moneda, precio_periodo,
   dormitorios, banos, estacionamientos, bodegas, superficie_util, superficie_total, terreno, frente, fondo, piso,
   orientacion, anio, gastos_comunes, etiquetas, resumen, descripcion, caracteristicas,
   destacada, publicada, estado, ilustracion_seed, ilustracion_tono`;
@@ -67,6 +68,11 @@ function lista(json: string): string[] {
 // que rompe el visor de imágenes del navegador al abrir la foto directamente.
 export const urlFoto = (clave: string) => `/fotos/${clave}`;
 
+const SLUG_PUBLICO = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const CLAVE_VIDEO = /^videos-propiedades\/[a-z0-9]+(?:-[a-z0-9]+)*\/[0-9a-f]{12}\.mp4$/;
+
+export const urlVideoPropiedad = (slug: string) => `/videos-propiedades/${slug}`;
+
 function aPropiedad(f: Fila, fotos: string[], stock?: ResumenStock): PropiedadAdmin {
   return {
     id: f.id,
@@ -77,6 +83,7 @@ function aPropiedad(f: Fila, fotos: string[], stock?: ResumenStock): PropiedadAd
     tipo: f.tipo,
     operacion: f.operacion,
     condicion: f.condicion,
+    ...(f.video_clave && CLAVE_VIDEO.test(f.video_clave) ? { video: urlVideoPropiedad(f.slug) } : {}),
     comuna: f.comuna,
     sector: f.sector,
     ...(f.latitud == null || f.longitud == null ? {} : { latitud: f.latitud, longitud: f.longitud }),
@@ -171,6 +178,22 @@ export async function propiedadPorSlug(slug: string): Promise<Propiedad | null> 
     .first<Fila>();
   if (!fila) return null;
   return (await hidratar([fila]))[0];
+}
+
+/**
+ * Resuelve la clave privada únicamente para una propiedad que sigue publicada.
+ * La ruta de video llama esto en cada petición, así despublicar corta también
+ * el acceso directo a un enlace que alguien haya guardado.
+ */
+export async function videoPublicadoPorSlug(slug: string): Promise<string | null> {
+  if (!SLUG_PUBLICO.test(slug)) return null;
+  const db = await obtenerDB();
+  const fila = await db
+    .prepare(`SELECT video_clave FROM propiedades WHERE slug = ? AND estado = 'PUBLICADA'`)
+    .bind(slug)
+    .first<{ video_clave: string | null }>();
+  const clave = fila?.video_clave?.trim();
+  return clave && CLAVE_VIDEO.test(clave) ? clave : null;
 }
 
 /** La propiedad publicada que alguien consultó desde su ficha, para armar el aviso del lead. Sin fotos. */

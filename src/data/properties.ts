@@ -45,6 +45,8 @@ export type Propiedad = {
   ilustracion: { seed: number; tono: 'dia' | 'atardecer' };
   /** Fotos servidas desde R2 en /fotos/. Si existen, reemplazan a las ilustraciones. */
   imagenes?: string[];
+  /** MP4 público servido por slug, sin exponer su clave privada de R2. */
+  video?: string;
   /** Resumen del stock, solo en los proyectos (condicion 'nuevo') que tienen unidades cargadas. */
   stock?: ResumenStock;
 };

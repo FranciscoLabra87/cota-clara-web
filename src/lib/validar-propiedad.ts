@@ -27,6 +27,20 @@ function entero(v: unknown, max: number): number {
   return Math.trunc(n);
 }
 
+/** Precio positivo: UF admite centésimas; los pesos siguen siendo enteros. */
+function precio(v: unknown, moneda: 'UF' | 'CLP', max: number): number {
+  if (typeof v !== 'string' && typeof v !== 'number') return Number.NaN;
+  const crudo = typeof v === 'string' ? v.trim().replace(',', '.') : v;
+  if (crudo === '') return Number.NaN;
+
+  const n = Number(crudo);
+  const decimales = moneda === 'UF' ? 2 : 0;
+  if (!Number.isFinite(n) || n < 1 || n > max || Number(n.toFixed(decimales)) !== n) {
+    return Number.NaN;
+  }
+  return n;
+}
+
 /** Igual que entero, pero vacío significa "sin dato" en vez de error. */
 function opcional(v: unknown, max: number): number | null | undefined {
   if (v === null || v === undefined || String(v).trim() === '') return null;
@@ -85,7 +99,7 @@ export function validarPropiedad(body: Record<string, unknown>): Resultado {
   const precioMoneda = texto(body.precioMoneda, 5);
   if (!MONEDAS.includes(precioMoneda as (typeof MONEDAS)[number])) return { ok: false, error: 'Elige la moneda del precio' };
 
-  const precioValor = entero(body.precioValor, 1_000_000_000);
+  const precioValor = precio(body.precioValor, precioMoneda as 'UF' | 'CLP', 1_000_000_000);
   if (Number.isNaN(precioValor) || precioValor < 1) return { ok: false, error: 'Escribe un precio válido' };
 
   const estado = texto(body.estado, 20) || 'BORRADOR';

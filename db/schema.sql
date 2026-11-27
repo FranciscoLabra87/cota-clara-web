@@ -100,6 +100,9 @@ CREATE TABLE IF NOT EXISTS propiedades (
   estado           TEXT NOT NULL DEFAULT 'BORRADOR' CHECK(estado IN ('BORRADOR','PUBLICADA')),
   -- nuevo = Proyectos de inversión, usado = Retail. Cada segmento tiene su página.
   condicion        TEXT NOT NULL DEFAULT 'usado' CHECK(condicion IN ('nuevo','usado')),
+  -- Un único MP4 público por propiedad. La clave apunta al prefijo privado
+  -- videos-propiedades/ del bucket R2 y nunca se expone directamente.
+  video_clave      TEXT,
   -- Ilustración SVG de reemplazo mientras la propiedad no tenga fotos.
   ilustracion_seed INTEGER NOT NULL DEFAULT 1,
   ilustracion_tono TEXT NOT NULL DEFAULT 'dia' CHECK(ilustracion_tono IN ('dia','atardecer')),

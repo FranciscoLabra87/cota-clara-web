@@ -19,6 +19,7 @@ describe('números en es-CL', () => {
 describe('precios', () => {
   it('escribe UF y pesos como corresponde', () => {
     expect(formatPrecio({ valor: 7890, moneda: 'UF' })).toBe('UF 7.890');
+    expect(formatPrecio({ valor: 8.17, moneda: 'UF' })).toBe('UF 8,17');
     expect(formatPrecio({ valor: 1200000, moneda: 'CLP' })).toBe('$1.200.000');
   });
 

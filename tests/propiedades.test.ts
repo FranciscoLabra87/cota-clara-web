@@ -95,6 +95,11 @@ describe('crear y leer', () => {
     expect((await propiedadPorId(arriendo))!.precio).toEqual({ valor: 1200000, moneda: 'CLP', periodo: 'mes' });
   });
 
+  it('conserva los centésimos de un precio en UF al guardarlo en D1', async () => {
+    const arriendo = await crearPropiedad(datos({ slug: 'oficina-arriendo-uf', operacion: 'arriendo', precioValor: 8.17 }));
+    expect((await propiedadPorId(arriendo))!.precio).toEqual({ valor: 8.17, moneda: 'UF', periodo: 'mes' });
+  });
+
   it('deja fuera los campos opcionales que vienen vacíos', async () => {
     const otro = await crearPropiedad(datos({ slug: 'casa-sin-datos', terreno: null, piso: null, gastosComunes: null }));
     const p = await propiedadPorId(otro);

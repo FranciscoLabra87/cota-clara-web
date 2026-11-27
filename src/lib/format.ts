@@ -1,6 +1,7 @@
 import type { Precio } from '@/data/properties';
 
 const entero = new Intl.NumberFormat('es-CL', { maximumFractionDigits: 0 });
+const uf = new Intl.NumberFormat('es-CL', { maximumFractionDigits: 2 });
 
 export function formatNumero(valor: number, decimales = 0): string {
   return new Intl.NumberFormat('es-CL', {
@@ -15,7 +16,7 @@ const metros = new Intl.NumberFormat('es-CL', { maximumFractionDigits: 2 });
 export const formatMetros = (valor: number) => `${metros.format(valor)} m`;
 
 export function formatPrecio(precio: Precio): string {
-  const base = precio.moneda === 'UF' ? `UF ${entero.format(precio.valor)}` : `$${entero.format(precio.valor)}`;
+  const base = precio.moneda === 'UF' ? `UF ${uf.format(precio.valor)}` : `$${entero.format(precio.valor)}`;
   return base;
 }
 
